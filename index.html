@@ -22,6 +22,7 @@
       --bg:#0b0d10; --fg:#e7edf3; --muted:#a9b3bd; --card:#101419;
       --accent:#6ee7ff; --accent2:#95f99d; --link:#8fd3ff; --border:rgba(231,237,243,0.12);
       --shadow: 0 10px 30px rgba(0,0,0,.25);
+      --header-h: 72px;
     }
     :root.light{
       --bg:#f7fafc; --fg:#0b0d10; --muted:#4a5568; --card:#ffffff;
@@ -33,17 +34,48 @@
     a{color:var(--link);text-decoration:none}
     a:hover{text-decoration:underline}
     .container{max-width:1080px;margin:0 auto;padding:24px}
+
+    /* Header / Nav */
     header{
-      position:sticky; top:0; z-index:20; backdrop-filter:saturate(180%) blur(10px);
+      position:sticky; top:0; z-index:40; backdrop-filter:saturate(180%) blur(10px);
       background:color-mix(in oklab,var(--bg),transparent 18%); border-bottom:1px solid var(--border);
     }
-    nav{display:flex;align-items:center;justify-content:space-between;gap:12px}
-    nav .links a{margin:0 10px; font-weight:600}
+    nav{display:flex;align-items:center;justify-content:space-between;gap:12px; min-height:var(--header-h);}
+    nav .links { display:flex; align-items:center; gap:12px; }
     .btn{display:inline-flex;align-items:center;gap:.5rem;background:var(--fg);color:var(--bg);padding:.6rem 1rem;border-radius:999px;border:0;font-weight:700;box-shadow:var(--shadow)}
     .btn:hover{opacity:.9; text-decoration:none}
     .btn.ghost{background:transparent;color:var(--fg);border:1px solid var(--border)}
+    .nav-toggle { display:none; }
 
-    /* HERO */
+    /* Mobile menu */
+    @media (max-width: 900px){
+      .nav-toggle { display:inline-flex; }
+      nav .links { display:none; } /* hide inline links on mobile */
+
+      #navmenu.mobile {
+        display:block;
+        position:fixed; left:0; right:0; top:var(--header-h);
+        background:var(--bg);
+        border-top:1px solid var(--border);
+        box-shadow: var(--shadow);
+        padding:18px 20px 24px;
+        z-index:50;
+        transform: translateY(-120%);
+        transition: transform .22s ease-out;
+      }
+      #navmenu.mobile.open { transform: translateY(0%); }
+      #navmenu.mobile a { display:block; padding:10px 2px; font-weight:600; font-size:1.05rem; }
+
+      .backdrop[hidden]{ display:none; }
+      .backdrop {
+        position:fixed; inset:0; z-index:45;
+        background: rgba(0,0,0,.35);
+        backdrop-filter: blur(2px);
+      }
+      body.menu-open { overflow:hidden; }
+    }
+
+    /* Hero */
     .hero{display:grid;grid-template-columns:1.1fr .9fr;gap:28px;align-items:center;padding:28px 0}
     .hero h1{font-size:clamp(2rem,1rem+4vw,3.1rem);line-height:1.08;margin:.25rem 0}
     .pill{display:inline-block;padding:.35rem .7rem;border-radius:999px;background:color-mix(in oklab,var(--accent),transparent 80%); color:var(--accent); font-weight:700; letter-spacing:.02em}
@@ -53,7 +85,7 @@
     .profile-card h3{margin:.8rem 0 0}
     .profile-card p{margin:.2rem 0 0; color:var(--muted)}
 
-    /* SECTIONS */
+    /* Sections */
     section{padding:22px 0}
     h2{font-size:1.55rem;margin:0 0 12px}
     .card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:22px;box-shadow:var(--shadow)}
@@ -83,20 +115,31 @@
           <strong style="font-size:1.1rem">Aniket Datar</strong>
           <span class="pill">FinOps • Hybrid Cloud • Quant</span>
         </div>
-        <div class="links" role="navigation">
+
+        <!-- Desktop links -->
+        <div id="navmenu" class="links" role="navigation">
           <a href="#finops">FinOps</a>
           <a href="#quant">Quant</a>
           <a href="#projects">Projects</a>
           <a href="#skills">Stack</a>
           <a href="#contact">Contact</a>
+        </div>
+
+        <!-- Right-side buttons -->
+        <div style="display:flex;align-items:center;gap:8px">
           <button id="theme" class="btn ghost" type="button" aria-label="Toggle theme">☾</button>
+          <button id="menu" class="nav-toggle btn ghost" type="button"
+                  aria-label="Open menu" aria-expanded="false" aria-controls="navmenu">☰</button>
         </div>
       </nav>
     </div>
   </header>
 
+  <!-- Backdrop for mobile menu -->
+  <div id="backdrop" class="backdrop" hidden></div>
+
   <main id="main" class="container">
-    <!-- HERO (photo-first but still modern) -->
+    <!-- HERO -->
     <section class="hero" id="top">
       <div>
         <p class="pill">👋 Hello!</p>
@@ -114,7 +157,7 @@
           <span class="tag">Derivatives • Monte Carlo</span>
         </div>
         <div style="display:flex; gap:10px; margin-top:14px; flex-wrap:wrap">
-          <a class="btn" href="resume.pdf" target="_blank">📄 Download CV</a>
+          <a class="btn" href="./resume.pdf" target="_blank" rel="noopener" download>📄 Download CV</a>
           <a class="btn ghost" href="https://github.com/D4T4R" target="_blank" rel="noopener">GitHub</a>
           <a class="btn ghost" href="https://www.linkedin.com/in/ezpuns" target="_blank" rel="noopener">LinkedIn</a>
         </div>
@@ -126,7 +169,7 @@
         <h3>Aniket Datar</h3>
         <p>FinOps • Hybrid Cloud • Quant Systems</p>
         <p style="margin-top:.6rem;font-size:.9rem">
-          India · <a href="mailto:aniketdatar@example.com">aniketdatar@cyberservices.com</a>
+          India · <a href="mailto:aniketdatar@example.com">aniketdatar@example.com</a>
         </p>
       </aside>
     </section>
@@ -259,7 +302,7 @@
       </div>
     </section>
 
-    <!-- ACTIVITY (optional, lightweight) -->
+    <!-- ACTIVITY (optional) -->
     <section id="stats">
       <h2>Activity Glimpse</h2>
       <div class="grid cols-2 stats">
@@ -306,6 +349,48 @@
       const mode = root.classList.contains('light') ? 'light':'dark';
       btn.textContent = mode==='light' ? '☀' : '☾';
       localStorage.setItem('theme', mode);
+    });
+
+    // --- Mobile nav ---
+    const menuBtn = document.getElementById('menu');
+    const navmenu = document.getElementById('navmenu');
+    const backdrop = document.getElementById('backdrop');
+    const headerEl = document.querySelector('header');
+    const mq = matchMedia('(max-width: 900px)');
+
+    function setHeaderHeightVar(){
+      const h = headerEl.getBoundingClientRect().height;
+      document.documentElement.style.setProperty('--header-h', h + 'px');
+    }
+    setHeaderHeightVar();
+    window.addEventListener('resize', setHeaderHeightVar);
+
+    function setMode() {
+      if (mq.matches) navmenu.classList.add('mobile');
+      else {
+        navmenu.classList.remove('mobile','open');
+        document.body.classList.remove('menu-open');
+        if (menuBtn) menuBtn.setAttribute('aria-expanded','false');
+        backdrop.hidden = true;
+      }
+    }
+    setMode(); mq.addEventListener('change', setMode);
+
+    function setMenu(open){
+      if (!navmenu.classList.contains('mobile')) return;
+      navmenu.classList.toggle('open', open);
+      document.body.classList.toggle('menu-open', open);
+      if (menuBtn) menuBtn.setAttribute('aria-expanded', String(open));
+      backdrop.hidden = !open;
+    }
+
+    if (menuBtn) menuBtn.addEventListener('click', () => setMenu(!navmenu.classList.contains('open')));
+    backdrop.addEventListener('click', () => setMenu(false));
+    window.addEventListener('keydown', (e) => { if (e.key === 'Escape') setMenu(false); });
+
+    // Close menu when a nav link is clicked (mobile)
+    navmenu.addEventListener('click', (e) => {
+      if (e.target.tagName === 'A') setMenu(false);
     });
   </script>
 </body>
