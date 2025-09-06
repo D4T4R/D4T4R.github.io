@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Aniket Datar (D4T4R) — Portfolio</title>
+
+  <!-- SEO -->
+  <meta name="description" content="Student & Developer from India. Software engineering across frontend/backend; interests in Blockchain, Cyber Security, and Finance." />
+  <meta name="author" content="Aniket Datar" />
+  <link rel="canonical" href="https://d4t4r.github.io/" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Aniket Datar (D4T4R) — Portfolio" />
+  <meta property="og:description" content="Software engineering, Blockchain/CyberSec exploration, finance projects, and DevOps tooling." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://d4t4r.github.io/" />
+  <meta property="og:image" content="og-image.png" />
+
+  <style>
+    :root{
+      --bg:#0b0d10; --fg:#e7edf3; --muted:#a9b3bd; --card:#11151a;
+      --accent:#6ee7ff; --accent-2:#95f99d; --link:#8fd3ff; --border:rgba(231,237,243,0.1);
+      --shadow: 0 10px 30px rgba(0,0,0,.25);
+    }
+    :root.light{
+      --bg:#f7fafc; --fg:#0b0d10; --muted:#4a5568; --card:#ffffff;
+      --accent:#0ea5e9; --accent-2:#10b981; --link:#0ea5e9; --border:rgba(11,13,16,0.08);
+      --shadow: 0 8px 24px rgba(2,6,23,.08);
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--fg);font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif}
+    a{color:var(--link);text-decoration:none}
+    a:hover{text-decoration:underline}
+    .container{max-width:1080px;margin:0 auto;padding:24px}
+    header{
+      position:sticky; top:0; z-index:20; backdrop-filter:saturate(180%) blur(10px);
+      background:color-mix(in oklab, var(--bg), transparent 18%); border-bottom:1px solid var(--border);
+    }
+    nav{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    nav .links a{margin:0 10px; font-weight:600}
+    .btn{display:inline-flex;align-items:center;gap:.5rem;background:var(--fg);color:var(--bg);padding:.6rem 1rem;border-radius:999px;border:0;font-weight:700;box-shadow:var(--shadow)}
+    .btn:hover{opacity:.9; text-decoration:none}
+    .btn.ghost{background:transparent;color:var(--fg);border:1px solid var(--border)}
+    .hero{display:grid;grid-template-columns:1.1fr .9fr;gap:24px;align-items:center;padding:28px 0}
+    .hero h1{font-size:clamp(2rem,1rem+4vw,3.25rem);line-height:1.1;margin:.25rem 0}
+    .pill{display:inline-block;padding:.35rem .7rem;border-radius:999px;background:color-mix(in oklab,var(--accent),transparent 80%); color:var(--accent); font-weight:700; letter-spacing:.02em}
+    .lead{font-size:1.1rem;color:var(--muted)}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:22px;box-shadow:var(--shadow)}
+    section{padding:22px 0}
+    h2{font-size:1.6rem;margin:0 0 12px}
+    .grid{display:grid;gap:16px}
+    .grid.cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .grid.cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+    @media (max-width:900px){ .hero{grid-template-columns:1fr} .grid.cols-3{grid-template-columns:1fr} .grid.cols-2{grid-template-columns:1fr} }
+    .kvs{display:flex;flex-wrap:wrap;gap:.6rem}
+    .tag{border:1px solid var(--border); padding:.4rem .6rem; border-radius:999px; color:var(--muted); font-weight:600}
+    footer{padding:40px 0; color:var(--muted); text-align:center; border-top:1px solid var(--border)}
+    .skip{position:absolute; left:-9999px; top:auto; width:1px; height:1px; overflow:hidden}
+    .skip:focus{position:static; width:auto; height:auto; padding:.5rem; background:var(--accent); color:#000; border-radius:8px}
+    .iconwall img{margin:6px}
+    .stats img{max-width:100%; height:auto; border-radius:12px; border:1px solid var(--border)}
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header>
+    <div class="container">
+      <nav aria-label="Primary">
+        <div style="display:flex;align-items:center;gap:12px">
+          <strong style="font-size:1.1rem">Aniket Datar</strong>
+          <span class="pill">Student • Developer • India</span>
+        </div>
+        <div class="links" role="navigation">
+          <a href="#about">About</a>
+          <a href="#skills">Languages & Tools</a>
+          <a href="#stats">Stats</a>
+          <a href="#contact">Contact</a>
+          <button id="theme" class="btn ghost" type="button" aria-label="Toggle theme">☾</button>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="container">
+    <!-- HERO -->
+    <section class="hero">
+      <div>
+        <p class="pill">👋 Hey there!</p>
+        <h1>Writing, deploying, and maintaining code across the stack</h1>
+        <p class="lead">
+          I’m a Student & Developer from India. I work as a Software Engineer contributing to
+          frontend and backend. I’m exploring Blockchain and Cyber Security, solve problems on
+          Codeforces in my free time, read tech articles, and love tackling finance problems.
+        </p>
+        <div class="kvs" style="margin:14px 0 6px">
+          <span class="tag">Frontend & Backend</span>
+          <span class="tag">Blockchain</span>
+          <span class="tag">Cyber Security</span>
+          <span class="tag">Finance</span>
+          <span class="tag">Codeforces</span>
+        </div>
+        <div style="display:flex; gap:10px; margin-top:14px; flex-wrap:wrap">
+          <a class="btn" href="https://www.linkedin.com/in/ezpuns" target="_blank" rel="noopener">LinkedIn</a>
+          <a class="btn ghost" href="https://www.buymeacoffee.com/ezpuns" target="_blank" rel="noopener">Buy Me a Coffee</a>
+          <a class="btn ghost" href="https://github.com/D4T4R" target="_blank" rel="noopener">GitHub</a>
+        </div>
+      </div>
+      <div class="card" aria-label="Intro image">
+        <div style="text-align:center">
+          <img src="https://media.giphy.com/media/gpF1hNYWOFvLa/giphy.gif" width="450" height="325" alt="Coding animation GIF" style="max-width:100%;height:auto;border-radius:12px"/>
+        </div>
+      </div>
+    </section>
+
+    <!-- BADGES (from your README top) -->
+    <section aria-label="Badges">
+      <div class="card" style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:space-between">
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+          <a href="https://www.linkedin.com/in/ezpuns" target="_blank" rel="noopener">
+            <img src="https://img.shields.io/badge/LinkedIn-blue?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn Badge" />
+          </a>
+          <a href="https://www.buymeacoffee.com/ezpuns" target="_blank" rel="noopener">
+            <img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174" />
+          </a>
+        </div>
+        <img src="https://komarev.com/ghpvc/?username=D4T4R&style=flat-square&color=blue" alt="Profile views counter"/>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="about">
+      <h2>About Me</h2>
+      <div class="card">
+        <ul>
+          <li>🔭 Working as a <strong>Software Engineer</strong>, contributing to frontend and backend.</li>
+          <li>🌱 Exploring <strong>Blockchain</strong> and <strong>Cyber Security</strong>.</li>
+          <li>⚡ Free time: <strong>Codeforces</strong> problems + tech articles.</li>
+          <li>💱 Huge <strong>finance</strong> fan—love solving domain problems.</li>
+          <li>📫 Reach me: <a href="https://www.linkedin.com/in/ezpuns" target="_blank" rel="noopener">LinkedIn</a></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- SKILLS -->
+    <section id="skills">
+      <h2>Languages & Tools</h2>
+      <div class="card iconwall">
+        <!-- Your icon wall from README -->
+        <p>
+          <img src="https://github.com/devicons/devicon/blob/master/icons/bash/bash-original.svg" title="Bash" alt="Bash" width="40" height="40"/>&nbsp;
+          <img src="https://github.com/devicons/devicon/blob/master/icons/solidity/solidity-original.svg" title="Solidity" alt="Solidity" width="40" height="40"/>&nbsp;
+          <img src="https://github.com/devicons/devicon/blob/master/icons/remix/remix-original.svg" title="Remix IDE" alt="Remix IDE" width="40" height="40"/>&nbsp;
+          <img src="https://github.com/devicons/devicon/blob/master/icons/linux/linux-original.svg" title="Linux" alt="Linux" width="40" height="40"/>&nbsp;
+          <img src="https://github.com/devicons/devicon/blob/master/icons/python/python-original-wordmark.svg" title="Python" alt="Python" width="40" height="40"/>&nbsp;
+          <img src="https://github.com/devicons/devicon/blob/master/icons/materialui/materialui-original.svg" title="Material UI" alt="Material UI" width="40" height="40"/>&nbsp;
+          <img src="https://github.com/devicons/devicon/blob/master/icons/npm/npm-original-wordmark.svg" title="NPM" alt="NPM" width="40" height="40"/>&nbsp;
+          <img src="https://github.com/devicons/devicon/blob/master/icons/html5/html5-original.svg" title="HTML5" alt="HTML" width="40" height="40"/>&nbsp;
+          <img src="https://github.com/devicons/devicon/blob/master/icons/javascript/javascript-original.svg" title="JavaScript" alt="JavaScript" width="40" height="40"/>&nbsp;
+          <img src="https://github.com/devicons/devicon/blob/master/icons/mongodb/mongodb-original-wordmark.svg" title="MongoDB" alt="MongoDB" width="40" height="40"/>&nbsp;
+          <img src="https://github.com/devicons/devicon/blob/master/icons/rust/rust-original.svg" title="Rust" alt="Rust" width="40" height="40"/>&nbsp;
+          <img src="https://github.com/devicons/devicon/blob/master/icons/sqldeveloper/sqldeveloper-original.svg" title="SQLDev"  alt="SQLDev" width="40" height="40"/>&nbsp;
+          <img src="https://github.com/devicons/devicon/blob/master/icons/dbeaver/dbeaver-original.svg" title="DBeaver" alt="DBeaver" width="40" height="40"/>&nbsp;
+          <img src="https://github.com/devicons/devicon/blob/master/icons/nodejs/nodejs-original-wordmark.svg" title="NodeJS" alt="NodeJS" width="40" height="40"/>&nbsp;
+          <img src="https://github.com/devicons/devicon/blob/master/icons/mocha/mocha-plain.svg" title="Mocha" alt="Mocha" width="40" height="40"/>&nbsp;
+          <img src="https://github.com/devicons/devicon/blob/master/icons/postman/postman-original.svg" title="Postman" alt="Postman" width="40" height="40"/>&nbsp;
+          <img src="https://github.com/devicons/devicon/blob/master/icons/git/git-original.svg" title="Git" alt="Git" width="40" height="40"/>&nbsp;
+          <img src="https://github.com/devicons/devicon/blob/master/icons/grafana/grafana-plain-wordmark.svg" title="Grafana" alt="Grafana" width="40" height="40"/>&nbsp;
+          <img src="https://github.com/devicons/devicon/blob/master/icons/apacheairflow/apacheairflow-original.svg" title="Airflow" alt="Airflow" width="40" height="40"/>&nbsp;
+          <img src="https://github.com/devicons/devicon/blob/master/icons/apachekafka/apachekafka-original.svg" title="Kafka" alt="Kafka" width="40" height="40"/>&nbsp;
+          <img src="https://github.com/devicons/devicon/blob/master/icons/nginx/nginx-original.svg" title="Nginx" alt="Nginx" width="40" height="40"/>&nbsp;
+          <img src="https://github.com/devicons/devicon/blob/master/icons/azuredevops/azuredevops-plain.svg" title="Azure DevOps" alt="ADO" width="40" height="40"/>&nbsp;
+          <img src="https://github.com/devicons/devicon/blob/master/icons/docker/docker-original.svg" title="Docker" alt="Docker" width="40" height="40"/>&nbsp;
+          <img src="https://github.com/devicons/devicon/blob/master/icons/kubernetes/kubernetes-plain.svg" title="Kubernetes" alt="Kubernetes" width="40" height="40"/>&nbsp;
+          <img src="https://github.com/devicons/devicon/blob/master/icons/argocd/argocd-original.svg" title="ArgoCD" alt="ArgoCD" width="40" height="40"/>&nbsp;
+          <img src="https://github.com/devicons/devicon/blob/master/icons/harbor/harbor-original.svg" title="Harbor" alt="Harbor" width="40" height="40"/>&nbsp;
+          <img src="https://github.com/devicons/devicon/blob/master/icons/helm/helm-original.svg" title="Helm" alt="Helm" width="40" height="40"/>&nbsp;
+          <img src="https://github.com/devicons/devicon/blob/master/icons/podman/podman-original.svg" title="Podman" alt="Podman" width="40" height="40"/>&nbsp;
+          <img src="https://github.com/devicons/devicon/blob/master/icons/googlecloud/googlecloud-original.svg" title="GCP" alt="GCP" width="40" height="40"/>&nbsp;
+          <img src="https://github.com/devicons/devicon/blob/master/icons/rabbitmq/rabbitmq-original.svg" title="RabbitMQ" alt="RabbitMQ" width="40" height="40"/>&nbsp;
+          <img src="https://github.com/devicons/devicon/blob/master/icons/jenkins/jenkins-original.svg" title="Jenkins" alt="Jenkins" width="40" height="40"/>&nbsp;
+          <img src="https://github.com/devicons/devicon/blob/master/icons/vault/vault-original.svg" title="Vault" alt="Vault" width="40" height="40"/>&nbsp;
+          <img src="https://github.com/devicons/devicon/blob/master/icons/elasticsearch/elasticsearch-original.svg" title="ElasticSearch" alt="Elastic" width="40" height="40"/>&nbsp;
+          <img src="https://github.com/devicons/devicon/blob/master/icons/awk/awk-original.svg" title="Awk" alt="Awk" width="40" height="40"/>&nbsp;
+          <img src="https://github.com/devicons/devicon/blob/master/icons/ballerina/ballerina-original.svg" title="Ballerina" alt="Ballerina" width="40" height="40"/>&nbsp;
+          <img src="https://github.com/devicons/devicon/blob/master/icons/cpanel/cpanel-original.svg" title="cPanel" alt="cPanel" width="40" height="40"/>&nbsp;
+          <img src="https://github.com/devicons/devicon/blob/master/icons/centos/centos-original.svg" title="CentOS" alt="CentOS" width="40" height="40"/>&nbsp;
+          <img src="https://github.com/devicons/devicon/blob/master/icons/kalilinux/kalilinux-original.svg" title="Kali Linux" alt="Kali Linux" width="40" height="40"/>&nbsp;
+          <img src="https://github.com/devicons/devicon/blob/master/icons/swagger/swagger-original.svg" title="Swagger" alt="Swagger" width="40" height="40"/>&nbsp;
+          <img src="https://github.com/devicons/devicon/blob/master/icons/yaml/yaml-original.svg" title="YAML" alt="YAML" width="40" height="40"/>&nbsp;
+          <img src="https://github.com/devicons/devicon/blob/master/icons/tomcat/tomcat-original.svg" title="Apache Tomcat" alt="Tomcat" width="40" height="40"/>&nbsp;
+          <img src="https://github.com/devicons/devicon/blob/master/icons/web3js/web3js-original.svg" title="Web3.js" alt="Web3JS" width="40" height="40"/>&nbsp;
+          <img src="https://github.com/zatosource/zato/blob/main/code/zato-openapi/src/zato/openapi/app/static/swagger-ui/android-chrome-192x192.png" title="Zato" alt="Zato" width="40" height="40"/>&nbsp;
+          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRivy-Oqgqx4JRPY18gvvMc-nXO7HMbu05zcQ&s" title="Apigee" alt="Apigee" width="40" height="40"/>&nbsp;
+        </p>
+      </div>
+    </section>
+
+    <!-- STATS -->
+    <section id="stats">
+      <h2>My Stats</h2>
+      <div class="grid cols-2 stats">
+        <div class="card">
+          <a href="https://git.io/streak-stats" target="_blank" rel="noopener">
+            <img src="http://github-readme-streak-stats.herokuapp.com?user=D4T4R&theme=dark&background=000000" alt="GitHub Streak graph for D4T4R">
+          </a>
+        </div>
+        <div class="card">
+          <a href="https://github.com/anuraghazra/github-readme-stats" target="_blank" rel="noopener">
+            <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=D4T4R&layout=compact&theme=vision-friendly-dark" alt="Top languages chart for D4T4R">
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact">
+      <h2>Contact</h2>
+      <div class="card">
+        <ul>
+          <li>LinkedIn: <a href="https://www.linkedin.com/in/ezpuns" target="_blank" rel="noopener">/in/ezpuns</a></li>
+          <li>GitHub: <a href="https://github.com/D4T4R" target="_blank" rel="noopener">@D4T4R</a></li>
+          <li>Support: <a href="https://www.buymeacoffee.com/ezpuns" target="_blank" rel="noopener">Buy me a coffee</a></li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">© <span id="y"></span> Aniket Datar • Built on GitHub Pages • <a href="#top">Back to top</a></div>
+  </footer>
+
+  <script>
+    // Year + Theme toggle
+    document.getElementById('y').textContent = new Date().getFullYear();
+    const root = document.documentElement;
+    const btn = document.getElementById('theme');
+    const saved = localStorage.getItem('theme') || (matchMedia('(prefers-color-scheme: light)').matches ? 'light':'dark');
+    if(saved === 'light'){ root.classList.add('light'); btn.textContent='☀'; }
+    btn.addEventListener('click', () => {
+      root.classList.toggle('light');
+      const mode = root.classList.contains('light') ? 'light':'dark';
+      btn.textContent = mode==='light' ? '☀' : '☾';
+      localStorage.setItem('theme', mode);
+    });
+  </script>
+</body>
+</html>
