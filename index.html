@@ -42,27 +42,35 @@
     .btn{display:inline-flex;align-items:center;gap:.5rem;background:var(--fg);color:var(--bg);padding:.6rem 1rem;border-radius:999px;border:0;font-weight:700;box-shadow:var(--shadow)}
     .btn:hover{opacity:.9; text-decoration:none}
     .btn.ghost{background:transparent;color:var(--fg);border:1px solid var(--border)}
-    .hero{display:grid;grid-template-columns:1.1fr .9fr;gap:24px;align-items:center;padding:28px 0}
+
+    /* HERO */
+    .hero{display:grid;grid-template-columns:1.1fr .9fr;gap:28px;align-items:center;padding:28px 0}
     .hero h1{font-size:clamp(2rem,1rem+4vw,3.1rem);line-height:1.08;margin:.25rem 0}
     .pill{display:inline-block;padding:.35rem .7rem;border-radius:999px;background:color-mix(in oklab,var(--accent),transparent 80%); color:var(--accent); font-weight:700; letter-spacing:.02em}
     .lead{font-size:1.1rem;color:var(--muted)}
-    .card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:22px;box-shadow:var(--shadow)}
+    .profile-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:24px;text-align:center;box-shadow:var(--shadow)}
+    .profile-card img{max-width:220px; width:100%; height:auto; border-radius:50%; box-shadow:var(--shadow)}
+    .profile-card h3{margin:.8rem 0 0}
+    .profile-card p{margin:.2rem 0 0; color:var(--muted)}
+
+    /* SECTIONS */
     section{padding:22px 0}
     h2{font-size:1.55rem;margin:0 0 12px}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:22px;box-shadow:var(--shadow)}
     .grid{display:grid;gap:16px}
     .grid.cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}
     .grid.cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}
     @media (max-width:900px){ .hero{grid-template-columns:1fr} .grid.cols-3,.grid.cols-2{grid-template-columns:1fr} }
+
     .kvs{display:flex;flex-wrap:wrap;gap:.6rem}
     .tag{border:1px solid var(--border); padding:.35rem .6rem; border-radius:999px; color:var(--muted); font-weight:600}
-    .statline{display:flex;gap:14px;flex-wrap:wrap}
-    .stat{background:color-mix(in oklab,var(--accent),transparent 88%); color:var(--accent); padding:.35rem .6rem; border-radius:10px; font-weight:700}
     .caps{letter-spacing:.06em; text-transform:uppercase; font-weight:800; font-size:.8rem; color:var(--muted)}
     .cards .card h3{margin-top:0}
+    .stats img{max-width:100%; height:auto; border-radius:12px; border:1px solid var(--border)}
+
     footer{padding:40px 0; color:var(--muted); text-align:center; border-top:1px solid var(--border)}
     .skip{position:absolute; left:-9999px; top:auto; width:1px; height:1px; overflow:hidden}
     .skip:focus{position:static; width:auto; height:auto; padding:.5rem; background:var(--accent); color:#000; border-radius:8px}
-    .stats img{max-width:100%; height:auto; border-radius:12px; border:1px solid var(--border)}
   </style>
 </head>
 <body>
@@ -88,42 +96,39 @@
   </header>
 
   <main id="main" class="container">
-    <!-- HERO -->
-    <section class="hero">
+    <!-- HERO (photo-first but still modern) -->
+    <section class="hero" id="top">
       <div>
         <p class="pill">👋 Hello!</p>
         <h1>Cost-intelligent cloud at scale, with a quant’s mindset</h1>
         <p class="lead">
           I build automation for multi-cloud <strong>FinOps</strong> (EA/MCA/GCP/AWS/OCI + private cloud),
-          GPU SKU provisioning & governance, and <strong>quant systems</strong> for option pricing,
-          risk, and event-driven analytics.
+          GPU SKU provisioning & governance, and <strong>quant systems</strong> for pricing, risk, and event-driven analytics.
         </p>
         <div class="kvs" style="margin:14px 0 6px">
           <span class="tag">Kubernetes & Helm</span>
           <span class="tag">ArgoCD</span>
           <span class="tag">Grafana/Prometheus</span>
-          <span class="tag">Oracle / BigQuery</span>
+          <span class="tag">Oracle • BigQuery</span>
           <span class="tag">Spring • Python</span>
           <span class="tag">Derivatives • Monte Carlo</span>
         </div>
         <div style="display:flex; gap:10px; margin-top:14px; flex-wrap:wrap">
-          <a class="btn" href="https://github.com/D4T4R" target="_blank" rel="noopener">GitHub</a>
+          <a class="btn" href="resume.pdf" target="_blank">📄 Download CV</a>
+          <a class="btn ghost" href="https://github.com/D4T4R" target="_blank" rel="noopener">GitHub</a>
           <a class="btn ghost" href="https://www.linkedin.com/in/ezpuns" target="_blank" rel="noopener">LinkedIn</a>
-          <a class="btn ghost" href="https://www.buymeacoffee.com/ezpuns" target="_blank" rel="noopener">Buy Me a Coffee</a>
         </div>
       </div>
-      <div class="card">
-        <div class="caps">Snapshot</div>
-        <div class="statline" style="margin-top:8px">
-          <div class="stat">Multi-cloud FinOps</div>
-          <div class="stat">4k+ SKU provisioning</div>
-          <div class="stat">GPU tenancy workflows</div>
-          <div class="stat">Automated PR gates</div>
-        </div>
-        <p style="color:var(--muted); margin:.8rem 0 0">
-          Focus: observability metrics, cost reconciliation, governance, and reliable pipelines for real workloads.
+
+      <!-- Profile Card with your photo -->
+      <aside class="profile-card" aria-label="Profile">
+        <img src="me.jpg" alt="Aniket Datar portrait" />
+        <h3>Aniket Datar</h3>
+        <p>FinOps • Hybrid Cloud • Quant Systems</p>
+        <p style="margin-top:.6rem;font-size:.9rem">
+          India · <a href="mailto:aniketdatar@example.com">aniketdatar@example.com</a>
         </p>
-      </div>
+      </aside>
     </section>
 
     <!-- FINOPS -->
@@ -158,7 +163,7 @@
           <h3>DevEx Automation: PR Auto-Approvals</h3>
           <p>
             Safe auto-approval windows for specific branches/paths (e.g., <code>Replica</code> or <code>prod</code>,
-            only <code>track1.list</code>/<code>track2.list</code> diffs), reducing manual toil while preserving controls.
+            only <code>track1.list</code>/<code>track2.list</code> diffs), reducing toil while preserving controls.
           </p>
           <ul>
             <li>Runs on schedules; integrates with ADO permissions & policy checks.</li>
@@ -234,34 +239,27 @@
       </div>
     </section>
 
-    <!-- SKILLS (condensed) -->
+    <!-- STACK -->
     <section id="skills">
       <h2>Stack</h2>
       <div class="card">
         <div class="kvs">
-          <span class="tag">Kubernetes</span>
-          <span class="tag">Helm</span>
-          <span class="tag">ArgoCD</span>
-          <span class="tag">KEDA</span>
-          <span class="tag">Vault</span>
-          <span class="tag">Docker/Podman</span>
-          <span class="tag">Grafana/Prometheus</span>
-          <span class="tag">Oracle • BigQuery</span>
-          <span class="tag">Spring (Java)</span>
-          <span class="tag">Python</span>
-          <span class="tag">SQL/PLSQL</span>
+          <span class="tag">Kubernetes</span><span class="tag">Helm</span><span class="tag">ArgoCD</span>
+          <span class="tag">KEDA</span><span class="tag">Vault</span><span class="tag">Docker/Podman</span>
+          <span class="tag">Grafana/Prometheus</span><span class="tag">Oracle • BigQuery</span>
+          <span class="tag">Spring (Java)</span><span class="tag">Python</span><span class="tag">SQL/PLSQL</span>
           <span class="tag">YAML/CI/CD (ADO)</span>
         </div>
       </div>
       <div class="card" style="margin-top:12px">
         <div class="caps">Also used</div>
         <p style="margin:.4rem 0 0; color:var(--muted)">
-          Linux • Nginx • Jenkins • Kafka • Airflow • Elastic • RabbitMQ • Swagger/OpenAPI • Ballerina • YAML/TOML • Git/GitHub/ADO
+          Linux • Nginx • Jenkins • Kafka • Airflow • Elastic • RabbitMQ • Swagger/OpenAPI • Ballerina • Git/GitHub/ADO
         </p>
       </div>
     </section>
 
-    <!-- LIGHT TOUCH: your stats from README (optional) -->
+    <!-- ACTIVITY (optional, lightweight) -->
     <section id="stats">
       <h2>Activity Glimpse</h2>
       <div class="grid cols-2 stats">
@@ -285,6 +283,7 @@
         <ul>
           <li>GitHub: <a href="https://github.com/D4T4R" target="_blank" rel="noopener">@D4T4R</a></li>
           <li>LinkedIn: <a href="https://www.linkedin.com/in/ezpuns" target="_blank" rel="noopener">/in/ezpuns</a></li>
+          <li>Email: <a href="mailto:aniketdatar@example.com">aniketdatar@example.com</a></li>
           <li>Support: <a href="https://www.buymeacoffee.com/ezpuns" target="_blank" rel="noopener">Buy me a coffee</a></li>
         </ul>
       </div>
@@ -292,7 +291,7 @@
   </main>
 
   <footer>
-    <div class="container">© <span id="y"></span> Aniket Datar • Built on GitHub Pages • <a href="#">Back to top</a></div>
+    <div class="container">© <span id="y"></span> Aniket Datar • Built on GitHub Pages • <a href="#top">Back to top</a></div>
   </footer>
 
   <script>
