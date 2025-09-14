@@ -103,6 +103,29 @@
     footer{padding:40px 0; color:var(--muted); text-align:center; border-top:1px solid var(--border)}
     .skip{position:absolute; left:-9999px; top:auto; width:1px; height:1px; overflow:hidden}
     .skip:focus{position:static; width:auto; height:auto; padding:.5rem; background:var(--accent); color:#000; border-radius:8px}
+
+    /* --- Compact header tweaks --- */
+    :root { --header-h: 56px; }                 /* smaller baseline for mobile menu offset */
+    header .container { padding: 12px 20px; }   /* tighter top-bar padding */
+    nav { min-height: var(--header-h); }
+
+    header strong { font-size: 1rem; }          /* smaller title */
+    header .pill { padding: .2rem .5rem; font-size: .75rem; }
+
+    nav .links { gap: 8px; }
+    nav .links a { margin: 0 6px; font-weight: 600; font-size: .95rem; }
+
+    header .btn { padding: .45rem .7rem; font-weight: 600; }
+    header .btn.ghost { border-radius: 999px; }
+
+    @media (max-width: 1100px){
+      header .pill { display: none; }           /* avoid wrapping, keeps header single-line */
+    }
+    @media (max-width: 900px){
+      header .container { padding: 10px 14px; }
+      header strong { font-size: .95rem; }
+      header .btn { padding: .38rem .6rem; }
+    }
   </style>
 </head>
 <body>
@@ -112,7 +135,7 @@
     <div class="container">
       <nav aria-label="Primary">
         <div style="display:flex;align-items:center;gap:12px">
-          <strong style="font-size:1.1rem">Aniket Datar</strong>
+          <strong>Aniket Datar</strong>
           <span class="pill">FinOps • Hybrid Cloud • Quant</span>
         </div>
 
@@ -169,7 +192,7 @@
         <h3>Aniket Datar</h3>
         <p>FinOps • Hybrid Cloud • Quant Systems</p>
         <p style="margin-top:.6rem;font-size:.9rem">
-          India · <a href="mailto:aniketdatar@cyberservices.com">aniketdatar@cyberservices.com</a>
+          India · <a href="mailto:aniketdatar@example.com">aniketdatar@example.com</a>
         </p>
       </aside>
     </section>
@@ -370,7 +393,8 @@
       else {
         navmenu.classList.remove('mobile','open');
         document.body.classList.remove('menu-open');
-        if (menuBtn) menuBtn.setAttribute('aria-expanded','false');
+        const menu = document.getElementById('menu');
+        if (menu) menu.setAttribute('aria-expanded','false');
         backdrop.hidden = true;
       }
     }
@@ -380,7 +404,8 @@
       if (!navmenu.classList.contains('mobile')) return;
       navmenu.classList.toggle('open', open);
       document.body.classList.toggle('menu-open', open);
-      if (menuBtn) menuBtn.setAttribute('aria-expanded', String(open));
+      const menu = document.getElementById('menu');
+      if (menu) menu.setAttribute('aria-expanded', String(open));
       backdrop.hidden = !open;
     }
 
