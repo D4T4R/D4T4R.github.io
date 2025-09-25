@@ -272,9 +272,8 @@
       background-size: 200% 100%;
       animation: shimmer 1.1s linear infinite;
       border-radius: inherit;
-      pointer-events: none; /* new */
+      pointer-events: none;
     }
-    /* NEW: stop showing skeleton once loaded + fade image in */
     .img-wrap:not(.loading) .skeleton { opacity: 0; visibility: hidden; transition: opacity .2s ease; }
     .img-wrap:not(.loading) img { opacity: 1; transition: opacity .2s ease; }
 
@@ -296,6 +295,25 @@
       display: block;
       max-width: 95%;
       height: auto;
+    }
+
+    /* ====== Icon wall (Also used) ====== */
+    .icon-wall{
+      display:flex; flex-wrap:wrap; gap:12px 14px; align-items:center;
+      margin-top:10px;
+    }
+    .icon-wall img{
+      width:40px; height:40px; object-fit:contain;
+      opacity:.88;
+      filter: drop-shadow(0 1px 0 rgba(0,0,0,.18));
+      transition: transform .15s ease, opacity .15s ease, filter .15s ease;
+      border-radius:8px; /* soft corner for PNGs with white bg */
+      background: transparent;
+    }
+    .icon-wall img:hover{
+      transform: translateY(-2px) scale(1.04);
+      opacity:1;
+      filter: drop-shadow(0 6px 16px rgba(0,0,0,.35));
     }
 
     /* Avoid double borders on activity images (wrappers handle border) */
@@ -503,11 +521,60 @@
           <span class="tag">YAML/CI/CD (ADO)</span>
         </div>
       </div>
+
+      <!-- ALSO USED: Icon wall -->
       <div class="card" style="margin-top:12px">
         <div class="caps">Also used</div>
-        <p style="margin:.4rem 0 0; color:var(--muted)">
-          Linux • Nginx • Jenkins • Kafka • Airflow • Elastic • RabbitMQ • Swagger/OpenAPI • Ballerina • Git/GitHub/ADO
-        </p>
+        <div class="icon-wall" aria-label="Also used tools and technologies">
+          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/bash/bash-original.svg" title="Bash" alt="Bash" width="40" height="40" loading="lazy"/>
+          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/solidity/solidity-original.svg" title="Solidity" alt="Solidity" width="40" height="40" loading="lazy"/>
+          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/remix/remix-original.svg" title="Remix IDE" alt="Remix IDE" width="40" height="40" loading="lazy"/>
+          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/linux/linux-original.svg" title="Linux" alt="Linux" width="40" height="40" loading="lazy"/>
+          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/python/python-original.svg" title="Python" alt="Python" width="40" height="40" loading="lazy"/>
+          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/materialui/materialui-original.svg" title="Material UI" alt="Material UI" width="40" height="40" loading="lazy"/>
+          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/npm/npm-original-wordmark.svg" title="NPM" alt="NPM" width="40" height="40" loading="lazy"/>
+          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/html5/html5-original.svg" title="HTML5" alt="HTML5" width="40" height="40" loading="lazy"/>
+          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/javascript/javascript-original.svg" title="JavaScript" alt="JavaScript" width="40" height="40" loading="lazy"/>
+          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/mongodb/mongodb-original.svg" title="MongoDB" alt="MongoDB" width="40" height="40" loading="lazy"/>
+          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/rust/rust-original.svg" title="Rust" alt="Rust" width="40" height="40" loading="lazy"/>
+          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/sqldeveloper/sqldeveloper-original.svg" title="SQLDev" alt="SQLDev" width="40" height="40" loading="lazy"/>
+          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/dbeaver/dbeaver-original.svg" title="DBeaver" alt="DBeaver" width="40" height="40" loading="lazy"/>
+          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/nodejs/nodejs-plain.svg" title="NodeJS" alt="NodeJS" width="40" height="40" loading="lazy"/>
+          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/mocha/mocha-plain.svg" title="Mocha" alt="Mocha" width="40" height="40" loading="lazy"/>
+          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/selenium/selenium-original.svg" title="Selenium" alt="Selenium" width="40" height="40" loading="lazy"/>
+          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/postman/postman-original.svg" title="Postman" alt="Postman" width="40" height="40" loading="lazy"/>
+          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/git/git-original.svg" title="Git" alt="Git" width="40" height="40" loading="lazy"/>
+          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/grafana/grafana-plain.svg" title="Grafana" alt="Grafana" width="40" height="40" loading="lazy"/>
+          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/prometheus/prometheus-original.svg" title="Prometheus" alt="Prometheus" width="40" height="40" loading="lazy"/>
+          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/apacheairflow/apacheairflow-original.svg" title="Airflow" alt="Airflow" width="40" height="40" loading="lazy"/>
+          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/apachekafka/apachekafka-original.svg" title="Kafka" alt="Kafka" width="40" height="40" loading="lazy"/>
+          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/nginx/nginx-original.svg" title="Nginx" alt="Nginx" width="40" height="40" loading="lazy"/>
+          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/azuredevops/azuredevops-plain.svg" title="Azure DevOps" alt="ADO" width="40" height="40" loading="lazy"/>
+          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/docker/docker-original.svg" title="Docker" alt="Docker" width="40" height="40" loading="lazy"/>
+          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/kubernetes/kubernetes-plain.svg" title="Kubernetes" alt="Kubernetes" width="40" height="40" loading="lazy"/>
+          <img src="https://raw.githubusercontent.com/istio/istio/master/logo/istio-bluelogo-whitebackground-unframed.svg" title="Istio ServiceMesh" alt="Istio" width="40" height="39" loading="lazy"/>
+          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/argocd/argocd-original.svg" title="ArgoCD" alt="ArgoCD" width="40" height="40" loading="lazy"/>
+          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/harbor/harbor-original.svg" title="Harbor" alt="Harbor" width="40" height="40" loading="lazy"/>
+          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/helm/helm-original.svg" title="Helm" alt="Helm" width="40" height="40" loading="lazy"/>
+          <img src="https://raw.githubusercontent.com/go-gitea/gitea/main/assets/logo.svg" title="Gitea" alt="Gitea" width="40" height="40" loading="lazy"/>
+          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/podman/podman-original.svg" title="Podman" alt="Podman" width="40" height="40" loading="lazy"/>
+          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/googlecloud/googlecloud-original.svg" title="GCP" alt="GCP" width="40" height="40" loading="lazy"/>
+          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/rabbitmq/rabbitmq-original.svg" title="RabbitMQ" alt="RabbitMQ" width="40" height="40" loading="lazy"/>
+          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/jenkins/jenkins-original.svg" title="Jenkins" alt="Jenkins" width="40" height="40" loading="lazy"/>
+          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/vault/vault-original.svg" title="Vault" alt="Vault" width="40" height="40" loading="lazy"/>
+          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/elasticsearch/elasticsearch-original.svg" title="ElasticSearch" alt="ElasticSearch" width="40" height="40" loading="lazy"/>
+          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/awk/awk-original.svg" title="Awk" alt="Awk" width="40" height="40" loading="lazy"/>
+          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/ballerina/ballerina-original.svg" title="Ballerina" alt="Ballerina" width="40" height="40" loading="lazy"/>
+          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/cpanel/cpanel-original.svg" title="cPanel" alt="cPanel" width="40" height="40" loading="lazy"/>
+          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/centos/centos-original.svg" title="CentOS" alt="CentOS" width="40" height="40" loading="lazy"/>
+          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/kalilinux/kalilinux-original.svg" title="Kali Linux" alt="Kali Linux" width="40" height="40" loading="lazy"/>
+          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/swagger/swagger-original.svg" title="Swagger" alt="Swagger" width="40" height="40" loading="lazy"/>
+          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/yaml/yaml-original.svg" title="YAML" alt="YAML" width="40" height="40" loading="lazy"/>
+          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/tomcat/tomcat-original.svg" title="Apache Tomcat" alt="Apache Tomcat" width="40" height="40" loading="lazy"/>
+          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/web3js/web3js-original.svg" title="Web3.js" alt="Web3.js" width="40" height="40" loading="lazy"/>
+          <img src="https://raw.githubusercontent.com/zatosource/zato/main/code/zato-openapi/src/zato/openapi/app/static/swagger-ui/android-chrome-192x192.png" title="Zato" alt="Zato" width="40" height="40" loading="lazy"/>
+          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRivy-Oqgqx4JRPY18gvvMc-nXO7HMbu05zcQ&s" title="Apigee" alt="Apigee" width="40" height="40" loading="lazy"/>
+        </div>
       </div>
     </section>
 
