@@ -2,7 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover"
+  />
   <title>Aniket Datar (D4T4R) — FinOps • Hybrid Cloud • Quant</title>
 
   <!-- SEO -->
@@ -17,124 +20,257 @@
   <meta property="og:url" content="https://d4t4r.github.io/" />
   <meta property="og:image" content="og-image.png" />
 
+  <!-- Font (optional but pretty) -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+
   <style>
+    /* ====== THEME ====== */
     :root{
-      --bg:#0b0d10; --fg:#e7edf3; --muted:#a9b3bd; --card:#101419;
-      --accent:#6ee7ff; --accent2:#95f99d; --link:#8fd3ff; --border:rgba(231,237,243,0.12);
-      --shadow: 0 10px 30px rgba(0,0,0,.25);
-      --header-h: 72px;
+      --bg: #06080c;
+      --bg-2: #0b0f16;
+      --fg: #e7edf3;
+      --muted:#a9b3bd;
+      --card:#0e141b99;              /* translucent for glass */
+      --border: color-mix(in oklab, #fff, transparent 88%);
+      --link:#9edbff;
+
+      --accent:#6ee7ff;              /* cyan */
+      --accent2:#95f99d;             /* mint */
+      --grad: linear-gradient(135deg, #7cd2ff 0%, #6ee7ff 30%, #95f99d 70%, #b4f397 100%);
+
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --ring: 0 0 0 1px color-mix(in oklab, #fff, transparent 85%);
+
+      --header-h: 56px;
+      --radius-lg: 20px;
+      --radius-xl: 26px;
     }
     :root.light{
-      --bg:#f7fafc; --fg:#0b0d10; --muted:#4a5568; --card:#ffffff;
-      --accent:#0ea5e9; --accent2:#10b981; --link:#0ea5e9; --border:rgba(11,13,16,0.08);
+      --bg:#f7fafc;
+      --bg-2:#eef3f8;
+      --fg:#0b0d10;
+      --muted:#4a5568;
+      --card:#ffffffcc;              /* translucent white */
+      --border: rgba(11,13,16,0.08);
+      --link:#0ea5e9;
+      --grad: linear-gradient(135deg, #0ea5e9 0%, #22d3ee 30%, #10b981 70%, #84cc16 100%);
       --shadow: 0 8px 24px rgba(2,6,23,.08);
+      --ring: 0 0 0 1px rgba(2,6,23,.08);
     }
-    *{box-sizing:border-box}
-    html,body{margin:0;padding:0;background:var(--bg);color:var(--fg);font:16px/1.65 system-ui,-apple-system,Segoe UI,Inter,Roboto,Arial,sans-serif}
-    a{color:var(--link);text-decoration:none}
-    a:hover{text-decoration:underline}
-    .container{max-width:1080px;margin:0 auto;padding:24px}
 
-    /* Header / Nav */
-    header{
-      position:sticky; top:0; z-index:40; backdrop-filter:saturate(180%) blur(10px);
-      background:color-mix(in oklab,var(--bg),transparent 18%); border-bottom:1px solid var(--border);
+    /* ====== RESET / BASE ====== */
+    *{box-sizing:border-box}
+    html,body{
+      margin:0; padding:0;
+      color:var(--fg);
+      background:
+        radial-gradient(1200px 600px at 10% -10%, rgba(28, 83, 142, .28), transparent 55%),
+        radial-gradient(900px 500px at 90% -20%, rgba(0, 140, 160, .22), transparent 55%),
+        var(--bg);
+      font: 16px/1.65 Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      scroll-behavior: smooth;
     }
+    .container{max-width:1120px;margin:0 auto;padding:24px}
+
+    a{color:var(--link); text-decoration:none}
+    a:hover{text-decoration:underline}
+
+    img{max-width:100%; height:auto; border: 0}
+
+    /* Better anchor offsets for sticky header */
+    section{scroll-margin-top: calc(var(--header-h) + 16px);}
+
+    /* ====== HEADER / NAV (glassy) ====== */
+    header{
+      position:sticky; top:0; z-index:60;
+      backdrop-filter: saturate(180%) blur(14px);
+      background: color-mix(in oklab, var(--bg-2), transparent 25%);
+      border-bottom: 1px solid var(--border);
+    }
+    header .container{ padding: 10px 18px; }
     nav{display:flex;align-items:center;justify-content:space-between;gap:12px; min-height:var(--header-h);}
-    nav .links { display:flex; align-items:center; gap:12px; }
-    .btn{display:inline-flex;align-items:center;gap:.5rem;background:var(--fg);color:var(--bg);padding:.6rem 1rem;border-radius:999px;border:0;font-weight:700;box-shadow:var(--shadow)}
-    .btn:hover{opacity:.9; text-decoration:none}
-    .btn.ghost{background:transparent;color:var(--fg);border:1px solid var(--border)}
+    nav .brand{
+      display:flex; align-items:center; gap:10px;
+    }
+    nav .brand strong{ font-size:.98rem; font-weight:800; letter-spacing:.2px}
+    .pill{
+      display:inline-flex; align-items:center; gap:.35rem;
+      padding:.2rem .6rem; border-radius:999px;
+      font-size:.72rem; font-weight:800; letter-spacing:.06em; text-transform:uppercase;
+      background: color-mix(in oklab, var(--accent), transparent 83%);
+      color: var(--accent);
+      border: 1px solid color-mix(in oklab, var(--accent), transparent 65%);
+    }
+
+    /* links */
+    nav .links { display:flex; align-items:center; gap:10px; }
+    nav .links a{
+      position:relative; font-weight:700; font-size:.95rem; padding:.1rem .2rem;
+    }
+    nav .links a::after{
+      content:""; position:absolute; left:0; bottom:-6px; height:2px; width:0%;
+      background: var(--grad); border-radius:2px; transition: width .2s ease;
+    }
+    nav .links a:hover::after{ width:100%; }
+
+    .btn{
+      display:inline-flex; align-items:center; gap:.55rem;
+      background:var(--fg); color:var(--bg);
+      padding:.48rem .85rem; border-radius:999px; border:0; font-weight:800;
+      box-shadow: var(--shadow);
+      position:relative; overflow:hidden;
+    }
+    .btn:hover{opacity:.95; text-decoration:none}
+    .btn.ghost{ background:transparent; color:var(--fg); border:1px solid var(--border); box-shadow:none }
+    .btn.gradient{
+      color:#0b0d10; background: var(--grad); border:none;
+    }
+    /* sheen */
+    .btn.gradient::before{
+      content:""; position:absolute; inset:0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.4), transparent);
+      transform: translateX(-120%); transition: transform .8s ease;
+    }
+    .btn.gradient:hover::before{ transform: translateX(120%); }
+
     .nav-toggle { display:none; }
 
-    /* Mobile menu */
+    /* ====== MOBILE MENU ====== */
     @media (max-width: 900px){
       .nav-toggle { display:inline-flex; }
-      nav .links { display:none; } /* hide inline links on mobile */
+      header .pill { display:none; } /* avoid wrapping */
+      nav .links { display:none; }   /* hide inline links on mobile */
 
       #navmenu.mobile {
         display:block;
         position:fixed; left:0; right:0; top:var(--header-h);
-        background:var(--bg);
+        background: color-mix(in oklab, var(--bg-2), transparent 8%);
         border-top:1px solid var(--border);
         box-shadow: var(--shadow);
         padding:18px 20px 24px;
-        z-index:50;
+        z-index:70;
         transform: translateY(-120%);
         transition: transform .22s ease-out;
+        backdrop-filter: blur(14px);
       }
       #navmenu.mobile.open { transform: translateY(0%); }
-      #navmenu.mobile a { display:block; padding:10px 2px; font-weight:600; font-size:1.05rem; }
+      #navmenu.mobile a { display:block; padding:12px 4px; font-weight:700; font-size:1.06rem; }
 
       .backdrop[hidden]{ display:none; }
       .backdrop {
-        position:fixed; inset:0; z-index:45;
+        position:fixed; inset:0; z-index:65;
         background: rgba(0,0,0,.35);
         backdrop-filter: blur(2px);
       }
       body.menu-open { overflow:hidden; }
     }
 
-    /* Hero */
-    .hero{display:grid;grid-template-columns:1.1fr .9fr;gap:28px;align-items:center;padding:28px 0}
-    .hero h1{font-size:clamp(2rem,1rem+4vw,3.1rem);line-height:1.08;margin:.25rem 0}
-    .pill{display:inline-block;padding:.35rem .7rem;border-radius:999px;background:color-mix(in oklab,var(--accent),transparent 80%); color:var(--accent); font-weight:700; letter-spacing:.02em}
-    .lead{font-size:1.1rem;color:var(--muted)}
-    .profile-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:24px;text-align:center;box-shadow:var(--shadow)}
-    .profile-card img{max-width:220px; width:100%; height:auto; border-radius:50%; box-shadow:var(--shadow)}
-    .profile-card h3{margin:.8rem 0 0}
-    .profile-card p{margin:.2rem 0 0; color:var(--muted)}
+    /* ====== HERO ====== */
+    .hero{
+      display:grid;grid-template-columns:1.1fr .9fr;gap:28px;align-items:center;padding:34px 0 10px;
+    }
+    .h1{
+      font-size: clamp(2.1rem, 1.2rem + 4vw, 3.2rem); line-height:1.05; margin:.25rem 0 .6rem;
+      font-weight: 900;
+      background: var(--grad); -webkit-background-clip:text; background-clip:text; color: transparent;
+    }
+    .lead{font-size:1.09rem;color:var(--muted); max-width:62ch}
+    .kvs{display:flex;flex-wrap:wrap;gap:.55rem; margin-top:14px}
+    .tag{
+      border:1px solid var(--border); padding:.38rem .6rem; border-radius:999px;
+      color:var(--muted); font-weight:700; background: color-mix(in oklab, var(--fg), transparent 92%);
+    }
 
-    /* Sections */
-    section{padding:22px 0}
-    h2{font-size:1.55rem;margin:0 0 12px}
-    .card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:22px;box-shadow:var(--shadow)}
+    .profile-card{
+      background: var(--card);
+      border:1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding:24px;
+      text-align:center;
+      box-shadow: var(--shadow);
+      position:relative;
+      overflow:hidden;
+      isolation:isolate;
+    }
+    /* gradient ring behind avatar */
+    .profile-card::before{
+      content:""; position:absolute; inset:-2px;
+      background: var(--grad);
+      filter: blur(24px); opacity:.25; z-index:-1;
+    }
+    .profile-card img{
+      max-width:220px; width:100%; height:auto; border-radius:50%;
+      box-shadow: 0 12px 40px rgba(0,0,0,.35);
+      border: 3px solid color-mix(in oklab, var(--fg), transparent 85%);
+      transform: translateZ(0);
+      animation: float 6s ease-in-out infinite;
+    }
+    .profile-card h3{margin:.9rem 0 0; font-size:1.2rem}
+    .profile-card p{margin:.25rem 0 0; color:var(--muted)}
+
+    @keyframes float{
+      0%,100% { transform: translateY(0) }
+      50%     { transform: translateY(-6px) }
+    }
+
+    /* ====== SECTION / CARDS ====== */
+    section{padding:26px 0}
+    h2{font-size:1.55rem;margin:0 0 14px}
+    .cards .card h3{margin-top:0}
+
+    .card{
+      background: var(--card);
+      border:1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding:22px;
+      box-shadow: var(--shadow);
+      transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+    }
+    .card:hover{
+      transform: translateY(-3px);
+      border-color: color-mix(in oklab, var(--accent), transparent 40%);
+      box-shadow: 0 16px 40px rgba(0,0,0,.4);
+    }
+
     .grid{display:grid;gap:16px}
     .grid.cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}
     .grid.cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}
     @media (max-width:900px){ .hero{grid-template-columns:1fr} .grid.cols-3,.grid.cols-2{grid-template-columns:1fr} }
 
-    .kvs{display:flex;flex-wrap:wrap;gap:.6rem}
-    .tag{border:1px solid var(--border); padding:.35rem .6rem; border-radius:999px; color:var(--muted); font-weight:600}
     .caps{letter-spacing:.06em; text-transform:uppercase; font-weight:800; font-size:.8rem; color:var(--muted)}
-    .cards .card h3{margin-top:0}
-    .stats img{max-width:100%; height:auto; border-radius:12px; border:1px solid var(--border)}
+    .stats img{max-width:100%; height:auto; border-radius:14px; border:1px solid var(--border)}
 
     footer{padding:40px 0; color:var(--muted); text-align:center; border-top:1px solid var(--border)}
+
     .skip{position:absolute; left:-9999px; top:auto; width:1px; height:1px; overflow:hidden}
     .skip:focus{position:static; width:auto; height:auto; padding:.5rem; background:var(--accent); color:#000; border-radius:8px}
 
-    /* --- Compact header tweaks --- */
-    :root { --header-h: 56px; }                 /* smaller baseline for mobile menu offset */
-    header .container { padding: 12px 20px; }   /* tighter top-bar padding */
-    nav { min-height: var(--header-h); }
-
-    header strong { font-size: 1rem; }          /* smaller title */
-    header .pill { padding: .2rem .5rem; font-size: .75rem; }
-
-    nav .links { gap: 8px; }
-    nav .links a { margin: 0 6px; font-weight: 600; font-size: .95rem; }
-
-    header .btn { padding: .45rem .7rem; font-weight: 600; }
-    header .btn.ghost { border-radius: 999px; }
-
-    @media (max-width: 1100px){
-      header .pill { display: none; }           /* avoid wrapping, keeps header single-line */
+    /* ====== SCROLL PROGRESS (thin, glossy) ====== */
+    .progress{
+      position: fixed; top: 0; left: 0; height: 3px; width: 0%;
+      background: var(--grad); z-index: 80;
+      box-shadow: 0 0 12px rgba(120,220,255,.9);
     }
-    @media (max-width: 900px){
-      header .container { padding: 10px 14px; }
-      header strong { font-size: .95rem; }
-      header .btn { padding: .38rem .6rem; }
+
+    /* ====== REDUCED MOTION ====== */
+    @media (prefers-reduced-motion: reduce){
+      *{animation: none !important; transition: none !important}
     }
   </style>
 </head>
 <body>
+  <div class="progress" id="progress"></div>
   <a class="skip" href="#main">Skip to content</a>
 
+  <!-- ====== HEADER ====== -->
   <header>
     <div class="container">
       <nav aria-label="Primary">
-        <div style="display:flex;align-items:center;gap:12px">
+        <div class="brand">
           <strong>Aniket Datar</strong>
           <span class="pill">FinOps • Hybrid Cloud • Quant</span>
         </div>
@@ -161,44 +297,48 @@
   <!-- Backdrop for mobile menu -->
   <div id="backdrop" class="backdrop" hidden></div>
 
+  <!-- ====== MAIN ====== -->
   <main id="main" class="container">
+
     <!-- HERO -->
     <section class="hero" id="top">
       <div>
-        <p class="pill">👋 Hello!</p>
-        <h1>Cost-intelligent cloud at scale, with a quant’s mindset</h1>
+        <span class="pill">👋 Hello!</span>
+        <h1 class="h1">Cost-intelligent cloud at scale, with a quant’s mindset</h1>
         <p class="lead">
           I build automation for multi-cloud <strong>FinOps</strong> (EA/MCA/GCP/AWS/OCI + private cloud),
           GPU SKU provisioning & governance, and <strong>quant systems</strong> for pricing, risk, and event-driven analytics.
         </p>
-        <div class="kvs" style="margin:14px 0 6px">
+
+        <div class="kvs">
           <span class="tag">Kubernetes & Helm</span>
           <span class="tag">ArgoCD</span>
-          <span class="tag">Grafana/Prometheus</span>
+          <span class="tag">Grafana / Prometheus</span>
           <span class="tag">Oracle • BigQuery</span>
           <span class="tag">Spring • Python</span>
           <span class="tag">Derivatives • Monte Carlo</span>
         </div>
-        <div style="display:flex; gap:10px; margin-top:14px; flex-wrap:wrap">
-          <a class="btn" href="./resume.pdf" target="_blank" rel="noopener" download>📄 Download CV</a>
+
+        <div style="display:flex; gap:10px; margin-top:16px; flex-wrap:wrap">
+          <a class="btn gradient" href="./resume.pdf" target="_blank" rel="noopener" download>📄 Download CV</a>
           <a class="btn ghost" href="https://github.com/D4T4R" target="_blank" rel="noopener">GitHub</a>
           <a class="btn ghost" href="https://www.linkedin.com/in/ezpuns" target="_blank" rel="noopener">LinkedIn</a>
         </div>
       </div>
 
       <!-- Profile Card with your photo -->
-      <aside class="profile-card" aria-label="Profile">
+      <aside class="profile-card reveal" aria-label="Profile">
         <img src="me.jpg" alt="Aniket Datar portrait" />
-        <h3>Aniket Datar</h3>
+        <h3 style="font-weight:800">Aniket Datar</h3>
         <p>FinOps • Hybrid Cloud • Quant Systems</p>
-        <p style="margin-top:.6rem;font-size:.9rem">
+        <p style="margin-top:.55rem;font-size:.92rem">
           India · <a href="mailto:aniketdatar@cyberservices.com">aniketdatar@cyberservices.com</a>
         </p>
       </aside>
     </section>
 
     <!-- FINOPS -->
-    <section id="finops">
+    <section id="finops" class="reveal">
       <h2>FinOps & Hybrid Cloud</h2>
       <div class="grid cols-2 cards">
         <article class="card">
@@ -208,8 +348,8 @@
             map to accounts/projects, and surface anomalies via dashboards & alerts.
           </p>
           <ul>
-            <li>Daily reconciliation jobs with retry semantics & partitioned DB design.</li>
-            <li>Grafana/Prometheus KPIs; actionable alerting (email/SMS/IVR/push).</li>
+            <li>Daily reconciliation jobs with retries & partitioned DB design.</li>
+            <li>Grafana/Prometheus KPIs; alerting via email/SMS/IVR/push.</li>
             <li>Exports for CRM/invoicing; governance & audit trails.</li>
           </ul>
         </article>
@@ -221,7 +361,7 @@
           </p>
           <ul>
             <li>Helm/ArgoCD GitOps across tracks/namespaces.</li>
-            <li>Automated retries for failed module inits; drift detection.</li>
+            <li>Automated retries for module init; drift detection.</li>
             <li>Service-level dashboards and readiness checks.</li>
           </ul>
         </article>
@@ -232,8 +372,8 @@
             only <code>track1.list</code>/<code>track2.list</code> diffs), reducing toil while preserving controls.
           </p>
           <ul>
-            <li>Runs on schedules; integrates with ADO permissions & policy checks.</li>
-            <li>Fine-grained conditions & audits for every merge.</li>
+            <li>Scheduled runs; ADO permissions & policy checks.</li>
+            <li>Fine-grained conditions and merge audits.</li>
           </ul>
         </article>
         <article class="card">
@@ -250,7 +390,7 @@
     </section>
 
     <!-- QUANT -->
-    <section id="quant">
+    <section id="quant" class="reveal">
       <h2>Quant & Derivatives Systems</h2>
       <div class="grid cols-2 cards">
         <article class="card">
@@ -271,7 +411,7 @@
             models that output event probabilities with action hooks.
           </p>
           <ul>
-            <li>Batch + streaming inputs, priority queues, and throttled executors.</li>
+            <li>Batch + streaming inputs, priority queues, throttled executors.</li>
             <li>Backtests with P&L accounting and slippage models.</li>
           </ul>
         </article>
@@ -279,7 +419,7 @@
     </section>
 
     <!-- PROJECTS -->
-    <section id="projects">
+    <section id="projects" class="reveal">
       <h2>Selected Projects</h2>
       <div class="grid cols-2 cards">
         <article class="card">
@@ -306,7 +446,7 @@
     </section>
 
     <!-- STACK -->
-    <section id="skills">
+    <section id="skills" class="reveal">
       <h2>Stack</h2>
       <div class="card">
         <div class="kvs">
@@ -326,7 +466,7 @@
     </section>
 
     <!-- ACTIVITY (optional) -->
-    <section id="stats">
+    <section id="stats" class="reveal">
       <h2>Activity Glimpse</h2>
       <div class="grid cols-2 stats">
         <div class="card">
@@ -343,7 +483,7 @@
     </section>
 
     <!-- CONTACT -->
-    <section id="contact">
+    <section id="contact" class="reveal">
       <h2>Contact</h2>
       <div class="card">
         <ul>
@@ -364,13 +504,13 @@
     // Year + Theme toggle
     document.getElementById('y').textContent = new Date().getFullYear();
     const root = document.documentElement;
-    const btn = document.getElementById('theme');
+    const themeBtn = document.getElementById('theme');
     const saved = localStorage.getItem('theme') || (matchMedia('(prefers-color-scheme: light)').matches ? 'light':'dark');
-    if(saved === 'light'){ root.classList.add('light'); btn.textContent='☀'; }
-    btn.addEventListener('click', () => {
+    if(saved === 'light'){ root.classList.add('light'); themeBtn.textContent='☀'; }
+    themeBtn.addEventListener('click', () => {
       root.classList.toggle('light');
       const mode = root.classList.contains('light') ? 'light':'dark';
-      btn.textContent = mode==='light' ? '☀' : '☾';
+      themeBtn.textContent = mode==='light' ? '☀' : '☾';
       localStorage.setItem('theme', mode);
     });
 
@@ -393,8 +533,7 @@
       else {
         navmenu.classList.remove('mobile','open');
         document.body.classList.remove('menu-open');
-        const menu = document.getElementById('menu');
-        if (menu) menu.setAttribute('aria-expanded','false');
+        if (menuBtn) menuBtn.setAttribute('aria-expanded','false');
         backdrop.hidden = true;
       }
     }
@@ -404,19 +543,43 @@
       if (!navmenu.classList.contains('mobile')) return;
       navmenu.classList.toggle('open', open);
       document.body.classList.toggle('menu-open', open);
-      const menu = document.getElementById('menu');
-      if (menu) menu.setAttribute('aria-expanded', String(open));
+      if (menuBtn) menuBtn.setAttribute('aria-expanded', String(open));
       backdrop.hidden = !open;
     }
 
     if (menuBtn) menuBtn.addEventListener('click', () => setMenu(!navmenu.classList.contains('open')));
     backdrop.addEventListener('click', () => setMenu(false));
     window.addEventListener('keydown', (e) => { if (e.key === 'Escape') setMenu(false); });
+    navmenu.addEventListener('click', (e) => { if (e.target.tagName === 'A') setMenu(false); });
 
-    // Close menu when a nav link is clicked (mobile)
-    navmenu.addEventListener('click', (e) => {
-      if (e.target.tagName === 'A') setMenu(false);
-    });
+    // --- Scroll progress bar ---
+    const progress = document.getElementById('progress');
+    const doc = document.documentElement;
+    function updateProgress(){
+      const scrollTop = doc.scrollTop || document.body.scrollTop;
+      const scrollHeight = doc.scrollHeight - doc.clientHeight;
+      const pct = scrollHeight ? (scrollTop / scrollHeight) * 100 : 0;
+      progress.style.width = pct + '%';
+    }
+    updateProgress();
+    window.addEventListener('scroll', updateProgress, { passive:true });
+    window.addEventListener('resize', updateProgress);
+
+    // --- Scroll reveal (subtle) ---
+    const revealEls = Array.from(document.querySelectorAll('.reveal .card, .reveal'));
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!prefersReduced && 'IntersectionObserver' in window){
+      revealEls.forEach(el => el.style.opacity = 0);
+      const io = new IntersectionObserver((entries) => {
+        for (const e of entries){
+          if (e.isIntersecting){
+            e.target.animate([{opacity:0, transform:'translateY(8px)'},{opacity:1, transform:'translateY(0)'}], {duration:380, easing:'ease-out', fill:'forwards'});
+            io.unobserve(e.target);
+          }
+        }
+      }, {threshold: .12, rootMargin: '0px 0px -40px 0px'});
+      revealEls.forEach(el => io.observe(el));
+    }
   </script>
 </body>
 </html>
