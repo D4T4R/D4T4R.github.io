@@ -272,7 +272,12 @@
       background-size: 200% 100%;
       animation: shimmer 1.1s linear infinite;
       border-radius: inherit;
+      pointer-events: none; /* new */
     }
+    /* NEW: stop showing skeleton once loaded + fade image in */
+    .img-wrap:not(.loading) .skeleton { opacity: 0; visibility: hidden; transition: opacity .2s ease; }
+    .img-wrap:not(.loading) img { opacity: 1; transition: opacity .2s ease; }
+
     @keyframes shimmer {
       0%   { background-position: -200% 0; }
       100% { background-position: 200% 0; }
@@ -516,7 +521,7 @@
             <div class="img-wrap loading" data-remote aria-busy="true">
               <div class="skeleton" aria-hidden="true"></div>
               <img
-                src="http://github-readme-streak-stats.herokuapp.com?user=d4t4r&theme=microsoft-dark&hide_border=true&short_numbers=true&date_format=M%20j[%2C%20Y]&exclude_days=Sun%2CSat"
+                src="https://github-readme-streak-stats.herokuapp.com/?user=d4t4r&theme=microsoft-dark&hide_border=true&short_numbers=true&date_format=M%20j[%2C%20Y]&exclude_days=Sun%2CSat"
                 alt="GitHub Streak graph for D4T4R"
                 loading="lazy"
               />
@@ -644,21 +649,31 @@
     // --- Skeleton loader for remote images (Activity) ---
     document.querySelectorAll('.img-wrap[data-remote]').forEach((wrap) => {
       const img = wrap.querySelector('img');
-      const done = (ok) => {
+      const skeleton = wrap.querySelector('.skeleton');
+
+      function finish(ok) {
         wrap.classList.remove('loading');
         wrap.setAttribute('aria-busy', 'false');
+        if (skeleton) skeleton.remove(); // remove shimmer node
         if (!ok) {
-          wrap.insertAdjacentHTML('beforeend',
+          wrap.insertAdjacentHTML(
+            'beforeend',
             '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--muted);font-weight:700;background:rgba(0,0,0,.2)">Image unavailable</div>'
           );
         }
-      };
-      if (img.complete) {
-        done(img.naturalWidth > 0);
-      } else {
-        img.addEventListener('load', () => done(true), { once: true });
-        img.addEventListener('error', () => done(false), { once: true });
       }
+
+      if (img.complete) {                 // already cached
+        finish(img.naturalWidth > 0);
+        return;
+      }
+
+      if ('decode' in img) {              // try decode to resolve quickly
+        img.decode().then(() => finish(true)).catch(() => { /* fall back to events */ });
+      }
+
+      img.addEventListener('load',  () => finish(true),  { once: true });
+      img.addEventListener('error', () => finish(false), { once: true });
     });
   </script>
 </body>
