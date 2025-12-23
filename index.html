@@ -15,7 +15,7 @@
 
   <!-- Open Graph -->
   <meta property="og:title" content="Aniket Datar — FinOps • Hybrid Cloud • Quant" />
-  <meta property="og:description" content="Multi-cloud cost management, GPU SKU provisioning, and quantitative tooling for derivatives." />
+  <meta property="og:description" content="Multi-cloud cost management, GPU SKU provisioning, managed Kubeflow automation, and quantitative tooling for derivatives." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://d4t4r.github.io/" />
   <meta property="og:image" content="og-image.png" />
@@ -83,8 +83,6 @@
 
     img{max-width:100%; height:auto; border: 0}
 
-    /* Better anchor offsets for sticky header */
-    /* FIX: use --header-offset instead of a circular --header-h */
     section{scroll-margin-top: calc(var(--header-offset) + 16px);}
 
     /* ====== HEADER / NAV (glassy) ====== */
@@ -95,7 +93,6 @@
       border-bottom: 1px solid var(--border);
     }
     header .container{ padding: 10px 18px; }
-    /* FIX: nav uses a fixed min-height, not the measured variable */
     nav{display:flex;align-items:center;justify-content:space-between;gap:12px; min-height:var(--header-min-h);}
     nav .brand{ display:flex; align-items:center; gap:10px; }
     nav .brand strong{ font-size:.98rem; font-weight:800; letter-spacing:.2px}
@@ -108,7 +105,6 @@
       border: 1px solid color-mix(in oklab, var(--accent), transparent 65%);
     }
 
-    /* links */
     nav .links { display:flex; align-items:center; gap:10px; }
     nav .links a{
       position:relative; font-weight:700; font-size:.95rem; padding:.1rem .2rem;
@@ -138,16 +134,14 @@
 
     .nav-toggle { display:none; }
 
-    /* ====== MOBILE MENU ====== */
     @media (max-width: 900px){
       .nav-toggle { display:inline-flex; }
-      header .pill { display:none; } /* avoid wrapping */
-      nav .links { display:none; }   /* hide inline links on mobile */
+      header .pill { display:none; }
+      nav .links { display:none; }
 
       #navmenu.mobile {
         display:block;
         position:fixed; left:0; right:0;
-        /* FIX: anchor to the measured offset, not the layout var */
         top: var(--header-offset);
         background: color-mix(in oklab, var(--bg-2), transparent 8%);
         border-top:1px solid var(--border);
@@ -245,7 +239,7 @@
     .skip{position:absolute; left:-9999px; top:auto; width:1px; height:1px; overflow:hidden}
     .skip:focus{position:static; width:auto; height:auto; padding:.5rem; background:var(--accent); color:#000; border-radius:8px}
 
-    /* ====== SCROLL PROGRESS (thin, glossy) ====== */
+    /* ====== SCROLL PROGRESS ====== */
     .progress{
       position: fixed; top: 0; left: 0; height: 3px; width: 0%;
       background: var(--grad); z-index: 80;
@@ -303,7 +297,7 @@
       height: auto;
     }
 
-    /* ====== Icon wall (Also used) ====== */
+    /* ====== Icon wall ====== */
     .icon-wall{
       display:flex; flex-wrap:wrap; gap:12px 14px; align-items:center;
       margin-top:10px;
@@ -313,7 +307,7 @@
       opacity:.88;
       filter: drop-shadow(0 1px 0 rgba(0,0,0,.18));
       transition: transform .15s ease, opacity .15s ease, filter .15s ease;
-      border-radius:8px; /* soft corner for PNGs with white bg */
+      border-radius:8px;
       background: transparent;
     }
     .icon-wall img:hover{
@@ -322,11 +316,9 @@
       filter: drop-shadow(0 6px 16px rgba(0,0,0,.35));
     }
 
-    /* Avoid double borders on activity images (wrappers handle border) */
     .stats .img-wrap img,
     .stats .img-center img { border: 0; border-radius: 0; }
 
-    /* ====== REDUCED MOTION ====== */
     @media (prefers-reduced-motion: reduce){
       *{animation: none !important; transition: none !important}
     }
@@ -377,13 +369,14 @@
         <h1 class="h1">Cost-intelligent cloud at scale, with a quant’s mindset</h1>
         <p class="lead">
           I build automation for multi-cloud <strong>FinOps</strong> (EA/MCA/GCP/AWS/OCI + private cloud),
-          GPU SKU provisioning & governance, and <strong>quant systems</strong> for pricing, risk, and event-driven analytics.
+          <strong>GPU provisioning</strong> and platform governance, and <strong>quant systems</strong> for pricing, risk, and event-driven analytics.
         </p>
 
         <div class="kvs">
           <span class="tag">Kubernetes & Helm</span>
           <span class="tag">ArgoCD</span>
-          <span class="tag">Grafana / Prometheus</span>
+          <span class="tag">GPU Provisioning</span>
+          <span class="tag">Managed Kubeflow</span>
           <span class="tag">Oracle • BigQuery</span>
           <span class="tag">Spring • Python</span>
           <span class="tag">Derivatives • Monte Carlo</span>
@@ -415,26 +408,41 @@
           <h3>Cost Intelligence & Billing Reconciliation</h3>
           <p>
             End-to-end pipelines that normalize provider bills (EA/MCA/GCP/AWS/OCI) to SKU-level usage,
-            map to accounts/projects, and surface anomalies via dashboards & alerts.
+            map to accounts/projects, and surface anomalies for audits and exports.
           </p>
           <ul>
+            <li>Operated two primary billing models: <strong>consumption-based</strong> and <strong>auto-metering-based</strong>.</li>
             <li>Daily reconciliation jobs with retries & partitioned DB design.</li>
-            <li>Grafana/Prometheus KPIs; alerting via email/SMS/IVR/push.</li>
             <li>Exports for CRM/invoicing; governance & audit trails.</li>
           </ul>
         </article>
+
         <article class="card">
-          <h3>Provisioning & GPU SKU Governance</h3>
+          <h3>Automated GPU Provisioning & Governance</h3>
           <p>
-            Declarative flows to create tenants/subscriptions, allocate NVIDIA H/A series GPU SKUs,
-            map billing IDs, and enforce quota & policy guardrails.
+            Declarative flows to create tenants/subscriptions, allocate NVIDIA GPU SKUs,
+            map billing IDs, and enforce quota + policy guardrails.
           </p>
           <ul>
-            <li>Helm/ArgoCD GitOps across tracks/namespaces.</li>
-            <li>Automated retries for module init; drift detection.</li>
-            <li>Service-level dashboards and readiness checks.</li>
+            <li>Automated GPU provisioning with SKU mapping to billing accounts and usage tracking.</li>
+            <li>Helm/ArgoCD GitOps across tracks/namespaces; drift detection and safe rollouts.</li>
+            <li>Automated retries for module init; readiness checks and guardrails.</li>
           </ul>
         </article>
+
+        <article class="card">
+          <h3>Managed Kubeflow: Auto-Install on Clusters</h3>
+          <p>
+            Automated, repeatable installation of managed Kubeflow on Kubernetes clusters with standard policies,
+            integration hooks, and operational checks.
+          </p>
+          <ul>
+            <li>Cluster bootstrap flows for Kubeflow components using GitOps patterns.</li>
+            <li>Repeatable installs across environments with validation and rollbacks.</li>
+            <li>Focus on reproducibility, governance, and day-2 operations.</li>
+          </ul>
+        </article>
+
         <article class="card">
           <h3>DevEx Automation: PR Auto-Approvals</h3>
           <p>
@@ -444,16 +452,6 @@
           <ul>
             <li>Scheduled runs; ADO permissions & policy checks.</li>
             <li>Fine-grained conditions and merge audits.</li>
-          </ul>
-        </article>
-        <article class="card">
-          <h3>Observability & SRE Practices</h3>
-          <p>
-            SLOs around billing freshness, pipeline latency, SKU success rates; dashboards for exec & ops views.
-          </p>
-          <ul>
-            <li>Prometheus metrics; Grafana boards per module.</li>
-            <li>Runbooks + alert routing; noise reduction with labels & silences.</li>
           </ul>
         </article>
       </div>
@@ -494,18 +492,18 @@
       <div class="grid cols-2 cards">
         <article class="card">
           <h3>HCMP FinOps Core</h3>
-          <p>Multi-provider cost normalization, anomaly detection, and billing exports.</p>
-          <p><strong>Stack:</strong> K8s, Helm, ArgoCD, Grafana/Prometheus, Oracle/BigQuery, Spring, Python</p>
+          <p>Multi-provider cost normalization, anomaly detection, and billing exports supporting both consumption-based and auto-metering billing models.</p>
+          <p><strong>Stack:</strong> K8s, Helm, ArgoCD, Oracle/BigQuery, Spring, Python</p>
         </article>
         <article class="card">
-          <h3>GPU Tenant & SKU Orchestrator</h3>
-          <p>Automated GPU tenant creation, SKU mapping to billing accounts, policy guardrails.</p>
-          <p><strong>Stack:</strong> ArgoCD Workflows, KEDA, Vault, YAML/Helm</p>
+          <h3>GPU Provisioning Orchestrator</h3>
+          <p>Automated GPU SKU provisioning, mapping SKUs to billing accounts, quota/policy guardrails, and usage tracking.</p>
+          <p><strong>Stack:</strong> Kubernetes, Helm/YAML, ArgoCD, Vault</p>
         </article>
         <article class="card">
-          <h3>PR Auto-Approval Bot</h3>
-          <p>Time-windowed rules that auto-approve narrow, low-risk diffs to <code>Replica</code>/<code>prod</code>.</p>
-          <p><strong>Stack:</strong> ADO REST, Git CLI, Cron, Bash/Python</p>
+          <h3>Managed Kubeflow Installer</h3>
+          <p>Repeatable Kubeflow auto-installation on Kubernetes clusters with validation checks and environment parity.</p>
+          <p><strong>Stack:</strong> GitOps patterns, Helm/YAML, Kubernetes</p>
         </article>
         <article class="card">
           <h3>Quant Lab</h3>
@@ -522,9 +520,11 @@
         <div class="kvs">
           <span class="tag">Kubernetes</span><span class="tag">Helm</span><span class="tag">ArgoCD</span>
           <span class="tag">KEDA</span><span class="tag">Vault</span><span class="tag">Docker/Podman</span>
-          <span class="tag">Grafana/Prometheus</span><span class="tag">Oracle • BigQuery</span>
+          <span class="tag">Kubeflow</span><span class="tag">GPU Provisioning</span>
+          <span class="tag">Oracle • BigQuery</span>
           <span class="tag">Spring (Java)</span><span class="tag">Python</span><span class="tag">SQL/PLSQL</span>
           <span class="tag">YAML/CI/CD (ADO)</span>
+          <span class="tag">Billing: Consumption • Auto-metering</span>
         </div>
       </div>
 
@@ -573,7 +573,6 @@
           <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/elasticsearch/elasticsearch-original.svg" title="ElasticSearch" alt="ElasticSearch" width="40" height="40" loading="lazy"/>
           <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/awk/awk-original.svg" title="Awk" alt="Awk" width="40" height="40" loading="lazy"/>
           <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/ballerina/ballerina-original.svg" title="Ballerina" alt="Ballerina" width="40" height="40" loading="lazy"/>
-          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/cpanel/cpanel-original.svg" title="cPanel" alt="cPanel" width="40" height="40" loading="lazy"/>
           <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/centos/centos-original.svg" title="CentOS" alt="CentOS" width="40" height="40" loading="lazy"/>
           <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/kalilinux/kalilinux-original.svg" title="Kali Linux" alt="Kali Linux" width="40" height="40" loading="lazy"/>
           <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/swagger/swagger-original.svg" title="Swagger" alt="Swagger" width="40" height="40" loading="lazy"/>
@@ -587,11 +586,10 @@
       </div>
     </section>
 
-    <!-- ACTIVITY (with skeleton + centering) -->
+    <!-- ACTIVITY -->
     <section id="stats" class="reveal">
       <h2>Activity Glimpse</h2>
       <div class="grid cols-2 stats">
-        <!-- Card 1: GitHub Streak with skeleton loader -->
         <div class="card">
           <a href="https://git.io/streak-stats" target="_blank" rel="noopener" class="no-underline">
             <div class="img-wrap loading" data-remote aria-busy="true">
@@ -605,7 +603,6 @@
           </a>
         </div>
 
-        <!-- Card 2: Top Languages perfectly centered -->
         <div class="card">
           <a href="https://github.com/anuraghazra/github-readme-stats" target="_blank" rel="noopener" class="no-underline">
             <div class="img-center">
@@ -656,20 +653,16 @@
     const menuBtn = document.getElementById('menu');
     const navmenu = document.getElementById('navmenu');
     const backdrop = document.getElementById('backdrop');
-    const headerEl = document.querySelector('header');
-    const navEl = document.querySelector('header nav'); // FIX: measure the nav itself
+    const navEl = document.querySelector('header nav');
     const mq = matchMedia('(max-width: 900px)');
 
-    // FIX: write to --header-offset without affecting layout min-height
     function setHeaderOffset(){
       const h = navEl ? navEl.offsetHeight : parseInt(getComputedStyle(document.documentElement).getPropertyValue('--header-min-h')) || 56;
       document.documentElement.style.setProperty('--header-offset', h + 'px');
     }
     setHeaderOffset();
-    // Recompute on safe events
     window.addEventListener('resize', () => requestAnimationFrame(setHeaderOffset), { passive: true });
     window.addEventListener('orientationchange', setHeaderOffset);
-    // Also on DOM font load (optional, in case font swap changes height)
     if (document.fonts && document.fonts.ready) { document.fonts.ready.then(setHeaderOffset); }
 
     function setMode() {
@@ -680,7 +673,7 @@
         if (menuBtn) menuBtn.setAttribute('aria-expanded','false');
         backdrop.hidden = true;
       }
-      setHeaderOffset(); // ensure correct top for menu after mode change
+      setHeaderOffset();
     }
     setMode(); mq.addEventListener('change', setMode);
 
@@ -710,7 +703,7 @@
     window.addEventListener('scroll', updateProgress, { passive:true });
     window.addEventListener('resize', updateProgress);
 
-    // --- Scroll reveal (subtle) ---
+    // --- Scroll reveal ---
     const revealEls = Array.from(document.querySelectorAll('.reveal .card, .reveal'));
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (!prefersReduced && 'IntersectionObserver' in window){
@@ -737,7 +730,7 @@
       function finish(ok) {
         wrap.classList.remove('loading');
         wrap.setAttribute('aria-busy', 'false');
-        if (skeleton) skeleton.remove(); // remove shimmer node
+        if (skeleton) skeleton.remove();
         if (!ok) {
           wrap.insertAdjacentHTML(
             'beforeend',
@@ -746,12 +739,12 @@
         }
       }
 
-      if (img.complete) {                 // already cached
+      if (img.complete) {
         finish(img.naturalWidth > 0);
         return;
       }
 
-      if ('decode' in img) {              // try decode to resolve quickly
+      if ('decode' in img) {
         img.decode().then(() => finish(true)).catch(() => { /* fall back to events */ });
       }
 
