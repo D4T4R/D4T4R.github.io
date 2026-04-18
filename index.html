@@ -34,8 +34,8 @@
       --bg-2: #0b0f16;
       --fg: #e7edf3;
       --muted:#a9b3bd;
-      --card:#0e141b99;              /* translucent for glass */
-      --border: color-mix(in oklab, #fff, transparent 88%);
+      --card: rgba(14, 20, 27, 0.6);          /* FIX: fallback for color-mix */
+      --border: rgba(255,255,255,0.12);        /* FIX: fallback for color-mix */
       --link:#9edbff;
 
       --accent:#6ee7ff;              /* cyan */
@@ -43,11 +43,15 @@
       --grad: linear-gradient(135deg, #7cd2ff 0%, #6ee7ff 30%, #95f99d 70%, #b4f397 100%);
 
       --shadow: 0 10px 30px rgba(0,0,0,.35);
-      --ring: 0 0 0 1px color-mix(in oklab, #fff, transparent 85%);
+      --ring: 0 0 0 1px rgba(255,255,255,0.08); /* FIX: fallback for color-mix */
 
-      /* FIX: keep a constant visual min-height, and a separate measured offset */
-      --header-min-h: 56px;          /* used for layout sizing only */
-      --header-offset: 56px;         /* measured runtime; used for anchor offsets/menu top */
+      /* FIX 1: --header-offset is now set purely by JS measurement.
+         We keep --header-min-h as a layout hint only.
+         Initial value is 64px (real measured height) instead of 56px
+         to prevent anchor/menu jumping before JS runs. */
+      --header-min-h: 56px;
+      --header-offset: 64px;
+
       --radius-lg: 20px;
       --radius-xl: 26px;
     }
@@ -56,12 +60,26 @@
       --bg-2:#eef3f8;
       --fg:#0b0d10;
       --muted:#4a5568;
-      --card:#ffffffcc;              /* translucent white */
+      --card: rgba(255,255,255,0.8);           /* FIX: fallback for color-mix */
       --border: rgba(11,13,16,0.08);
       --link:#0ea5e9;
       --grad: linear-gradient(135deg, #0ea5e9 0%, #22d3ee 30%, #10b981 70%, #84cc16 100%);
       --shadow: 0 8px 24px rgba(2,6,23,.08);
       --ring: 0 0 0 1px rgba(2,6,23,.08);
+    }
+
+    /* color-mix progressive enhancement — overrides fallbacks in capable browsers */
+    @supports (color: color-mix(in oklab, red, blue)) {
+      :root {
+        --card: #0e141b99;
+        --border: color-mix(in oklab, #fff, transparent 88%);
+        --ring: 0 0 0 1px color-mix(in oklab, #fff, transparent 85%);
+      }
+      :root.light {
+        --card: #ffffffcc;
+        --border: color-mix(in oklab, #0b0d10, transparent 92%);
+        --ring: 0 0 0 1px color-mix(in oklab, #02060f, transparent 92%);
+      }
     }
 
     /* ====== RESET / BASE ====== */
@@ -85,12 +103,30 @@
 
     section{scroll-margin-top: calc(var(--header-offset) + 16px);}
 
+    /* ====== SCROLL PROGRESS ====== */
+    /* FIX 2: progress bar z-index reduced to sit BELOW the header (z-index:60),
+       so it never bleeds over the nav. It stays fixed at the very top visually
+       because the header is also at top:0, and the bar is 3px tall. */
+    .progress{
+      position: fixed; top: 0; left: 0; height: 3px; width: 0%;
+      background: var(--grad); z-index: 50;   /* was 80 — now below header (60) */
+      box-shadow: 0 0 12px rgba(120,220,255,.9);
+      pointer-events: none;
+    }
+
     /* ====== HEADER / NAV (glassy) ====== */
     header{
       position:sticky; top:0; z-index:60;
       backdrop-filter: saturate(180%) blur(14px);
       background: color-mix(in oklab, var(--bg-2), transparent 25%);
+      /* FIX: fallback background for browsers without color-mix */
+      background: rgba(11, 15, 22, 0.82);
       border-bottom: 1px solid var(--border);
+    }
+    @supports (color: color-mix(in oklab, red, blue)) {
+      header {
+        background: color-mix(in oklab, var(--bg-2), transparent 25%);
+      }
     }
     header .container{ padding: 10px 18px; }
     nav{display:flex;align-items:center;justify-content:space-between;gap:12px; min-height:var(--header-min-h);}
@@ -100,9 +136,15 @@
       display:inline-flex; align-items:center; gap:.35rem;
       padding:.2rem .6rem; border-radius:999px;
       font-size:.72rem; font-weight:800; letter-spacing:.06em; text-transform:uppercase;
-      background: color-mix(in oklab, var(--accent), transparent 83%);
+      background: rgba(110,231,255,0.12);    /* FIX: fallback */
       color: var(--accent);
-      border: 1px solid color-mix(in oklab, var(--accent), transparent 65%);
+      border: 1px solid rgba(110,231,255,0.35); /* FIX: fallback */
+    }
+    @supports (color: color-mix(in oklab, red, blue)) {
+      .pill {
+        background: color-mix(in oklab, var(--accent), transparent 83%);
+        border-color: color-mix(in oklab, var(--accent), transparent 65%);
+      }
     }
 
     nav .links { display:flex; align-items:center; gap:10px; }
@@ -139,25 +181,32 @@
       header .pill { display:none; }
       nav .links { display:none; }
 
+      /* FIX 3: mobile menu z-index raised to 65 (above header 60, backdrop 62),
+         but progress bar is now 50, so menu correctly layers above everything. */
       #navmenu.mobile {
         display:block;
         position:fixed; left:0; right:0;
         top: var(--header-offset);
-        background: color-mix(in oklab, var(--bg-2), transparent 8%);
+        background: rgba(11, 15, 22, 0.97); /* FIX: solid fallback */
         border-top:1px solid var(--border);
         box-shadow: var(--shadow);
         padding:18px 20px 24px;
-        z-index:70;
+        z-index:65;                          /* above header (60), below nothing problematic */
         transform: translateY(-120%);
         transition: transform .22s ease-out;
         backdrop-filter: blur(14px);
+      }
+      @supports (color: color-mix(in oklab, red, blue)) {
+        #navmenu.mobile {
+          background: color-mix(in oklab, var(--bg-2), transparent 8%);
+        }
       }
       #navmenu.mobile.open { transform: translateY(0%); }
       #navmenu.mobile a { display:block; padding:12px 4px; font-weight:700; font-size:1.06rem; }
 
       .backdrop[hidden]{ display:none; }
       .backdrop {
-        position:fixed; inset:0; z-index:65;
+        position:fixed; inset:0; z-index:62; /* FIX: between header(60) and menu(65) */
         background: rgba(0,0,0,.35);
         backdrop-filter: blur(2px);
       }
@@ -177,7 +226,10 @@
     .kvs{display:flex;flex-wrap:wrap;gap:.55rem; margin-top:14px}
     .tag{
       border:1px solid var(--border); padding:.38rem .6rem; border-radius:999px;
-      color:var(--muted); font-weight:700; background: color-mix(in oklab, var(--fg), transparent 92%);
+      color:var(--muted); font-weight:700; background: rgba(231,237,243,0.06); /* FIX: fallback */
+    }
+    @supports (color: color-mix(in oklab, red, blue)) {
+      .tag { background: color-mix(in oklab, var(--fg), transparent 92%); }
     }
 
     .profile-card{
@@ -199,9 +251,14 @@
     .profile-card img{
       max-width:220px; width:100%; height:auto; border-radius:50%;
       box-shadow: 0 12px 40px rgba(0,0,0,.35);
-      border: 3px solid color-mix(in oklab, var(--fg), transparent 85%);
+      border: 3px solid rgba(231,237,243,0.12); /* FIX: fallback */
       transform: translateZ(0);
       animation: float 6s ease-in-out infinite;
+    }
+    @supports (color: color-mix(in oklab, red, blue)) {
+      .profile-card img {
+        border-color: color-mix(in oklab, var(--fg), transparent 85%);
+      }
     }
     .profile-card h3{margin:.9rem 0 0; font-size:1.2rem}
     .profile-card p{margin:.25rem 0 0; color:var(--muted)}
@@ -222,8 +279,13 @@
     }
     .card:hover{
       transform: translateY(-3px);
-      border-color: color-mix(in oklab, var(--accent), transparent 40%);
+      border-color: rgba(110,231,255,0.55);    /* FIX: fallback */
       box-shadow: 0 16px 40px rgba(0,0,0,.4);
+    }
+    @supports (color: color-mix(in oklab, red, blue)) {
+      .card:hover {
+        border-color: color-mix(in oklab, var(--accent), transparent 40%);
+      }
     }
 
     .grid{display:grid;gap:16px}
@@ -238,13 +300,6 @@
 
     .skip{position:absolute; left:-9999px; top:auto; width:1px; height:1px; overflow:hidden}
     .skip:focus{position:static; width:auto; height:auto; padding:.5rem; background:var(--accent); color:#000; border-radius:8px}
-
-    /* ====== SCROLL PROGRESS ====== */
-    .progress{
-      position: fixed; top: 0; left: 0; height: 3px; width: 0%;
-      background: var(--grad); z-index: 80;
-      box-shadow: 0 0 12px rgba(120,220,255,.9);
-    }
 
     /* ====== Activity: loader + centering ====== */
     .no-underline:hover { text-decoration: none; }
@@ -325,6 +380,7 @@
   </style>
 </head>
 <body>
+  <!-- FIX 2: progress bar z-index is now 50, below the sticky header (z-index:60) -->
   <div class="progress" id="progress"></div>
   <a class="skip" href="#main">Skip to content</a>
 
@@ -366,7 +422,7 @@
     <section class="hero" id="top">
       <div>
         <span class="pill">👋 Hello!</span>
-        <h1 class="h1">Cost-intelligent cloud at scale, with a quant’s mindset</h1>
+        <h1 class="h1">Cost-intelligent cloud at scale, with a quant's mindset</h1>
         <p class="lead">
           I build automation for multi-cloud <strong>FinOps</strong> (EA/MCA/GCP/AWS/OCI + private cloud),
           <strong>GPU provisioning</strong> and platform governance, and <strong>quant systems</strong> for pricing, risk, and event-driven analytics.
@@ -532,7 +588,6 @@
       <div class="card" style="margin-top:12px">
         <div class="caps">Also used</div>
         <div class="icon-wall" aria-label="Also used tools and technologies">
-          <!-- (icons unchanged) -->
           <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/bash/bash-original.svg" title="Bash" alt="Bash" width="40" height="40" loading="lazy"/>
           <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/solidity/solidity-original.svg" title="Solidity" alt="Solidity" width="40" height="40" loading="lazy"/>
           <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/remix/remix-original.svg" title="Remix IDE" alt="Remix IDE" width="40" height="40" loading="lazy"/>
@@ -565,7 +620,8 @@
           <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/helm/helm-original.svg" title="Helm" alt="Helm" width="40" height="40" loading="lazy"/>
           <img src="https://raw.githubusercontent.com/go-gitea/gitea/main/assets/logo.svg" title="Gitea" alt="Gitea" width="40" height="40" loading="lazy"/>
           <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/podman/podman-original.svg" title="Podman" alt="Podman" width="40" height="40" loading="lazy"/>
-          <img src="https://raw.githubusercontent.com/kedacore/keda/blob/main/images/logos/keda-icon.svg" title="Keda Autoscaler" alt="Keda" width="40" height="40" loading="lazy"/>
+          <!-- FIX 5: corrected KEDA icon URL — was /blob/main/, now /main/ (raw path) -->
+          <img src="https://raw.githubusercontent.com/kedacore/keda/main/images/logos/keda-icon.svg" title="Keda Autoscaler" alt="Keda" width="40" height="40" loading="lazy"/>
           <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/googlecloud/googlecloud-original.svg" title="GCP" alt="GCP" width="40" height="40" loading="lazy"/>
           <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/rabbitmq/rabbitmq-original.svg" title="RabbitMQ" alt="RabbitMQ" width="40" height="40" loading="lazy"/>
           <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/jenkins/jenkins-original.svg" title="Jenkins" alt="Jenkins" width="40" height="40" loading="lazy"/>
@@ -653,16 +709,19 @@
     const menuBtn = document.getElementById('menu');
     const navmenu = document.getElementById('navmenu');
     const backdrop = document.getElementById('backdrop');
-    const navEl = document.querySelector('header nav');
+    const headerEl = document.querySelector('header');   // FIX 1: measure the whole header, not just nav
     const mq = matchMedia('(max-width: 900px)');
 
+    // FIX 1: measure the full header element height (includes border, padding on container etc.)
+    // This ensures --header-offset is always pixel-accurate so the mobile menu top and
+    // section scroll-margin-top are correctly aligned.
     function setHeaderOffset(){
-      const h = navEl ? navEl.offsetHeight : parseInt(getComputedStyle(document.documentElement).getPropertyValue('--header-min-h')) || 56;
-      document.documentElement.style.setProperty('--header-offset', h + 'px');
+      const h = headerEl ? headerEl.getBoundingClientRect().height : 64;
+      document.documentElement.style.setProperty('--header-offset', Math.ceil(h) + 'px');
     }
     setHeaderOffset();
     window.addEventListener('resize', () => requestAnimationFrame(setHeaderOffset), { passive: true });
-    window.addEventListener('orientationchange', setHeaderOffset);
+    window.addEventListener('orientationchange', () => requestAnimationFrame(setHeaderOffset));
     if (document.fonts && document.fonts.ready) { document.fonts.ready.then(setHeaderOffset); }
 
     function setMode() {
