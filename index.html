@@ -105,8 +105,11 @@ section{scroll-margin-top:calc(var(--header-offset) + 18px)}
 }
 .eyebrow::before{content:"";width:18px;height:1px;background:var(--grad);display:inline-block}
 .grad-text{
-  background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;
+  background:var(--grad);background-size:220% 100%;
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  animation:gradShift 7s ease-in-out infinite alternate;
 }
+@keyframes gradShift{from{background-position:0% 50%}to{background-position:100% 50%}}
 
 /* ============================================================ PROGRESS */
 .progress{
@@ -175,7 +178,11 @@ nav{display:flex;align-items:center;justify-content:space-between;gap:12px;min-h
 /* ============================================================ HERO */
 .hero{
   display:grid;grid-template-columns:1.22fr .78fr;gap:36px;align-items:center;
-  padding:54px 0 30px;
+  padding:54px 0 30px;position:relative;isolation:isolate;
+}
+#heroParticles{
+  position:absolute;inset:0;z-index:-1;width:100%;height:100%;
+  pointer-events:none;opacity:.55;
 }
 .hero h1{
   font-family:var(--display);font-weight:700;
@@ -308,7 +315,8 @@ section{padding:48px 0}
 .contact-link .v{color:var(--fg);font-weight:500}
 
 /* animated canvas strips */
-.anim-strip{position:relative;height:118px;padding:0;margin-bottom:18px;overflow:hidden}
+.anim-strip{position:relative;height:122px;padding:0;margin-bottom:18px;overflow:hidden}
+.anim-strip.tall{height:300px}
 .anim-strip canvas{display:block;width:100%;height:100%}
 .strip-label{position:absolute;top:10px;left:14px;font-family:var(--mono);font-size:.68rem;letter-spacing:.04em;color:var(--faint);pointer-events:none}
 
@@ -341,6 +349,7 @@ footer a:hover{color:var(--magenta)}
   body.menu-open{overflow:hidden}
   .hero{grid-template-columns:1fr;gap:28px;padding:36px 0 14px}
   .surface-panel{aspect-ratio:16/10;max-height:280px}
+  .anim-strip.tall{height:210px}
   .cols-3,.cols-2{grid-template-columns:1fr}
   .contact-grid{grid-template-columns:1fr}
 }
@@ -384,6 +393,7 @@ footer a:hover{color:var(--magenta)}
 
   <!-- HERO -->
   <section class="hero" id="top">
+    <canvas id="heroParticles" aria-hidden="true"></canvas>
     <div class="hero-copy">
       <span class="eyebrow">finops · hybrid cloud · quant systems</span>
       <h1 id="headline">Cost-intelligent cloud at scale, with a <span class="grad-text">quant's mindset</span></h1>
@@ -478,9 +488,9 @@ footer a:hover{color:var(--magenta)}
       <span class="eyebrow">pricing &amp; risk</span>
       <h2>Quant &amp; Derivatives Systems</h2>
     </div>
-    <div class="anim-strip card" data-reveal aria-hidden="true">
+    <div class="anim-strip tall card" data-reveal aria-hidden="true">
       <canvas id="mcCanvas"></canvas>
-      <span class="strip-label">monte carlo · gbm sample paths</span>
+      <span class="strip-label">monte carlo pricing engine · live</span>
     </div>
     <div class="grid cols-2">
       <article class="card" data-reveal>
@@ -839,7 +849,7 @@ function makeStrip(id, init, draw){
 
 /* --- GitOps delivery loop: packets flowing commit → build → argocd → k8s --- */
 makeStrip('pipelineCanvas',
-  (w, h) => ({ w, h, t: 0,
+  (w, h) => ({ w, h, t: 0, rings: [],
     nodes: [{p:0,label:'commit'},{p:1/3,label:'build'},{p:2/3,label:'argocd'},{p:1,label:'k8s'}] }),
   (ctx, s) => {
     const { w, h, nodes } = s;
@@ -856,7 +866,21 @@ makeStrip('pipelineCanvas',
       const x = x0 + (x1 - x0) * tt;
       ctx.beginPath(); ctx.arc(x, y, 2.6, 0, 7);
       ctx.fillStyle = cols[i % 3]; ctx.globalAlpha = .9; ctx.fill(); ctx.globalAlpha = 1;
+      // spawn a pulse ring when a packet crosses a node
+      nodes.forEach((nd, ni) => {
+        if (Math.abs(tt - nd.p) < 0.0036 && s.rings.length < 8)
+          s.rings.push({ x: x0 + (x1 - x0) * nd.p, y, r: 5, a: .45, c: cols[ni % 3] });
+      });
     }
+
+    // expanding rings
+    s.rings = s.rings.filter(rg => rg.a > 0.03);
+    s.rings.forEach(rg => {
+      ctx.beginPath(); ctx.arc(rg.x, rg.y, rg.r, 0, 7);
+      ctx.strokeStyle = rg.c; ctx.globalAlpha = rg.a; ctx.lineWidth = 1.2; ctx.stroke();
+      ctx.globalAlpha = 1;
+      if (!s.static){ rg.r += 0.55; rg.a *= 0.955; }
+    });
 
     ctx.font = '10px JetBrains Mono, monospace'; ctx.textAlign = 'center';
     nodes.forEach((nd, i) => {
@@ -875,47 +899,182 @@ makeStrip('pipelineCanvas',
     });
   });
 
-/* --- Monte Carlo: GBM sample paths drawing in, then regenerating --- */
+/* --- Monte Carlo: GBM paths colored by outcome, terminal histogram, live readout --- */
 function genPaths(w, h){
-  const n = 200, P = 32, paths = [];
+  const n = 240, P = 44, paths = [], term = [];
+  const cy = h * 0.52, sc = h / 105;
   for (let p = 0; p < P; p++){
-    const drift = (Math.random() - 0.5) * 0.10;
+    const drift = (Math.random() - 0.5) * 0.12;
     let v = 0; const arr = [];
     for (let k = 0; k < n; k++){
-      v += (Math.random() - 0.5) * 2.0 + drift - v * 0.008; // mean-reverting-ish random walk
-      arr.push(h * 0.55 - v * (h / 95));
+      v += (Math.random() - 0.5) * 2.1 + drift - v * 0.006;
+      arr.push(cy - v * sc);
     }
-    paths.push(arr);
+    paths.push(arr); term.push(arr[n - 1]);
   }
-  return { w, h, n, paths, head: 0, hold: 0 };
+  return { w, h, n, paths, term, head: 0, hold: 0, cy };
 }
 makeStrip('mcCanvas',
   (w, h) => genPaths(w, h),
   (ctx, s) => {
-    const { w, h, paths, n } = s;
-    if (s.static) s.head = n;
+    const { w, h, paths, n, cy } = s;
+    if (s.static){ s.head = n; s.hold = 999; }
     else {
-      s.head = Math.min(s.head + 1.5, n);
-      if (s.head >= n && ++s.hold > 110) Object.assign(s, genPaths(w, h));
+      s.head = Math.min(s.head + 1.6, n);
+      if (s.head >= n && ++s.hold > 150) Object.assign(s, genPaths(w, h));
     }
     ctx.clearRect(0, 0, w, h);
-    const cols = [cssVar('--violet'), cssVar('--magenta'), cssVar('--amber')];
+    const violet = cssVar('--violet'), amber = cssVar('--amber');
+    const histW = 70, xmax = w - histW - 18;
     const m = Math.floor(s.head);
+
+    // faint gridlines
+    ctx.strokeStyle = 'rgba(154,160,181,.10)'; ctx.lineWidth = 1;
+    [0.22, 0.82].forEach(g => { ctx.beginPath(); ctx.moveTo(0, h*g); ctx.lineTo(xmax, h*g); ctx.stroke(); });
+
+    // strike line K
+    ctx.setLineDash([3, 5]); ctx.strokeStyle = 'rgba(154,160,181,.32)';
+    ctx.beginPath(); ctx.moveTo(0, cy); ctx.lineTo(xmax, cy); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.font = '10px JetBrains Mono, monospace';
+    ctx.fillStyle = 'rgba(154,160,181,.85)'; ctx.textAlign = 'left';
+    ctx.fillText('K', 6, cy - 6);
+
+    // paths, colored by terminal outcome (above strike = sand, below = violet)
     ctx.lineWidth = 1;
     paths.forEach((p, i) => {
+      const colr = (s.term[i] < cy) ? amber : violet;
       ctx.beginPath();
       for (let k = 0; k < m; k++){
-        const x = (k / (n - 1)) * w, y = Math.max(8, Math.min(h - 8, p[k]));
+        const x = (k / (n - 1)) * xmax, y = Math.max(8, Math.min(h - 8, p[k]));
         k ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
       }
-      ctx.strokeStyle = cols[i % 3]; ctx.globalAlpha = .30; ctx.stroke();
+      ctx.strokeStyle = colr; ctx.globalAlpha = .26; ctx.stroke();
+      // glowing head while drawing
+      if (m > 1 && m < n){
+        const hx = ((m - 1) / (n - 1)) * xmax, hy = Math.max(8, Math.min(h - 8, p[m - 1]));
+        ctx.beginPath(); ctx.arc(hx, hy, 1.8, 0, 7);
+        ctx.fillStyle = colr; ctx.globalAlpha = .85; ctx.fill();
+      }
     });
     ctx.globalAlpha = 1;
-    // strike line
-    ctx.setLineDash([3, 5]); ctx.strokeStyle = 'rgba(154,160,181,.30)';
-    ctx.beginPath(); ctx.moveTo(0, h * 0.55); ctx.lineTo(w, h * 0.55); ctx.stroke();
-    ctx.setLineDash([]);
+
+    // terminal distribution histogram, fills in after paths complete
+    if (m >= n){
+      const prog = Math.min(1, s.hold / 45);
+      const bins = 14, counts = new Array(bins).fill(0);
+      const y0 = 10, y1 = h - 10, bh = (y1 - y0) / bins;
+      s.term.forEach(tv => {
+        const yy = Math.max(y0, Math.min(y1 - 0.01, tv));
+        counts[Math.floor((yy - y0) / (y1 - y0) * bins)]++;
+      });
+      const mx = Math.max.apply(null, counts) || 1;
+      for (let b = 0; b < bins; b++){
+        const by = y0 + b * bh;
+        ctx.fillStyle = (by + bh / 2) < cy ? amber : violet;
+        ctx.globalAlpha = .5;
+        ctx.fillRect(xmax + 10, by + 1, (counts[b] / mx) * (histW - 14) * prog, bh - 2);
+      }
+      ctx.globalAlpha = 1;
+    }
+
+    // live readout
+    const itm = s.term.filter(tv => tv < cy).length / s.term.length;
+    ctx.textAlign = 'right'; ctx.fillStyle = 'rgba(154,160,181,.9)';
+    ctx.fillText(`${paths.length} paths · ITM ${Math.round(itm * 100)}%`, w - 12, 20);
+    if (m < n) ctx.fillText('simulating\u2026', w - 12, 34);
+    else ctx.fillText('terminal dist \u2192', w - 12, 34);
   });
+
+/* =========================================================
+   AMBIENT — drifting particle field behind the hero (three.js)
+   ========================================================= */
+(function heroParticles(){
+  const cv = document.getElementById('heroParticles');
+  if (!cv || typeof THREE === 'undefined' || REDUCED) return;
+  const hero = cv.parentElement;
+  const N = matchMedia('(max-width:920px)').matches ? 70 : 150;
+  let renderer, scene, camera, pts, raf = 0, running = false, t = 0;
+  let tx = 0, ty = 0, camX = 0, camY = 0;
+
+  function build(){
+    const w = Math.max(1, hero.clientWidth), h = Math.max(1, hero.clientHeight);
+    renderer = new THREE.WebGLRenderer({ canvas:cv, alpha:true, antialias:false, powerPreference:'low-power' });
+    renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+    renderer.setSize(w, h, false);
+    scene = new THREE.Scene();
+    camera = new THREE.PerspectiveCamera(50, w/h, 0.1, 50);
+    camera.position.z = 10;
+
+    const pos = new Float32Array(N*3), col = new Float32Array(N*3), seed = new Float32Array(N);
+    const palette = [[0.55,0.52,0.91],[0.85,0.52,0.74],[0.91,0.79,0.54]];
+    for (let i = 0; i < N; i++){
+      pos[i*3]   = (Math.random() - 0.5) * 24;
+      pos[i*3+1] = (Math.random() - 0.5) * 12;
+      pos[i*3+2] = (Math.random() - 0.5) * 6;
+      const c = palette[i % 3];
+      col[i*3] = c[0]; col[i*3+1] = c[1]; col[i*3+2] = c[2];
+      seed[i] = Math.random() * 100;
+    }
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    g.setAttribute('color', new THREE.BufferAttribute(col, 3));
+    pts = new THREE.Points(g, new THREE.PointsMaterial({ size:0.07, vertexColors:true, transparent:true, opacity:0.55 }));
+    pts.userData.seed = seed;
+    scene.add(pts);
+  }
+
+  function frame(){
+    t += 0.004;
+    const pos = pts.geometry.attributes.position, seed = pts.userData.seed;
+    for (let i = 0; i < N; i++){
+      pos.array[i*3+1] += Math.sin(t*2 + seed[i]) * 0.0016;
+      pos.array[i*3]   += Math.cos(t + seed[i]) * 0.0012;
+    }
+    pos.needsUpdate = true;
+    pts.rotation.y = Math.sin(t*0.3) * 0.05;
+    camX += (tx - camX) * 0.04; camY += (ty - camY) * 0.04;
+    camera.position.x = camX; camera.position.y = camY;
+    camera.lookAt(0, 0, 0);
+    renderer.render(scene, camera);
+    raf = requestAnimationFrame(frame);
+  }
+  const start = () => { if (!running && pts){ running = true; raf = requestAnimationFrame(frame); } };
+  const stop  = () => { running = false; cancelAnimationFrame(raf); };
+
+  hero.addEventListener('pointermove', e => {
+    const r = hero.getBoundingClientRect();
+    tx = ((e.clientX - r.left) / r.width - 0.5) * 0.9;
+    ty = -((e.clientY - r.top) / r.height - 0.5) * 0.5;
+  });
+  hero.addEventListener('pointerleave', () => { tx = 0; ty = 0; });
+
+  try { build(); } catch(e){ return; }
+  function resize(){
+    const w = Math.max(1, hero.clientWidth), h = Math.max(1, hero.clientHeight);
+    camera.aspect = w/h; camera.updateProjectionMatrix(); renderer.setSize(w, h, false);
+  }
+  addEventListener('resize', () => requestAnimationFrame(resize), { passive:true });
+  if ('IntersectionObserver' in window)
+    new IntersectionObserver(es => es.forEach(en => en.isIntersecting ? start() : stop()), { threshold:0.05 }).observe(hero);
+  else start();
+  document.addEventListener('visibilitychange', () => document.hidden ? stop() : start());
+})();
+
+/* =========================================================
+   3D tilt on cards (pointer-fine devices only)
+   ========================================================= */
+if (!REDUCED && matchMedia('(pointer:fine)').matches){
+  document.querySelectorAll('.card:not(.anim-strip)').forEach(card => {
+    card.addEventListener('pointermove', e => {
+      const r = card.getBoundingClientRect();
+      const rx = ((e.clientY - r.top) / r.height - 0.5) * -3.2;
+      const ry = ((e.clientX - r.left) / r.width - 0.5) * 3.2;
+      card.style.transform = `translateY(-4px) perspective(750px) rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg)`;
+    });
+    card.addEventListener('pointerleave', () => { card.style.transform = ''; });
+  });
+}
 
 /* =========================================================
    SIGNATURE — animated implied volatility surface (three.js)
@@ -925,7 +1084,7 @@ makeStrip('mcCanvas',
   const fallback = document.getElementById('surfaceFallback');
   if (!panel || typeof THREE === 'undefined') return; // fallback gradient stays visible
 
-  let renderer, scene, camera, mesh, raf = 0, running = false, t = 0;
+  let renderer, scene, camera, mesh, dots, grp, raf = 0, running = false, t = 0, scrollTilt = 0;
   const SEG = (matchMedia('(max-width:920px)').matches ? 28 : 46);
   const W = 4.2, H = 4.2;
 
@@ -971,8 +1130,11 @@ makeStrip('mcCanvas',
     geo.setAttribute('color', new THREE.BufferAttribute(new Float32Array(count*3), 3));
     const mat = new THREE.MeshBasicMaterial({ wireframe:true, vertexColors:true, transparent:true, opacity:0.78 });
     mesh = new THREE.Mesh(geo, mat);
-    mesh.rotation.x = -Math.PI / 2.18;
-    scene.add(mesh);
+    const dotMat = new THREE.PointsMaterial({ size:0.05, vertexColors:true, transparent:true, opacity:0.5 });
+    dots = new THREE.Points(geo, dotMat);
+    grp = new THREE.Group(); grp.add(mesh); grp.add(dots);
+    grp.rotation.x = -Math.PI / 2.18;
+    scene.add(grp);
 
     fallback.style.opacity = '0';
     deform(0);
@@ -1004,7 +1166,8 @@ makeStrip('mcCanvas',
     t += 0.012;
     deform(t);
     curRX += (targRX - curRX) * 0.06; curRZ += (targRZ - curRZ) * 0.06;
-    mesh.rotation.x = curRX; mesh.rotation.z = curRZ + Math.sin(t*0.2)*0.04;
+    grp.rotation.x = curRX; grp.rotation.z = curRZ + Math.sin(t*0.2)*0.04 + scrollTilt;
+    if (dots) dots.material.opacity = 0.35 + 0.2 * (0.5 + 0.5*Math.sin(t*0.6));
     renderer.render(scene, camera);
     raf = requestAnimationFrame(frame);
   }
@@ -1025,6 +1188,16 @@ makeStrip('mcCanvas',
 
   try { build(); } catch(e){ fallback.style.opacity = '0.5'; return; }
   addEventListener('resize', () => requestAnimationFrame(resize), { passive:true });
+
+  // scroll-linked tilt: surface leans as the hero scrolls away
+  if (window.gsap && window.ScrollTrigger && !REDUCED){
+    const o = { v: 0 };
+    gsap.to(o, {
+      v: 0.45, ease:'none',
+      scrollTrigger:{ trigger:'#top', start:'top top', end:'bottom top', scrub:0.6 },
+      onUpdate(){ scrollTilt = o.v; }
+    });
+  }
 
   if (REDUCED){ renderer.render(scene, camera); return; } // static frame, no loop
 
