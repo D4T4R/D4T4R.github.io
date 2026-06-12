@@ -65,6 +65,11 @@
   --border-strong: rgba(20,19,31,0.16);
   --ring: 0 0 0 1px rgba(20,19,31,0.07);
   --shadow: 0 16px 40px rgba(30,20,60,0.10);
+  /* deeper accents — pastels wash out on light backgrounds */
+  --violet:#5b50c9;
+  --magenta:#b14a93;
+  --amber:#b9831f;
+  --grad: linear-gradient(100deg, #5b50c9 0%, #b14a93 52%, #b9831f 100%);
 }
 
 @supports (color: color-mix(in oklab, red, blue)) {
@@ -125,6 +130,13 @@ header{
   border-bottom:1px solid var(--border);
 }
 :root.light header{background:rgba(244,245,250,0.72)}
+:root.light .btn.primary{color:#fff}
+:root.light .brand .glyph::after{color:#fff}
+:root.light .surface-panel{
+  background:
+    radial-gradient(120% 120% at 50% 0%, rgba(91,80,201,.07), transparent 60%),
+    linear-gradient(180deg, rgba(255,255,255,.65), rgba(233,235,243,.85));
+}
 @supports (color: color-mix(in oklab, red, blue)) {
   header{background:color-mix(in oklab, var(--bg), transparent 28%)}
 }
@@ -685,6 +697,7 @@ footer a:hover{color:var(--magenta)}
 "use strict";
 document.documentElement.classList.add('js');
 const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const THEME_HOOKS = []; // visuals register here to re-tint/redraw on theme toggle
 
 /* ---------- year ---------- */
 document.getElementById('y').textContent = new Date().getFullYear();
@@ -698,7 +711,7 @@ themeBtn.addEventListener('click', () => {
   const mode = root.classList.contains('light') ? 'light' : 'dark';
   themeBtn.textContent = mode === 'light' ? '☀' : '☾';
   localStorage.setItem('theme', mode);
-  if (window.__setSurfaceTheme) window.__setSurfaceTheme(mode);
+  THEME_HOOKS.forEach(f => f(mode));
 });
 
 /* ---------- header offset (accurate sticky measurement) ---------- */
@@ -825,6 +838,12 @@ if (!REDUCED && matchMedia('(pointer:fine)').matches) {
    CANVAS STRIPS — GitOps delivery loop + Monte Carlo paths
    ========================================================= */
 function cssVar(n){ return getComputedStyle(document.documentElement).getPropertyValue(n).trim() || '#999'; }
+function themeInk(){
+  const light = document.documentElement.classList.contains('light');
+  return light
+    ? { light, text:'rgba(74,80,108,.95)', line:'rgba(60,66,96,.30)', grid:'rgba(60,66,96,.14)', dash:'rgba(60,66,96,.45)' }
+    : { light, text:'rgba(154,160,181,.9)', line:'rgba(150,152,176,.22)', grid:'rgba(154,160,181,.10)', dash:'rgba(154,160,181,.32)' };
+}
 
 function makeStrip(id, init, draw){
   const cv = document.getElementById(id);
@@ -845,6 +864,7 @@ function makeStrip(id, init, draw){
   const stop  = () => { running = false; cancelAnimationFrame(raf); };
 
   size();
+  THEME_HOOKS.push(() => { if (state) draw(ctx, state); });
   addEventListener('resize', () => requestAnimationFrame(size), { passive:true });
   if ('IntersectionObserver' in window)
     new IntersectionObserver(es => es.forEach(e => e.isIntersecting ? start() : stop()), { threshold:.1 }).observe(cv);
@@ -942,10 +962,11 @@ function makeStrip(id, init, draw){
     const { y, x0, x1, nx } = geom();
     const violet = cssVar('--violet'), magenta = cssVar('--magenta'), amber = cssVar('--amber');
     const cols = [violet, magenta, amber, violet];
-    const faint = 'rgba(154,160,181,.85)';
+    const ink = themeInk();
+    const faint = ink.text;
 
     // base line
-    ctx.strokeStyle = 'rgba(150,152,176,.22)'; ctx.lineWidth = 1;
+    ctx.strokeStyle = ink.line; ctx.lineWidth = 1;
     ctx.beginPath(); ctx.moveTo(x0, y); ctx.lineTo(x1, y); ctx.stroke();
 
     // completed segment lights up during a run
@@ -1052,6 +1073,7 @@ function makeStrip(id, init, draw){
   const stop  = () => { running = false; cancelAnimationFrame(raf); };
 
   size();
+  THEME_HOOKS.push(() => draw());
   addEventListener('resize', () => requestAnimationFrame(size), { passive:true });
   if ('IntersectionObserver' in window)
     new IntersectionObserver(es => es.forEach(e => e.isIntersecting ? start() : stop()), { threshold:.1 }).observe(cv);
@@ -1085,19 +1107,20 @@ makeStrip('mcCanvas',
     }
     ctx.clearRect(0, 0, w, h);
     const violet = cssVar('--violet'), amber = cssVar('--amber');
+    const ink = themeInk();
     const histW = 70, xmax = w - histW - 18;
     const m = Math.floor(s.head);
 
     // faint gridlines
-    ctx.strokeStyle = 'rgba(154,160,181,.10)'; ctx.lineWidth = 1;
+    ctx.strokeStyle = ink.grid; ctx.lineWidth = 1;
     [0.22, 0.82].forEach(g => { ctx.beginPath(); ctx.moveTo(0, h*g); ctx.lineTo(xmax, h*g); ctx.stroke(); });
 
     // strike line K
-    ctx.setLineDash([3, 5]); ctx.strokeStyle = 'rgba(154,160,181,.32)';
+    ctx.setLineDash([3, 5]); ctx.strokeStyle = ink.dash;
     ctx.beginPath(); ctx.moveTo(0, cy); ctx.lineTo(xmax, cy); ctx.stroke();
     ctx.setLineDash([]);
     ctx.font = '10px JetBrains Mono, monospace';
-    ctx.fillStyle = 'rgba(154,160,181,.85)'; ctx.textAlign = 'left';
+    ctx.fillStyle = ink.text; ctx.textAlign = 'left';
     ctx.fillText('K', 6, cy - 6);
 
     // paths, colored by terminal outcome (above strike = sand, below = violet)
@@ -1140,7 +1163,7 @@ makeStrip('mcCanvas',
 
     // live readout
     const itm = s.term.filter(tv => tv < cy).length / s.term.length;
-    ctx.textAlign = 'right'; ctx.fillStyle = 'rgba(154,160,181,.9)';
+    ctx.textAlign = 'right'; ctx.fillStyle = ink.text;
     ctx.fillText(`${paths.length} paths · ITM ${Math.round(itm * 100)}%`, w - 12, 20);
     if (m < n) ctx.fillText('simulating\u2026', w - 12, 34);
     else ctx.fillText('terminal dist \u2192', w - 12, 34);
@@ -1154,6 +1177,8 @@ makeStrip('mcCanvas',
   if (!cv || typeof THREE === 'undefined' || REDUCED) return;
   const hero = cv.parentElement;
   const N = matchMedia('(max-width:920px)').matches ? 70 : 150;
+  const PAL_DARK  = [[0.55,0.52,0.91],[0.85,0.52,0.74],[0.91,0.79,0.54]];
+  const PAL_LIGHT = [[0.36,0.31,0.79],[0.69,0.29,0.58],[0.73,0.51,0.12]];
   let renderer, scene, camera, pts, raf = 0, running = false, t = 0;
   let tx = 0, ty = 0, camX = 0, camY = 0;
 
@@ -1167,7 +1192,7 @@ makeStrip('mcCanvas',
     camera.position.z = 10;
 
     const pos = new Float32Array(N*3), col = new Float32Array(N*3), seed = new Float32Array(N);
-    const palette = [[0.55,0.52,0.91],[0.85,0.52,0.74],[0.91,0.79,0.54]];
+    const palette = document.documentElement.classList.contains('light') ? PAL_LIGHT : PAL_DARK;
     for (let i = 0; i < N; i++){
       pos[i*3]   = (Math.random() - 0.5) * 24;
       pos[i*3+1] = (Math.random() - 0.5) * 12;
@@ -1210,6 +1235,14 @@ makeStrip('mcCanvas',
   hero.addEventListener('pointerleave', () => { tx = 0; ty = 0; });
 
   try { build(); } catch(e){ return; }
+  function retint(mode){
+    const pal = (mode === 'light') ? PAL_LIGHT : PAL_DARK;
+    const col = pts.geometry.attributes.color;
+    for (let i = 0; i < N; i++){ const c = pal[i % 3]; col.setXYZ(i, c[0], c[1], c[2]); }
+    col.needsUpdate = true;
+    pts.material.opacity = (mode === 'light') ? 0.5 : 0.55;
+  }
+  THEME_HOOKS.push(retint);
   function resize(){
     const w = Math.max(1, hero.clientWidth), h = Math.max(1, hero.clientHeight);
     camera.aspect = w/h; camera.updateProjectionMatrix(); renderer.setSize(w, h, false);
@@ -1248,13 +1281,20 @@ if (!REDUCED && matchMedia('(pointer:fine)').matches){
   const SEG = (matchMedia('(max-width:920px)').matches ? 28 : 46);
   const W = 4.2, H = 4.2;
 
-  // plasma colormap stops — muted
-  const STOPS = [
-    [0.28,0.26,0.48],  // dusk violet
-    [0.55,0.52,0.91],  // soft violet
-    [0.85,0.52,0.74],  // rose
-    [0.91,0.79,0.54]   // sand
+  // plasma colormap stops — per theme (light needs deeper, more saturated stops)
+  const STOPS_DARK = [
+    [0.28,0.26,0.48],
+    [0.55,0.52,0.91],
+    [0.85,0.52,0.74],
+    [0.91,0.79,0.54]
   ];
+  const STOPS_LIGHT = [
+    [0.30,0.26,0.62],
+    [0.40,0.34,0.82],
+    [0.66,0.30,0.55],
+    [0.72,0.51,0.16]
+  ];
+  let STOPS = document.documentElement.classList.contains('light') ? STOPS_LIGHT : STOPS_DARK;
   function ramp(x){
     x = Math.max(0, Math.min(1, x));
     const seg = (STOPS.length - 1), f = x * seg, i = Math.min(Math.floor(f), seg-1), k = f - i;
@@ -1288,7 +1328,8 @@ if (!REDUCED && matchMedia('(pointer:fine)').matches){
     const geo = new THREE.PlaneGeometry(W, H, SEG, SEG);
     const count = geo.attributes.position.count;
     geo.setAttribute('color', new THREE.BufferAttribute(new Float32Array(count*3), 3));
-    const mat = new THREE.MeshBasicMaterial({ wireframe:true, vertexColors:true, transparent:true, opacity:0.78 });
+    const mat = new THREE.MeshBasicMaterial({ wireframe:true, vertexColors:true, transparent:true,
+      opacity: document.documentElement.classList.contains('light') ? 0.85 : 0.78 });
     mesh = new THREE.Mesh(geo, mat);
     const dotMat = new THREE.PointsMaterial({ size:0.05, vertexColors:true, transparent:true, opacity:0.5 });
     dots = new THREE.Points(geo, dotMat);
@@ -1341,10 +1382,14 @@ if (!REDUCED && matchMedia('(pointer:fine)').matches){
     if (!running) renderer.render(scene, camera);
   }
 
-  // theme retint (amber pops a touch more on light bg)
-  window.__setSurfaceTheme = mode => {
-    if (mesh) mesh.material.opacity = (mode === 'light') ? 0.72 : 0.78;
-  };
+  // theme retint: swap colormap and opacity, refresh static frames
+  THEME_HOOKS.push(mode => {
+    const light = mode === 'light';
+    STOPS = light ? STOPS_LIGHT : STOPS_DARK;
+    if (mesh) mesh.material.opacity = light ? 0.85 : 0.78;
+    if (dots) dots.material.opacity = light ? 0.45 : 0.5;
+    if (renderer && mesh && !running){ deform(t); renderer.render(scene, camera); }
+  });
 
   try { build(); } catch(e){ fallback.style.opacity = '0.5'; return; }
   addEventListener('resize', () => requestAnimationFrame(resize), { passive:true });
