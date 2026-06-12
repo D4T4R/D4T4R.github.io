@@ -1,821 +1,1039 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1, viewport-fit=cover"
-  />
-  <title>Aniket Datar (D4T4R) — FinOps • Hybrid Cloud • Quant</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Aniket Datar (D4T4R) — FinOps • Hybrid Cloud • Quant</title>
 
-  <!-- SEO -->
-  <meta name="description" content="FinOps & Hybrid-Cloud automation engineer building cost intelligence, provisioning, and quant systems." />
-  <meta name="author" content="Aniket Datar" />
-  <link rel="canonical" href="https://d4t4r.github.io/" />
+<!-- SEO -->
+<meta name="description" content="FinOps & Hybrid-Cloud automation engineer building cost intelligence, provisioning, and quant systems." />
+<meta name="author" content="Aniket Datar" />
+<link rel="canonical" href="https://d4t4r.github.io/" />
 
-  <!-- Open Graph -->
-  <meta property="og:title" content="Aniket Datar — FinOps • Hybrid Cloud • Quant" />
-  <meta property="og:description" content="Multi-cloud cost management, GPU SKU provisioning, managed Kubeflow automation, and quantitative tooling for derivatives." />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://d4t4r.github.io/" />
-  <meta property="og:image" content="og-image.png" />
+<!-- Open Graph -->
+<meta property="og:title" content="Aniket Datar — FinOps • Hybrid Cloud • Quant" />
+<meta property="og:description" content="Multi-cloud cost management, GPU SKU provisioning, managed Kubeflow automation, and quantitative tooling for derivatives." />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://d4t4r.github.io/" />
+<meta property="og:image" content="og-image.png" />
 
-  <!-- Font (optional) -->
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap"
-    rel="stylesheet"
-  />
+<!-- Fonts: display / body / data -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
 
-  <style>
-    /* ====== THEME ====== */
-    :root{
-      --bg: #06080c;
-      --bg-2: #0b0f16;
-      --fg: #e7edf3;
-      --muted:#a9b3bd;
-      --card: rgba(14, 20, 27, 0.6);          /* FIX: fallback for color-mix */
-      --border: rgba(255,255,255,0.12);        /* FIX: fallback for color-mix */
-      --link:#9edbff;
+<style>
+/* ============================================================
+   THEME — "volatility surface" plasma colormap as the identity
+   ============================================================ */
+:root{
+  --bg:#07070d;
+  --bg-2:#0c0d16;
+  --fg:#ECEAF4;
+  --muted:#9aa0b5;
+  --faint:#6a7088;
 
-      --accent:#6ee7ff;              /* cyan */
-      --accent2:#95f99d;             /* mint */
-      --grad: linear-gradient(135deg, #7cd2ff 0%, #6ee7ff 30%, #95f99d 70%, #b4f397 100%);
+  /* plasma ramp — muted */
+  --violet:#8d85e8;
+  --magenta:#d984bd;
+  --amber:#e8c98a;
+  --grad: linear-gradient(100deg, #8d85e8 0%, #d984bd 52%, #e8c98a 100%);
 
-      --shadow: 0 10px 30px rgba(0,0,0,.35);
-      --ring: 0 0 0 1px rgba(255,255,255,0.08); /* FIX: fallback for color-mix */
+  --card: rgba(18,20,32,0.55);
+  --border: rgba(255,255,255,0.10);
+  --border-strong: rgba(255,255,255,0.16);
+  --ring: 0 0 0 1px rgba(255,255,255,0.07);
+  --shadow: 0 18px 50px rgba(0,0,0,0.45);
 
-      /* FIX 1: --header-offset is now set purely by JS measurement.
-         We keep --header-min-h as a layout hint only.
-         Initial value is 64px (real measured height) instead of 56px
-         to prevent anchor/menu jumping before JS runs. */
-      --header-min-h: 56px;
-      --header-offset: 64px;
+  --radius: 16px;
+  --radius-lg: 22px;
+  --header-min-h: 58px;
+  --header-offset: 66px;
 
-      --radius-lg: 20px;
-      --radius-xl: 26px;
-    }
-    :root.light{
-      --bg:#f7fafc;
-      --bg-2:#eef3f8;
-      --fg:#0b0d10;
-      --muted:#4a5568;
-      --card: rgba(255,255,255,0.8);           /* FIX: fallback for color-mix */
-      --border: rgba(11,13,16,0.08);
-      --link:#0ea5e9;
-      --grad: linear-gradient(135deg, #0ea5e9 0%, #22d3ee 30%, #10b981 70%, #84cc16 100%);
-      --shadow: 0 8px 24px rgba(2,6,23,.08);
-      --ring: 0 0 0 1px rgba(2,6,23,.08);
-    }
+  --mono:'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --display:'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+  --body:'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+}
+:root.light{
+  --bg:#f4f5fa;
+  --bg-2:#e9ebf3;
+  --fg:#14131f;
+  --muted:#545a72;
+  --faint:#7e849c;
+  --card: rgba(255,255,255,0.72);
+  --border: rgba(20,19,31,0.10);
+  --border-strong: rgba(20,19,31,0.16);
+  --ring: 0 0 0 1px rgba(20,19,31,0.07);
+  --shadow: 0 16px 40px rgba(30,20,60,0.10);
+}
 
-    /* color-mix progressive enhancement — overrides fallbacks in capable browsers */
-    @supports (color: color-mix(in oklab, red, blue)) {
-      :root {
-        --card: #0e141b99;
-        --border: color-mix(in oklab, #fff, transparent 88%);
-        --ring: 0 0 0 1px color-mix(in oklab, #fff, transparent 85%);
-      }
-      :root.light {
-        --card: #ffffffcc;
-        --border: color-mix(in oklab, #0b0d10, transparent 92%);
-        --ring: 0 0 0 1px color-mix(in oklab, #02060f, transparent 92%);
-      }
-    }
+@supports (color: color-mix(in oklab, red, blue)) {
+  :root{
+    --card: color-mix(in oklab, var(--bg-2), transparent 30%);
+    --border: color-mix(in oklab, var(--fg), transparent 90%);
+    --border-strong: color-mix(in oklab, var(--fg), transparent 84%);
+  }
+}
 
-    /* ====== RESET / BASE ====== */
-    *{box-sizing:border-box}
-    html,body{
-      margin:0; padding:0;
-      color:var(--fg);
-      background:
-        radial-gradient(1200px 600px at 10% -10%, rgba(28, 83, 142, .28), transparent 55%),
-        radial-gradient(900px 500px at 90% -20%, rgba(0, 140, 160, .22), transparent 55%),
-        var(--bg);
-      font: 16px/1.65 Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      scroll-behavior: smooth;
-    }
-    .container{max-width:1120px;margin:0 auto;padding:24px}
+/* ============================================================ RESET / BASE */
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+html,body{margin:0;padding:0}
+body{
+  color:var(--fg);
+  background:
+    radial-gradient(1100px 620px at 8% -8%, rgba(141,133,232,.10), transparent 55%),
+    radial-gradient(900px 560px at 96% -12%, rgba(217,132,189,.07), transparent 55%),
+    radial-gradient(800px 600px at 50% 110%, rgba(232,201,138,.04), transparent 55%),
+    var(--bg);
+  font:16px/1.65 var(--body);
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+.container{max-width:1140px;margin:0 auto;padding:24px}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;height:auto;border:0}
+section{scroll-margin-top:calc(var(--header-offset) + 18px)}
 
-    a{color:var(--link); text-decoration:none}
-    a:hover{text-decoration:underline}
+::selection{background:rgba(141,133,232,.28);color:#fff}
+:focus-visible{outline:2px solid var(--magenta);outline-offset:3px;border-radius:6px}
 
-    img{max-width:100%; height:auto; border: 0}
+.mono{font-family:var(--mono)}
+.eyebrow{
+  font-family:var(--mono);font-size:.74rem;font-weight:500;letter-spacing:.04em;
+  color:var(--faint);text-transform:lowercase;display:inline-flex;gap:.5ch;align-items:center;
+}
+.eyebrow::before{content:"";width:18px;height:1px;background:var(--grad);display:inline-block}
+.grad-text{
+  background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;
+}
 
-    section{scroll-margin-top: calc(var(--header-offset) + 16px);}
+/* ============================================================ PROGRESS */
+.progress{
+  position:fixed;top:0;left:0;height:2px;width:0%;
+  background:var(--grad);z-index:50;pointer-events:none;
+}
 
-    /* ====== SCROLL PROGRESS ====== */
-    /* FIX 2: progress bar z-index reduced to sit BELOW the header (z-index:60),
-       so it never bleeds over the nav. It stays fixed at the very top visually
-       because the header is also at top:0, and the bar is 3px tall. */
-    .progress{
-      position: fixed; top: 0; left: 0; height: 3px; width: 0%;
-      background: var(--grad); z-index: 50;   /* was 80 — now below header (60) */
-      box-shadow: 0 0 12px rgba(120,220,255,.9);
-      pointer-events: none;
-    }
+/* ============================================================ HEADER */
+header{
+  position:sticky;top:0;z-index:60;
+  background:rgba(8,9,16,0.7);
+  backdrop-filter:saturate(160%) blur(14px);
+  border-bottom:1px solid var(--border);
+}
+:root.light header{background:rgba(244,245,250,0.72)}
+@supports (color: color-mix(in oklab, red, blue)) {
+  header{background:color-mix(in oklab, var(--bg), transparent 28%)}
+}
+header .container{padding:9px 22px}
+nav{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:var(--header-min-h)}
+.brand{display:flex;align-items:center;gap:11px;min-width:0}
+.brand .glyph{
+  width:30px;height:30px;border-radius:9px;flex:none;position:relative;
+  background:var(--grad);box-shadow:0 4px 12px rgba(0,0,0,.30);
+  display:grid;place-items:center;
+}
+.brand .glyph::after{
+  content:"σ";font-family:var(--display);font-weight:700;font-size:.95rem;color:#0a0a12;
+}
+.brand strong{font-family:var(--display);font-size:.98rem;font-weight:600;letter-spacing:.2px;white-space:nowrap}
+.links{display:flex;align-items:center;gap:18px}
+.links a{
+  font-family:var(--mono);font-size:.82rem;font-weight:500;color:var(--muted);
+  position:relative;padding:2px 0;transition:color .18s ease;
+}
+.links a:hover{color:var(--fg)}
+.links a::after{
+  content:"";position:absolute;left:0;bottom:-5px;height:2px;width:0;
+  background:var(--grad);border-radius:2px;transition:width .22s ease;
+}
+.links a:hover::after{width:100%}
 
-    /* ====== HEADER / NAV (glassy) ====== */
-    header{
-      position:sticky; top:0; z-index:60;
-      backdrop-filter: saturate(180%) blur(14px);
-      background: color-mix(in oklab, var(--bg-2), transparent 25%);
-      /* FIX: fallback background for browsers without color-mix */
-      background: rgba(11, 15, 22, 0.82);
-      border-bottom: 1px solid var(--border);
-    }
-    @supports (color: color-mix(in oklab, red, blue)) {
-      header {
-        background: color-mix(in oklab, var(--bg-2), transparent 25%);
-      }
-    }
-    header .container{ padding: 10px 18px; }
-    nav{display:flex;align-items:center;justify-content:space-between;gap:12px; min-height:var(--header-min-h);}
-    nav .brand{ display:flex; align-items:center; gap:10px; }
-    nav .brand strong{ font-size:.98rem; font-weight:800; letter-spacing:.2px}
-    .pill{
-      display:inline-flex; align-items:center; gap:.35rem;
-      padding:.2rem .6rem; border-radius:999px;
-      font-size:.72rem; font-weight:800; letter-spacing:.06em; text-transform:uppercase;
-      background: rgba(110,231,255,0.12);    /* FIX: fallback */
-      color: var(--accent);
-      border: 1px solid rgba(110,231,255,0.35); /* FIX: fallback */
-    }
-    @supports (color: color-mix(in oklab, red, blue)) {
-      .pill {
-        background: color-mix(in oklab, var(--accent), transparent 83%);
-        border-color: color-mix(in oklab, var(--accent), transparent 65%);
-      }
-    }
+.actions{display:flex;align-items:center;gap:8px}
+.icon-btn{
+  display:inline-grid;place-items:center;width:38px;height:38px;border-radius:11px;
+  background:transparent;border:1px solid var(--border-strong);color:var(--fg);
+  cursor:pointer;font-size:1rem;transition:background .18s ease,border-color .18s ease;
+}
+.icon-btn:hover{background:rgba(255,255,255,.06);border-color:var(--magenta)}
+.nav-toggle{display:none}
 
-    nav .links { display:flex; align-items:center; gap:10px; }
-    nav .links a{
-      position:relative; font-weight:700; font-size:.95rem; padding:.1rem .2rem;
-    }
-    nav .links a::after{
-      content:""; position:absolute; left:0; bottom:-6px; height:2px; width:0%;
-      background: var(--grad); border-radius:2px; transition: width .2s ease;
-    }
-    nav .links a:hover::after{ width:100%; }
+/* ============================================================ BUTTONS */
+.btn{
+  display:inline-flex;align-items:center;gap:.55rem;cursor:pointer;
+  font-family:var(--mono);font-weight:500;font-size:.86rem;letter-spacing:.01em;
+  padding:.62rem 1.05rem;border-radius:12px;border:1px solid transparent;
+  transition:transform .12s ease,border-color .18s ease,background .18s ease;
+  will-change:transform;
+}
+.btn.primary{background:var(--grad);color:#0a0a12;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.28)}
+.btn.primary:hover{transform:translateY(-1px)}
+.btn.ghost{background:rgba(255,255,255,.03);color:var(--fg);border-color:var(--border-strong)}
+.btn.ghost:hover{border-color:var(--magenta);background:rgba(255,255,255,.06)}
+.mag-inner{display:inline-flex;align-items:center;gap:.55rem;will-change:transform}
 
-    .btn{
-      display:inline-flex; align-items:center; gap:.55rem;
-      background:var(--fg); color:var(--bg);
-      padding:.48rem .85rem; border-radius:999px; border:0; font-weight:800;
-      box-shadow: var(--shadow);
-      position:relative; overflow:hidden;
-    }
-    .btn:hover{opacity:.95; text-decoration:none}
-    .btn.ghost{ background:transparent; color:var(--fg); border:1px solid var(--border); box-shadow:none }
-    .btn.gradient{ color:#0b0d10; background: var(--grad); border:none; }
-    .btn.gradient::before{
-      content:""; position:absolute; inset:0;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,.4), transparent);
-      transform: translateX(-120%); transition: transform .8s ease;
-    }
-    .btn.gradient:hover::before{ transform: translateX(120%); }
+/* ============================================================ HERO */
+.hero{
+  display:grid;grid-template-columns:1.22fr .78fr;gap:36px;align-items:center;
+  padding:54px 0 30px;
+}
+.hero h1{
+  font-family:var(--display);font-weight:700;
+  font-size:clamp(2.1rem,1.1rem + 4.2vw,3.5rem);line-height:1.04;
+  letter-spacing:-.02em;margin:.5rem 0 .8rem;
+}
+.hero h1 .word{display:inline-block}
+.lead{font-size:1.06rem;color:var(--muted);max-width:54ch;margin:0}
+.lead strong{color:var(--fg);font-weight:600}
 
-    .nav-toggle { display:none; }
+.chips{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:18px}
+.chip{
+  font-family:var(--mono);font-size:.76rem;color:var(--muted);
+  padding:.34rem .62rem;border-radius:9px;border:1px solid var(--border);
+  background:rgba(255,255,255,.02);
+}
+.cta-row{display:flex;gap:11px;margin-top:24px;flex-wrap:wrap}
 
-    @media (max-width: 900px){
-      .nav-toggle { display:inline-flex; }
-      header .pill { display:none; }
-      nav .links { display:none; }
+.id-row{
+  display:flex;align-items:center;gap:12px;margin-top:26px;
+  padding-top:22px;border-top:1px solid var(--border);
+}
+.id-row img{width:46px;height:46px;border-radius:50%;object-fit:cover;border:2px solid var(--border-strong)}
+.id-row .who{font-family:var(--display);font-weight:600;font-size:.98rem}
+.id-row .meta{font-family:var(--mono);font-size:.76rem;color:var(--faint)}
+.id-row a{color:var(--muted)}
+.id-row a:hover{color:var(--magenta)}
 
-      /* FIX 3: mobile menu z-index raised to 65 (above header 60, backdrop 62),
-         but progress bar is now 50, so menu correctly layers above everything. */
-      #navmenu.mobile {
-        display:block;
-        position:fixed; left:0; right:0;
-        top: var(--header-offset);
-        background: rgba(11, 15, 22, 0.97); /* FIX: solid fallback */
-        border-top:1px solid var(--border);
-        box-shadow: var(--shadow);
-        padding:18px 20px 24px;
-        z-index:65;                          /* above header (60), below nothing problematic */
-        transform: translateY(-120%);
-        transition: transform .22s ease-out;
-        backdrop-filter: blur(14px);
-      }
-      @supports (color: color-mix(in oklab, red, blue)) {
-        #navmenu.mobile {
-          background: color-mix(in oklab, var(--bg-2), transparent 8%);
-        }
-      }
-      #navmenu.mobile.open { transform: translateY(0%); }
-      #navmenu.mobile a { display:block; padding:12px 4px; font-weight:700; font-size:1.06rem; }
+/* ---- the signature: vol surface viewport ---- */
+.surface-panel{
+  position:relative;aspect-ratio:4/3.4;max-height:340px;width:100%;
+  border-radius:var(--radius-lg);align-self:center;
+  border:1px solid var(--border-strong);overflow:hidden;isolation:isolate;
+  background:
+    radial-gradient(120% 120% at 50% 0%, rgba(141,133,232,.06), transparent 60%),
+    linear-gradient(180deg, rgba(12,13,22,.6), rgba(7,7,13,.7));
+  box-shadow:var(--shadow);
+}
+.surface-panel canvas{display:block;width:100%;height:100%}
+.surface-fallback{
+  position:absolute;inset:0;background:
+    repeating-linear-gradient(115deg, rgba(139,92,246,.18) 0 1px, transparent 1px 22px),
+    repeating-linear-gradient(65deg, rgba(232,90,200,.14) 0 1px, transparent 1px 22px),
+    var(--grad);
+  opacity:.5;filter:blur(.3px);
+}
+.panel-tag{
+  position:absolute;font-family:var(--mono);font-size:.68rem;color:var(--faint);
+  letter-spacing:.04em;pointer-events:none;z-index:2;
+}
+.panel-tag.tl{top:14px;left:16px;color:var(--muted)}
+.panel-tag.tl b{color:var(--fg);font-weight:600}
+.panel-tag.br{bottom:14px;right:16px}
+.panel-axis{position:absolute;font-family:var(--mono);font-size:.66rem;color:var(--faint);z-index:2;pointer-events:none}
+.panel-axis.x{bottom:13px;left:50%;transform:translateX(-50%)}
+.panel-axis.y{top:50%;left:13px;transform:translateY(-50%) rotate(-90deg);transform-origin:left center}
+.live-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--amber);box-shadow:0 0 5px rgba(232,201,138,.55);animation:pulse 2.4s ease-in-out infinite;vertical-align:middle;margin-right:5px}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
 
-      .backdrop[hidden]{ display:none; }
-      .backdrop {
-        position:fixed; inset:0; z-index:62; /* FIX: between header(60) and menu(65) */
-        background: rgba(0,0,0,.35);
-        backdrop-filter: blur(2px);
-      }
-      body.menu-open { overflow:hidden; }
-    }
+/* ============================================================ SECTIONS */
+section{padding:48px 0}
+.sec-head{margin-bottom:26px}
+.sec-head h2{
+  font-family:var(--display);font-weight:600;letter-spacing:-.01em;
+  font-size:clamp(1.5rem,1.1rem + 1.4vw,2rem);margin:.4rem 0 0;
+}
 
-    /* ====== HERO ====== */
-    .hero{
-      display:grid;grid-template-columns:1.1fr .9fr;gap:28px;align-items:center;padding:34px 0 10px;
-    }
-    .h1{
-      font-size: clamp(2.1rem, 1.2rem + 4vw, 3.2rem); line-height:1.05; margin:.25rem 0 .6rem;
-      font-weight: 900;
-      background: var(--grad); -webkit-background-clip:text; background-clip:text; color: transparent;
-    }
-    .lead{font-size:1.09rem;color:var(--muted); max-width:62ch}
-    .kvs{display:flex;flex-wrap:wrap;gap:.55rem; margin-top:14px}
-    .tag{
-      border:1px solid var(--border); padding:.38rem .6rem; border-radius:999px;
-      color:var(--muted); font-weight:700; background: rgba(231,237,243,0.06); /* FIX: fallback */
-    }
-    @supports (color: color-mix(in oklab, red, blue)) {
-      .tag { background: color-mix(in oklab, var(--fg), transparent 92%); }
-    }
+.grid{display:grid;gap:16px}
+.cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}
 
-    .profile-card{
-      background: var(--card);
-      border:1px solid var(--border);
-      border-radius: var(--radius-xl);
-      padding:24px;
-      text-align:center;
-      box-shadow: var(--shadow);
-      position:relative;
-      overflow:hidden;
-      isolation:isolate;
-    }
-    .profile-card::before{
-      content:""; position:absolute; inset:-2px;
-      background: var(--grad);
-      filter: blur(24px); opacity:.25; z-index:-1;
-    }
-    .profile-card img{
-      max-width:220px; width:100%; height:auto; border-radius:50%;
-      box-shadow: 0 12px 40px rgba(0,0,0,.35);
-      border: 3px solid rgba(231,237,243,0.12); /* FIX: fallback */
-      transform: translateZ(0);
-      animation: float 6s ease-in-out infinite;
-    }
-    @supports (color: color-mix(in oklab, red, blue)) {
-      .profile-card img {
-        border-color: color-mix(in oklab, var(--fg), transparent 85%);
-      }
-    }
-    .profile-card h3{margin:.9rem 0 0; font-size:1.2rem}
-    .profile-card p{margin:.25rem 0 0; color:var(--muted)}
-    @keyframes float{ 0%,100% { transform: translateY(0) } 50% { transform: translateY(-6px) } }
+.card{
+  background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+  padding:24px;box-shadow:var(--shadow);position:relative;overflow:hidden;
+  transition:transform .22s ease,border-color .22s ease;
+}
+.card::before{
+  content:"";position:absolute;left:0;top:0;height:2px;width:0;
+  background:var(--grad);transition:width .35s ease;
+}
+.card:hover{transform:translateY(-4px);border-color:var(--border-strong)}
+.card:hover::before{width:100%}
+.card h3{font-family:var(--display);font-weight:600;font-size:1.12rem;margin:0 0 .55rem}
+.card p{margin:0 0 .6rem;color:var(--muted)}
+.card ul{margin:.4rem 0 0;padding-left:1.1rem;color:var(--muted)}
+.card li{margin:.28rem 0}
+.card code{font-family:var(--mono);font-size:.85em;background:rgba(255,255,255,.06);padding:.06em .4em;border-radius:5px;color:var(--fg)}
+.card .stack{font-family:var(--mono);font-size:.82rem;color:var(--faint);margin-top:.3rem}
+.card .stack b{color:var(--violet);font-weight:500}
 
-    /* ====== SECTION / CARDS ====== */
-    section{padding:26px 0}
-    h2{font-size:1.55rem;margin:0 0 14px}
-    .cards .card h3{margin-top:0}
+/* stack tags + icon wall */
+.tagwall{display:flex;flex-wrap:wrap;gap:.5rem}
+.tag{
+  font-family:var(--mono);font-size:.8rem;color:var(--muted);
+  border:1px solid var(--border);padding:.4rem .66rem;border-radius:9px;
+  background:rgba(255,255,255,.02);transition:color .15s ease,border-color .15s ease;
+}
+.tag:hover{color:var(--fg);border-color:var(--magenta)}
+.caps{font-family:var(--mono);letter-spacing:.04em;text-transform:lowercase;font-weight:500;font-size:.78rem;color:var(--faint);margin-bottom:12px}
+.icon-wall{display:flex;flex-wrap:wrap;gap:13px 15px;align-items:center}
+.icon-wall img{
+  width:38px;height:38px;object-fit:contain;opacity:.72;border-radius:8px;
+  transition:transform .16s ease,opacity .16s ease,filter .16s ease;
+  filter:grayscale(.2) drop-shadow(0 1px 0 rgba(0,0,0,.2));
+}
+.icon-wall img:hover{transform:translateY(-3px) scale(1.06);opacity:1;filter:grayscale(0) drop-shadow(0 6px 14px rgba(0,0,0,.35))}
 
-    .card{
-      background: var(--card);
-      border:1px solid var(--border);
-      border-radius: var(--radius-lg);
-      padding:22px;
-      box-shadow: var(--shadow);
-      transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
-    }
-    .card:hover{
-      transform: translateY(-3px);
-      border-color: rgba(110,231,255,0.55);    /* FIX: fallback */
-      box-shadow: 0 16px 40px rgba(0,0,0,.4);
-    }
-    @supports (color: color-mix(in oklab, red, blue)) {
-      .card:hover {
-        border-color: color-mix(in oklab, var(--accent), transparent 40%);
-      }
-    }
+/* activity */
+.stats img{width:100%;height:auto;border-radius:12px}
+.img-wrap{position:relative;border-radius:12px;overflow:hidden;border:1px solid var(--border);min-height:170px;isolation:isolate;background:rgba(255,255,255,.02)}
+.img-wrap.loading img{opacity:0}
+.img-wrap img{display:block;width:100%;height:auto}
+.skeleton{position:absolute;inset:0;background:linear-gradient(90deg,rgba(255,255,255,.04),rgba(255,255,255,.12),rgba(255,255,255,.04));background-size:200% 100%;animation:shimmer 1.1s linear infinite;border-radius:inherit;pointer-events:none}
+.img-wrap:not(.loading) .skeleton{opacity:0;visibility:hidden;transition:opacity .2s ease}
+.img-wrap:not(.loading) img{opacity:1;transition:opacity .25s ease}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+.img-center{display:flex;align-items:center;justify-content:center;min-height:170px;border-radius:12px;border:1px solid var(--border);overflow:hidden;background:rgba(255,255,255,.02)}
+.img-center img{display:block;max-width:96%;height:auto}
+.no-underline:hover{text-decoration:none}
 
-    .grid{display:grid;gap:16px}
-    .grid.cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}
-    .grid.cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}
-    @media (max-width:900px){ .hero{grid-template-columns:1fr} .grid.cols-3,.grid.cols-2{grid-template-columns:1fr} }
+/* contact */
+.contact-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.contact-link{
+  display:flex;align-items:center;gap:12px;padding:16px 18px;border-radius:14px;
+  border:1px solid var(--border);background:var(--card);font-family:var(--mono);font-size:.9rem;
+  transition:transform .18s ease,border-color .18s ease;
+}
+.contact-link:hover{transform:translateY(-3px);border-color:var(--magenta)}
+.contact-link .k{color:var(--faint);font-size:.72rem;display:block;text-transform:lowercase}
+.contact-link .v{color:var(--fg);font-weight:500}
 
-    .caps{letter-spacing:.06em; text-transform:uppercase; font-weight:800; font-size:.8rem; color:var(--muted)}
-    .stats img{max-width:100%; height:auto; border-radius:14px; border:1px solid var(--border)}
+/* animated canvas strips */
+.anim-strip{position:relative;height:118px;padding:0;margin-bottom:18px;overflow:hidden}
+.anim-strip canvas{display:block;width:100%;height:100%}
+.strip-label{position:absolute;top:10px;left:14px;font-family:var(--mono);font-size:.68rem;letter-spacing:.04em;color:var(--faint);pointer-events:none}
 
-    footer{padding:40px 0; color:var(--muted); text-align:center; border-top:1px solid var(--border)}
+footer{padding:46px 0;color:var(--faint);text-align:center;border-top:1px solid var(--border);font-family:var(--mono);font-size:.82rem}footer a{color:var(--muted)}
+footer a:hover{color:var(--magenta)}
 
-    .skip{position:absolute; left:-9999px; top:auto; width:1px; height:1px; overflow:hidden}
-    .skip:focus{position:static; width:auto; height:auto; padding:.5rem; background:var(--accent); color:#000; border-radius:8px}
+.skip{position:absolute;left:-9999px}
+.skip:focus{position:fixed;left:12px;top:12px;z-index:100;padding:.6rem .9rem;background:var(--magenta);color:#fff;border-radius:9px}
 
-    /* ====== Activity: loader + centering ====== */
-    .no-underline:hover { text-decoration: none; }
+/* reveal default state (JS adds animation) */
+[data-reveal]{opacity:1}
+.js [data-reveal]{opacity:0;transform:translateY(14px)}
 
-    .img-wrap {
-      position: relative;
-      border-radius: 14px;
-      overflow: hidden;
-      border: 1px solid var(--border);
-      min-height: 180px;
-      isolation: isolate;
-    }
-    .img-wrap.loading img { opacity: 0; }
-    .img-wrap img { display: block; width: 100%; height: auto; }
+/* ============================================================ RESPONSIVE */
+@media (max-width:920px){
+  .nav-toggle{display:inline-grid}
+  .links{display:none}
+  #navmenu.mobile{
+    display:block;position:fixed;left:0;right:0;top:var(--header-offset);
+    background:rgba(8,9,16,0.97);border-top:1px solid var(--border);
+    box-shadow:var(--shadow);padding:14px 22px 22px;z-index:65;
+    transform:translateY(-120%);transition:transform .24s ease-out;backdrop-filter:blur(14px);
+  }
+  :root.light #navmenu.mobile{background:rgba(244,245,250,0.97)}
+  #navmenu.mobile.open{transform:translateY(0)}
+  #navmenu.mobile a{display:block;padding:13px 4px;font-size:1.02rem}
+  #navmenu.mobile a::after{display:none}
+  .backdrop[hidden]{display:none}
+  .backdrop{position:fixed;inset:0;z-index:62;background:rgba(0,0,0,.4);backdrop-filter:blur(2px)}
+  body.menu-open{overflow:hidden}
+  .hero{grid-template-columns:1fr;gap:28px;padding:36px 0 14px}
+  .surface-panel{aspect-ratio:16/10;max-height:280px}
+  .cols-3,.cols-2{grid-template-columns:1fr}
+  .contact-grid{grid-template-columns:1fr}
+}
 
-    .img-wrap .skeleton {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(
-        90deg,
-        rgba(255,255,255,.05),
-        rgba(255,255,255,.14),
-        rgba(255,255,255,.05)
-      );
-      background-size: 200% 100%;
-      animation: shimmer 1.1s linear infinite;
-      border-radius: inherit;
-      pointer-events: none;
-    }
-    .img-wrap:not(.loading) .skeleton { opacity: 0; visibility: hidden; transition: opacity .2s ease; }
-    .img-wrap:not(.loading) img { opacity: 1; transition: opacity .2s ease; }
-
-    @keyframes shimmer {
-      0%   { background-position: -200% 0; }
-      100% { background-position: 200% 0; }
-    }
-
-    .img-center {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 180px;
-      border-radius: 14px;
-      border: 1px solid var(--border);
-      overflow: hidden;
-    }
-    .img-center img {
-      display: block;
-      max-width: 95%;
-      height: auto;
-    }
-
-    /* ====== Icon wall ====== */
-    .icon-wall{
-      display:flex; flex-wrap:wrap; gap:12px 14px; align-items:center;
-      margin-top:10px;
-    }
-    .icon-wall img{
-      width:40px; height:40px; object-fit:contain;
-      opacity:.88;
-      filter: drop-shadow(0 1px 0 rgba(0,0,0,.18));
-      transition: transform .15s ease, opacity .15s ease, filter .15s ease;
-      border-radius:8px;
-      background: transparent;
-    }
-    .icon-wall img:hover{
-      transform: translateY(-2px) scale(1.04);
-      opacity:1;
-      filter: drop-shadow(0 6px 16px rgba(0,0,0,.35));
-    }
-
-    .stats .img-wrap img,
-    .stats .img-center img { border: 0; border-radius: 0; }
-
-    @media (prefers-reduced-motion: reduce){
-      *{animation: none !important; transition: none !important}
-    }
-  </style>
+@media (prefers-reduced-motion: reduce){
+  *{animation:none !important;transition:none !important;scroll-behavior:auto !important}
+  .js [data-reveal]{opacity:1;transform:none}
+}
+</style>
 </head>
 <body>
-  <!-- FIX 2: progress bar z-index is now 50, below the sticky header (z-index:60) -->
-  <div class="progress" id="progress"></div>
-  <a class="skip" href="#main">Skip to content</a>
+<div class="progress" id="progress"></div>
+<a class="skip" href="#main">Skip to content</a>
 
-  <!-- ====== HEADER ====== -->
-  <header>
-    <div class="container">
-      <nav aria-label="Primary">
-        <div class="brand">
-          <strong>Aniket Datar</strong>
-          <span class="pill">FinOps • Hybrid Cloud • Quant</span>
-        </div>
-
-        <!-- Desktop links -->
-        <div id="navmenu" class="links" role="navigation">
-          <a href="#finops">FinOps</a>
-          <a href="#quant">Quant</a>
-          <a href="#projects">Projects</a>
-          <a href="#skills">Stack</a>
-          <a href="#contact">Contact</a>
-        </div>
-
-        <!-- Right-side buttons -->
-        <div style="display:flex;align-items:center;gap:8px">
-          <button id="theme" class="btn ghost" type="button" aria-label="Toggle theme">☾</button>
-          <button id="menu" class="nav-toggle btn ghost" type="button"
-                  aria-label="Open menu" aria-expanded="false" aria-controls="navmenu">☰</button>
-        </div>
-      </nav>
-    </div>
-  </header>
-
-  <!-- Backdrop for mobile menu -->
-  <div id="backdrop" class="backdrop" hidden></div>
-
-  <!-- ====== MAIN ====== -->
-  <main id="main" class="container">
-
-    <!-- HERO -->
-    <section class="hero" id="top">
-      <div>
-        <span class="pill">👋 Hello!</span>
-        <h1 class="h1">Cost-intelligent cloud at scale, with a quant's mindset</h1>
-        <p class="lead">
-          I build automation for multi-cloud <strong>FinOps</strong> (EA/MCA/GCP/AWS/OCI + private cloud),
-          <strong>GPU provisioning</strong> and platform governance, and <strong>quant systems</strong> for pricing, risk, and event-driven analytics.
-        </p>
-
-        <div class="kvs">
-          <span class="tag">Kubernetes & Helm</span>
-          <span class="tag">ArgoCD</span>
-          <span class="tag">GPU Provisioning</span>
-          <span class="tag">Managed Kubeflow</span>
-          <span class="tag">Oracle • BigQuery</span>
-          <span class="tag">Spring • Python</span>
-          <span class="tag">Derivatives • Monte Carlo</span>
-        </div>
-
-        <div style="display:flex; gap:10px; margin-top:16px; flex-wrap:wrap">
-          <a class="btn gradient" href="./resume.pdf" target="_blank" rel="noopener" download>📄 Download CV</a>
-          <a class="btn ghost" href="https://github.com/D4T4R" target="_blank" rel="noopener">GitHub</a>
-          <a class="btn ghost" href="https://www.linkedin.com/in/ezpuns" target="_blank" rel="noopener">LinkedIn</a>
-        </div>
+<!-- ============ HEADER ============ -->
+<header>
+  <div class="container">
+    <nav aria-label="Primary">
+      <div class="brand">
+        <span class="glyph" aria-hidden="true"></span>
+        <strong>Aniket Datar</strong>
       </div>
+      <div id="navmenu" class="links" role="navigation">
+        <a href="#finops">finops</a>
+        <a href="#quant">quant</a>
+        <a href="#projects">projects</a>
+        <a href="#stack">stack</a>
+        <a href="#contact">contact</a>
+      </div>
+      <div class="actions">
+        <button id="theme" class="icon-btn" type="button" aria-label="Toggle theme">☾</button>
+        <button id="menu" class="nav-toggle icon-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="navmenu">☰</button>
+      </div>
+    </nav>
+  </div>
+</header>
+<div id="backdrop" class="backdrop" hidden></div>
 
-      <!-- Profile Card with your photo -->
-      <aside class="profile-card reveal" aria-label="Profile">
+<!-- ============ MAIN ============ -->
+<main id="main" class="container">
+
+  <!-- HERO -->
+  <section class="hero" id="top">
+    <div class="hero-copy">
+      <span class="eyebrow">finops · hybrid cloud · quant systems</span>
+      <h1 id="headline">Cost-intelligent cloud at scale, with a <span class="grad-text">quant's mindset</span></h1>
+      <p class="lead" data-reveal>
+        I build automation for multi-cloud <strong>FinOps</strong> (EA/MCA/GCP/AWS/OCI + private cloud),
+        <strong>GPU provisioning</strong> and platform governance, and <strong>quant systems</strong> for pricing, risk, and event-driven analytics.
+      </p>
+      <div class="chips" data-reveal>
+        <span class="chip">Kubernetes</span>
+        <span class="chip">ArgoCD</span>
+        <span class="chip">GPU Provisioning</span>
+        <span class="chip">Managed Kubeflow</span>
+        <span class="chip">Oracle · BigQuery</span>
+        <span class="chip">Monte Carlo</span>
+      </div>
+      <div class="cta-row" data-reveal>
+        <a class="btn primary magnetic" href="./resume.pdf" target="_blank" rel="noopener" download><span class="mag-inner">↓ Download CV</span></a>
+        <a class="btn ghost magnetic" href="https://github.com/D4T4R" target="_blank" rel="noopener"><span class="mag-inner">GitHub</span></a>
+        <a class="btn ghost magnetic" href="https://www.linkedin.com/in/ezpuns" target="_blank" rel="noopener"><span class="mag-inner">LinkedIn</span></a>
+      </div>
+      <div class="id-row" data-reveal>
         <img src="me.jpg" alt="Aniket Datar portrait" />
-        <h3 style="font-weight:800">Aniket Datar</h3>
-        <p>FinOps • Hybrid Cloud • Quant Systems</p>
-        <p style="margin-top:.55rem;font-size:.92rem">
-          India · <a href="mailto:aniketdatar@cyberservices.com">aniketdatar@cyberservices.com</a>
-        </p>
-      </aside>
-    </section>
-
-    <!-- FINOPS -->
-    <section id="finops" class="reveal">
-      <h2>FinOps & Hybrid Cloud</h2>
-      <div class="grid cols-2 cards">
-        <article class="card">
-          <h3>Cost Intelligence & Billing Reconciliation</h3>
-          <p>
-            End-to-end pipelines that normalize provider bills (EA/MCA/GCP/AWS/OCI) to SKU-level usage,
-            map to accounts/projects, and surface anomalies for audits and exports.
-          </p>
-          <ul>
-            <li>Operated two primary billing models: <strong>consumption-based</strong> and <strong>auto-metering-based</strong>.</li>
-            <li>Daily reconciliation jobs with retries & partitioned DB design.</li>
-            <li>Exports for CRM/invoicing; governance & audit trails.</li>
-          </ul>
-        </article>
-
-        <article class="card">
-          <h3>Automated GPU Provisioning & Governance</h3>
-          <p>
-            Declarative flows to create tenants/subscriptions, allocate NVIDIA GPU SKUs,
-            map billing IDs, and enforce quota + policy guardrails.
-          </p>
-          <ul>
-            <li>Automated GPU provisioning with SKU mapping to billing accounts and usage tracking.</li>
-            <li>Helm/ArgoCD GitOps across tracks/namespaces; drift detection and safe rollouts.</li>
-            <li>Automated retries for module init; readiness checks and guardrails.</li>
-          </ul>
-        </article>
-
-        <article class="card">
-          <h3>Managed Kubeflow: Auto-Install on Clusters</h3>
-          <p>
-            Automated, repeatable installation of managed Kubeflow on Kubernetes clusters with standard policies,
-            integration hooks, and operational checks.
-          </p>
-          <ul>
-            <li>Cluster bootstrap flows for Kubeflow components using GitOps patterns.</li>
-            <li>Repeatable installs across environments with validation and rollbacks.</li>
-            <li>Focus on reproducibility, governance, and day-2 operations.</li>
-          </ul>
-        </article>
-
-        <article class="card">
-          <h3>DevEx Automation: PR Auto-Approvals</h3>
-          <p>
-            Safe auto-approval windows for specific branches/paths (e.g., <code>Replica</code> or <code>prod</code>,
-            only <code>track1.list</code>/<code>track2.list</code> diffs), reducing toil while preserving controls.
-          </p>
-          <ul>
-            <li>Scheduled runs; ADO permissions & policy checks.</li>
-            <li>Fine-grained conditions and merge audits.</li>
-          </ul>
-        </article>
-      </div>
-    </section>
-
-    <!-- QUANT -->
-    <section id="quant" class="reveal">
-      <h2>Quant & Derivatives Systems</h2>
-      <div class="grid cols-2 cards">
-        <article class="card">
-          <h3>Pricing & Simulation</h3>
-          <p>
-            Option pricing utilities (Black-Scholes, CRR binomial) and Monte-Carlo engines
-            for path-dependent instruments; stress testing & scenario analysis.
-          </p>
-          <ul>
-            <li>Greeks & risk surfaces; parameter sweeps and calibration hooks.</li>
-            <li>Payoff visualizers for custom strategies (iron condors, synthetics, more).</li>
-          </ul>
-        </article>
-        <article class="card">
-          <h3>Event-Driven Signals</h3>
-          <p>
-            Ingestion → classification of market/news/alt data; feature pipelines feeding
-            models that output event probabilities with action hooks.
-          </p>
-          <ul>
-            <li>Batch + streaming inputs, priority queues, throttled executors.</li>
-            <li>Backtests with P&L accounting and slippage models.</li>
-          </ul>
-        </article>
-      </div>
-    </section>
-
-    <!-- PROJECTS -->
-    <section id="projects" class="reveal">
-      <h2>Selected Projects</h2>
-      <div class="grid cols-2 cards">
-        <article class="card">
-          <h3>HCMP FinOps Core</h3>
-          <p>Multi-provider cost normalization, anomaly detection, and billing exports supporting both consumption-based and auto-metering billing models.</p>
-          <p><strong>Stack:</strong> K8s, Helm, ArgoCD, Oracle/BigQuery, Spring, Python</p>
-        </article>
-        <article class="card">
-          <h3>GPU Provisioning Orchestrator</h3>
-          <p>Automated GPU SKU provisioning, mapping SKUs to billing accounts, quota/policy guardrails, and usage tracking.</p>
-          <p><strong>Stack:</strong> Kubernetes, Helm/YAML, ArgoCD, Vault</p>
-        </article>
-        <article class="card">
-          <h3>Managed Kubeflow Installer</h3>
-          <p>Repeatable Kubeflow auto-installation on Kubernetes clusters with validation checks and environment parity.</p>
-          <p><strong>Stack:</strong> GitOps patterns, Helm/YAML, Kubernetes</p>
-        </article>
-        <article class="card">
-          <h3>Quant Lab</h3>
-          <p>Pricing engines, greeks, Monte Carlo, and strategy payoff visualizers.</p>
-          <p><strong>Stack:</strong> Python, NumPy, Matplotlib; notebooks + scripts</p>
-        </article>
-      </div>
-    </section>
-
-    <!-- STACK -->
-    <section id="skills" class="reveal">
-      <h2>Stack</h2>
-      <div class="card">
-        <div class="kvs">
-          <span class="tag">Kubernetes</span><span class="tag">Helm</span><span class="tag">ArgoCD</span>
-          <span class="tag">KEDA</span><span class="tag">Vault</span><span class="tag">Docker/Podman</span>
-          <span class="tag">Kubeflow</span><span class="tag">GPU Provisioning</span>
-          <span class="tag">Oracle • BigQuery</span>
-          <span class="tag">Spring (Java)</span><span class="tag">Python</span><span class="tag">SQL/PLSQL</span>
-          <span class="tag">YAML/CI/CD (ADO)</span>
-          <span class="tag">Billing: Consumption • Auto-metering</span>
+        <div>
+          <div class="who">Aniket Datar</div>
+          <div class="meta">India · <a href="mailto:aniketdatar@cyberservices.com">aniketdatar@cyberservices.com</a></div>
         </div>
       </div>
+    </div>
 
-      <!-- ALSO USED: Icon wall -->
-      <div class="card" style="margin-top:12px">
-        <div class="caps">Also used</div>
-        <div class="icon-wall" aria-label="Also used tools and technologies">
-          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/bash/bash-original.svg" title="Bash" alt="Bash" width="40" height="40" loading="lazy"/>
-          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/solidity/solidity-original.svg" title="Solidity" alt="Solidity" width="40" height="40" loading="lazy"/>
-          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/remix/remix-original.svg" title="Remix IDE" alt="Remix IDE" width="40" height="40" loading="lazy"/>
-          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/linux/linux-original.svg" title="Linux" alt="Linux" width="40" height="40" loading="lazy"/>
-          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/python/python-original.svg" title="Python" alt="Python" width="40" height="40" loading="lazy"/>
-          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/materialui/materialui-original.svg" title="Material UI" alt="Material UI" width="40" height="40" loading="lazy"/>
-          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/npm/npm-original-wordmark.svg" title="NPM" alt="NPM" width="40" height="40" loading="lazy"/>
-          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/javascript/javascript-original.svg" title="JavaScript" alt="JavaScript" width="40" height="40" loading="lazy"/>
-          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/mongodb/mongodb-original.svg" title="MongoDB" alt="MongoDB" width="40" height="40" loading="lazy"/>
-          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/rust/rust-original.svg" title="Rust" alt="Rust" width="40" height="40" loading="lazy"/>
-          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/dbeaver/dbeaver-original.svg" title="DBeaver" alt="DBeaver" width="40" height="40" loading="lazy"/>
-          <img src="https://raw.githubusercontent.com/D4T4R/GoAnon/main/Veritas%20VCS.png" title="Veritas HAC" alt="Veritas HAC" width="40" height="60" loading="lazy"/>
-          <img src="https://raw.githubusercontent.com/ClusterLabs/pacemaker/main/doc/clusterlabs-logo-55x55.png" title="Pacemaker" alt="ClusterLabs Pacemaker" width="40" height="60" loading="lazy"/>
-          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/nodejs/nodejs-plain.svg" title="NodeJS" alt="NodeJS" width="40" height="40" loading="lazy"/>
-          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/mocha/mocha-plain.svg" title="Mocha" alt="Mocha" width="40" height="40" loading="lazy"/>
-          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/selenium/selenium-original.svg" title="Selenium" alt="Selenium" width="40" height="40" loading="lazy"/>
-          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/postman/postman-original.svg" title="Postman" alt="Postman" width="40" height="40" loading="lazy"/>
-          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/git/git-original.svg" title="Git" alt="Git" width="40" height="40" loading="lazy"/>
-          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/grafana/grafana-plain.svg" title="Grafana" alt="Grafana" width="40" height="40" loading="lazy"/>
-          <img src="https://raw.githubusercontent.com/grafana/beyla/main/docs/sources/assets/logo.png" title="Beyla" alt="Beyla" width="35" height="40" loading="lazy"/>
-          <img src="https://www.cloudbabble.co.uk/assets/img/anthos/anthoslogo.png" title="Anthos" alt="GCP Anthos" width="40" height="40" loading="lazy"/>
-          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/prometheus/prometheus-original.svg" title="Prometheus" alt="Prometheus" width="40" height="40" loading="lazy"/>
-          <img src="https://raw.githubusercontent.com/D4T4R/GoAnon/main/symbol-white.png" title="Victoria Metrics" alt="VictoriaMetrics" width="35" height="40" loading="lazy"/>
-          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/apacheairflow/apacheairflow-original.svg" title="Airflow" alt="Airflow" width="40" height="40" loading="lazy"/>
-          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/apachekafka/apachekafka-original.svg" title="Kafka" alt="Kafka" width="40" height="40" loading="lazy"/>
-          <img src="https://raw.githubusercontent.com/D4T4R/GoAnon/main/Keycloak.png" title="Keycloak" alt="Kyecloak" width="40" height="40" loading="lazy"/>
-          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/nginx/nginx-original.svg" title="Nginx" alt="Nginx" width="40" height="40" loading="lazy"/>
-          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/azuredevops/azuredevops-plain.svg" title="Azure DevOps" alt="ADO" width="40" height="40" loading="lazy"/>
-          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/docker/docker-original.svg" title="Docker" alt="Docker" width="40" height="40" loading="lazy"/>
-          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/kubernetes/kubernetes-plain.svg" title="Kubernetes" alt="Kubernetes" width="40" height="40" loading="lazy"/>
-          <img src="https://raw.githubusercontent.com/istio/istio/master/logo/istio-bluelogo-whitebackground-unframed.svg" title="Istio ServiceMesh" alt="Istio" width="40" height="39" loading="lazy"/>
-          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/argocd/argocd-original.svg" title="ArgoCD" alt="ArgoCD" width="40" height="40" loading="lazy"/>
-          <img src="https://raw.githubusercontent.com/D4T4R/GoAnon/main/fargate.png" title="AWS Fargate" alt="AWS Fargate" width="40" height="40" loading="lazy"/>
-          <img src="https://avatars.githubusercontent.com/u/52158677" title="FluxCD" alt="FluxCD" width="40" height="40" loading="lazy"/>
-          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/harbor/harbor-original.svg" title="Harbor" alt="Harbor" width="40" height="40" loading="lazy"/>
-          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/helm/helm-original.svg" title="Helm" alt="Helm" width="40" height="40" loading="lazy"/>
-          <img src="https://raw.githubusercontent.com/go-gitea/gitea/main/assets/logo.svg" title="Gitea" alt="Gitea" width="40" height="40" loading="lazy"/>
-          <img src="https://raw.githubusercontent.com/D4T4R/GoAnon/main/boring-registry.png" title="Boring Registry" alt="Boring Registry" width="40" height="40" loading="lazy"/>
-          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/podman/podman-original.svg" title="Podman" alt="Podman" width="40" height="40" loading="lazy"/>
-          <img src="https://raw.githubusercontent.com/kedacore/keda/main/images/logos/keda-icon.svg" title="Keda Autoscaler" alt="Keda" width="40" height="40" loading="lazy"/>
-          <img src="https://raw.githubusercontent.com/percona/percona-toolkit/0289a1a6b4018c950c812b1d7d495774c712103f/config/sphinx-build/_static/percona-favicon.svg" title="Percona Operator" alt="Percona" width="40" height="40" loading="lazy"/>
-          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/googlecloud/googlecloud-original.svg" title="GCP" alt="GCP" width="40" height="40" loading="lazy"/>
-          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/rabbitmq/rabbitmq-original.svg" title="RabbitMQ" alt="RabbitMQ" width="40" height="40" loading="lazy"/>
-          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/jenkins/jenkins-original.svg" title="Jenkins" alt="Jenkins" width="40" height="40" loading="lazy"/>
-          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/vault/vault-original.svg" title="Vault" alt="Vault" width="40" height="40" loading="lazy"/>
-          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/elasticsearch/elasticsearch-original.svg" title="ElasticSearch" alt="ElasticSearch" width="40" height="40" loading="lazy"/>
-          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/awk/awk-original.svg" title="Awk" alt="Awk" width="40" height="40" loading="lazy"/>
-          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/ballerina/ballerina-original.svg" title="Ballerina" alt="Ballerina" width="40" height="40" loading="lazy"/>
-          <img src="https://avatars.githubusercontent.com/u/40630007" title="Genesys Cloud" alt="Genesys" width="40" height="40" loading="lazy"/>
-          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/swagger/swagger-original.svg" title="Swagger" alt="Swagger" width="40" height="40" loading="lazy"/>
-          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/yaml/yaml-original.svg" title="YAML" alt="YAML" width="40" height="40" loading="lazy"/>
-          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/tomcat/tomcat-original.svg" title="Apache Tomcat" alt="Apache Tomcat" width="40" height="40" loading="lazy"/>
-          <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/web3js/web3js-original.svg" title="Web3.js" alt="Web3.js" width="40" height="40" loading="lazy"/>
-          <img src="https://raw.githubusercontent.com/zatosource/zato/main/code/zato-openapi/src/zato/openapi/app/static/swagger-ui/android-chrome-192x192.png" title="Zato" alt="Zato" width="40" height="40" loading="lazy"/>
-          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRivy-Oqgqx4JRPY18gvvMc-nXO7HMbu05zcQ&s" title="Apigee" alt="Apigee" width="40" height="40" loading="lazy"/>
-          <img src="https://avatars.githubusercontent.com/u/1393215" title="Zipline" alt="Zipline" width="40" height="40" loading="lazy"/>
-        </div>
-      </div>
-    </section>
+    <!-- SIGNATURE: live implied volatility surface -->
+    <aside class="surface-panel" id="surfacePanel" aria-label="Live implied volatility surface visualization">
+      <div class="surface-fallback" id="surfaceFallback"></div>
+      <span class="panel-tag tl"><span class="live-dot"></span><b>implied volatility surface</b> · live</span>
+      <span class="panel-tag br mono">three.js</span>
+      <span class="panel-axis x">strike (K) →</span>
+      <span class="panel-axis y">maturity (T) →</span>
+    </aside>
+  </section>
 
-    <!-- ACTIVITY -->
-    <section id="stats" class="reveal">
-      <h2>Activity Glimpse</h2>
-      <div class="grid cols-2 stats">
-        <div class="card">
-          <a href="https://git.io/streak-stats" target="_blank" rel="noopener" class="no-underline">
-            <div class="img-wrap loading" data-remote aria-busy="true">
-              <div class="skeleton" aria-hidden="true"></div>
-              <img
-                src="https://github-readme-streak-stats.herokuapp.com/?user=d4t4r&theme=microsoft-dark&card_width=550&hide_border=true&short_numbers=true&date_format=M%20j[%2C%20Y]&exclude_days=Sun%2CSat"
-                alt="GitHub Streak graph for D4T4R"
-                loading="lazy"
-              />
-            </div>
-          </a>
-        </div>
-
-        <div class="card">
-          <a href="https://github.com/anuraghazra/github-readme-stats" target="_blank" rel="noopener" class="no-underline">
-            <div class="img-center">
-              <img
-                src="https://github-stats-extended.vercel.app/api/top-langs/?username=D4T4R&hide_border=true&card_width=550&theme=vision-friendly-dark"                
-                alt="Top languages chart for D4T4R"
-                loading="lazy"
-              />
-            </div>
-          </a>
-        </div>
-      </div>
-    </section>
-
-    <!-- CONTACT -->
-    <section id="contact" class="reveal">
-      <h2>Contact</h2>
-      <div class="card">
+  <!-- FINOPS -->
+  <section id="finops">
+    <div class="sec-head" data-reveal>
+      <span class="eyebrow">cloud economics</span>
+      <h2>FinOps &amp; Hybrid Cloud</h2>
+    </div>
+    <div class="anim-strip card" data-reveal aria-hidden="true">
+      <canvas id="pipelineCanvas"></canvas>
+      <span class="strip-label">gitops delivery loop</span>
+    </div>
+    <div class="grid cols-2">
+      <article class="card" data-reveal>
+        <h3>Cost Intelligence &amp; Billing Reconciliation</h3>
+        <p>End-to-end pipelines that normalize provider bills (EA/MCA/GCP/AWS/OCI) to SKU-level usage, map to accounts/projects, and surface anomalies for audits and exports.</p>
         <ul>
-          <li>GitHub: <a href="https://github.com/D4T4R" target="_blank" rel="noopener">@D4T4R</a></li>
-          <li>LinkedIn: <a href="https://www.linkedin.com/in/ezpuns" target="_blank" rel="noopener">/in/ezpuns</a></li>
-          <li>Email: <a href="mailto:aniketdatar@cyberservices.com">aniketdatar@cyberservices.com</a></li>
-          <li>Support: <a href="https://www.buymeacoffee.com/ezpuns" target="_blank" rel="noopener">Buy me a coffee</a></li>
+          <li>Operated two primary billing models: <strong>consumption-based</strong> and <strong>auto-metering-based</strong>.</li>
+          <li>Daily reconciliation jobs with retries &amp; partitioned DB design.</li>
+          <li>Exports for CRM/invoicing; governance &amp; audit trails.</li>
         </ul>
+      </article>
+      <article class="card" data-reveal>
+        <h3>Automated GPU Provisioning &amp; Governance</h3>
+        <p>Declarative flows to create tenants/subscriptions, allocate NVIDIA GPU SKUs, map billing IDs, and enforce quota + policy guardrails.</p>
+        <ul>
+          <li>GPU provisioning with SKU mapping to billing accounts and usage tracking.</li>
+          <li>Helm/ArgoCD GitOps across tracks/namespaces; drift detection and safe rollouts.</li>
+          <li>Automated retries for module init; readiness checks and guardrails.</li>
+        </ul>
+      </article>
+      <article class="card" data-reveal>
+        <h3>Managed Kubeflow: Auto-Install on Clusters</h3>
+        <p>Automated, repeatable installation of managed Kubeflow on Kubernetes clusters with standard policies, integration hooks, and operational checks.</p>
+        <ul>
+          <li>Cluster bootstrap flows for Kubeflow components using GitOps patterns.</li>
+          <li>Repeatable installs across environments with validation and rollbacks.</li>
+          <li>Focus on reproducibility, governance, and day-2 operations.</li>
+        </ul>
+      </article>
+      <article class="card" data-reveal>
+        <h3>DevEx Automation: PR Auto-Approvals</h3>
+        <p>Safe auto-approval windows for specific branches/paths (e.g. <code>Replica</code> or <code>prod</code>, only <code>track1.list</code>/<code>track2.list</code> diffs), reducing toil while preserving controls.</p>
+        <ul>
+          <li>Scheduled runs; ADO permissions &amp; policy checks.</li>
+          <li>Fine-grained conditions and merge audits.</li>
+        </ul>
+      </article>
+    </div>
+  </section>
+
+  <!-- QUANT -->
+  <section id="quant">
+    <div class="sec-head" data-reveal>
+      <span class="eyebrow">pricing &amp; risk</span>
+      <h2>Quant &amp; Derivatives Systems</h2>
+    </div>
+    <div class="anim-strip card" data-reveal aria-hidden="true">
+      <canvas id="mcCanvas"></canvas>
+      <span class="strip-label">monte carlo · gbm sample paths</span>
+    </div>
+    <div class="grid cols-2">
+      <article class="card" data-reveal>
+        <h3>Pricing &amp; Simulation</h3>
+        <p>Option pricing utilities (Black-Scholes, CRR binomial) and Monte-Carlo engines for path-dependent instruments; stress testing &amp; scenario analysis.</p>
+        <ul>
+          <li>Greeks &amp; risk surfaces; parameter sweeps and calibration hooks.</li>
+          <li>Payoff visualizers for custom strategies (iron condors, synthetics, more).</li>
+        </ul>
+      </article>
+      <article class="card" data-reveal>
+        <h3>Event-Driven Signals</h3>
+        <p>Ingestion → classification of market/news/alt data; feature pipelines feeding models that output event probabilities with action hooks.</p>
+        <ul>
+          <li>Batch + streaming inputs, priority queues, throttled executors.</li>
+          <li>Backtests with P&amp;L accounting and slippage models.</li>
+        </ul>
+      </article>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="projects">
+    <div class="sec-head" data-reveal>
+      <span class="eyebrow">selected work</span>
+      <h2>Projects</h2>
+    </div>
+    <div class="grid cols-2">
+      <article class="card" data-reveal>
+        <h3>HCMP FinOps Core</h3>
+        <p>Multi-provider cost normalization, anomaly detection, and billing exports supporting both consumption-based and auto-metering billing models.</p>
+        <div class="stack"><b>stack</b> · K8s · Helm · ArgoCD · Oracle/BigQuery · Spring · Python</div>
+      </article>
+      <article class="card" data-reveal>
+        <h3>GPU Provisioning Orchestrator</h3>
+        <p>Automated GPU SKU provisioning, mapping SKUs to billing accounts, quota/policy guardrails, and usage tracking.</p>
+        <div class="stack"><b>stack</b> · Kubernetes · Helm/YAML · ArgoCD · Vault</div>
+      </article>
+      <article class="card" data-reveal>
+        <h3>Managed Kubeflow Installer</h3>
+        <p>Repeatable Kubeflow auto-installation on Kubernetes clusters with validation checks and environment parity.</p>
+        <div class="stack"><b>stack</b> · GitOps · Helm/YAML · Kubernetes</div>
+      </article>
+      <article class="card" data-reveal>
+        <h3>Quant Lab</h3>
+        <p>Pricing engines, greeks, Monte Carlo, and strategy payoff visualizers.</p>
+        <div class="stack"><b>stack</b> · Python · NumPy · Matplotlib · notebooks + scripts</div>
+      </article>
+    </div>
+  </section>
+
+  <!-- STACK -->
+  <section id="stack">
+    <div class="sec-head" data-reveal>
+      <span class="eyebrow">toolchain</span>
+      <h2>Stack</h2>
+    </div>
+    <div class="card" data-reveal>
+      <div class="tagwall">
+        <span class="tag">Kubernetes</span><span class="tag">Helm</span><span class="tag">ArgoCD</span>
+        <span class="tag">KEDA</span><span class="tag">Vault</span><span class="tag">Docker/Podman</span>
+        <span class="tag">Kubeflow</span><span class="tag">GPU Provisioning</span>
+        <span class="tag">Oracle · BigQuery</span>
+        <span class="tag">Spring (Java)</span><span class="tag">Python</span><span class="tag">SQL/PLSQL</span>
+        <span class="tag">YAML/CI/CD (ADO)</span>
+        <span class="tag">Billing: Consumption · Auto-metering</span>
       </div>
-    </section>
-  </main>
+    </div>
+    <div class="card" data-reveal style="margin-top:14px">
+      <div class="caps">also used</div>
+      <div class="icon-wall" aria-label="Also used tools and technologies">
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/bash/bash-original.svg" title="Bash" alt="Bash" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/solidity/solidity-original.svg" title="Solidity" alt="Solidity" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/remix/remix-original.svg" title="Remix IDE" alt="Remix IDE" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/linux/linux-original.svg" title="Linux" alt="Linux" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/python/python-original.svg" title="Python" alt="Python" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/materialui/materialui-original.svg" title="Material UI" alt="Material UI" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/npm/npm-original-wordmark.svg" title="NPM" alt="NPM" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/javascript/javascript-original.svg" title="JavaScript" alt="JavaScript" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/mongodb/mongodb-original.svg" title="MongoDB" alt="MongoDB" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/rust/rust-original.svg" title="Rust" alt="Rust" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/dbeaver/dbeaver-original.svg" title="DBeaver" alt="DBeaver" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/D4T4R/GoAnon/main/Veritas%20VCS.png" title="Veritas HAC" alt="Veritas HAC" width="40" height="60" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/ClusterLabs/pacemaker/main/doc/clusterlabs-logo-55x55.png" title="Pacemaker" alt="ClusterLabs Pacemaker" width="40" height="60" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/nodejs/nodejs-plain.svg" title="NodeJS" alt="NodeJS" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/mocha/mocha-plain.svg" title="Mocha" alt="Mocha" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/selenium/selenium-original.svg" title="Selenium" alt="Selenium" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/postman/postman-original.svg" title="Postman" alt="Postman" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/git/git-original.svg" title="Git" alt="Git" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/grafana/grafana-plain.svg" title="Grafana" alt="Grafana" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/grafana/beyla/main/docs/sources/assets/logo.png" title="Beyla" alt="Beyla" width="35" height="40" loading="lazy"/>
+        <img src="https://www.cloudbabble.co.uk/assets/img/anthos/anthoslogo.png" title="Anthos" alt="GCP Anthos" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/prometheus/prometheus-original.svg" title="Prometheus" alt="Prometheus" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/D4T4R/GoAnon/main/symbol-white.png" title="Victoria Metrics" alt="VictoriaMetrics" width="35" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/apacheairflow/apacheairflow-original.svg" title="Airflow" alt="Airflow" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/apachekafka/apachekafka-original.svg" title="Kafka" alt="Kafka" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/D4T4R/GoAnon/main/Keycloak.png" title="Keycloak" alt="Keycloak" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/nginx/nginx-original.svg" title="Nginx" alt="Nginx" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/azuredevops/azuredevops-plain.svg" title="Azure DevOps" alt="ADO" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/docker/docker-original.svg" title="Docker" alt="Docker" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/kubernetes/kubernetes-plain.svg" title="Kubernetes" alt="Kubernetes" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/istio/istio/master/logo/istio-bluelogo-whitebackground-unframed.svg" title="Istio ServiceMesh" alt="Istio" width="40" height="39" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/argocd/argocd-original.svg" title="ArgoCD" alt="ArgoCD" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/D4T4R/GoAnon/main/fargate.png" title="AWS Fargate" alt="AWS Fargate" width="40" height="40" loading="lazy"/>
+        <img src="https://avatars.githubusercontent.com/u/52158677" title="FluxCD" alt="FluxCD" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/harbor/harbor-original.svg" title="Harbor" alt="Harbor" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/helm/helm-original.svg" title="Helm" alt="Helm" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/go-gitea/gitea/main/assets/logo.svg" title="Gitea" alt="Gitea" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/D4T4R/GoAnon/main/boring-registry.png" title="Boring Registry" alt="Boring Registry" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/podman/podman-original.svg" title="Podman" alt="Podman" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/kedacore/keda/main/images/logos/keda-icon.svg" title="Keda Autoscaler" alt="Keda" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/percona/percona-toolkit/0289a1a6b4018c950c812b1d7d495774c712103f/config/sphinx-build/_static/percona-favicon.svg" title="Percona Operator" alt="Percona" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/googlecloud/googlecloud-original.svg" title="GCP" alt="GCP" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/rabbitmq/rabbitmq-original.svg" title="RabbitMQ" alt="RabbitMQ" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/jenkins/jenkins-original.svg" title="Jenkins" alt="Jenkins" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/vault/vault-original.svg" title="Vault" alt="Vault" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/elasticsearch/elasticsearch-original.svg" title="ElasticSearch" alt="ElasticSearch" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/awk/awk-original.svg" title="Awk" alt="Awk" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/ballerina/ballerina-original.svg" title="Ballerina" alt="Ballerina" width="40" height="40" loading="lazy"/>
+        <img src="https://avatars.githubusercontent.com/u/40630007" title="Genesys Cloud" alt="Genesys" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/swagger/swagger-original.svg" title="Swagger" alt="Swagger" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/yaml/yaml-original.svg" title="YAML" alt="YAML" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/tomcat/tomcat-original.svg" title="Apache Tomcat" alt="Apache Tomcat" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/web3js/web3js-original.svg" title="Web3.js" alt="Web3.js" width="40" height="40" loading="lazy"/>
+      </div>
+    </div>
+  </section>
 
-  <footer>
-    <div class="container">© <span id="y"></span> Aniket Datar • Built on GitHub Pages • <a href="#top">Back to top</a></div>
-  </footer>
+  <!-- ACTIVITY -->
+  <section id="stats">
+    <div class="sec-head" data-reveal>
+      <span class="eyebrow">signal</span>
+      <h2>Activity Glimpse</h2>
+    </div>
+    <div class="grid cols-2 stats">
+      <div class="card" data-reveal>
+        <a href="https://git.io/streak-stats" target="_blank" rel="noopener" class="no-underline">
+          <div class="img-wrap loading" data-remote aria-busy="true">
+            <div class="skeleton" aria-hidden="true"></div>
+            <img src="https://github-readme-streak-stats.herokuapp.com/?user=d4t4r&theme=transparent&hide_border=true&short_numbers=true&date_format=M%20j[%2C%20Y]&ring=d984bd&fire=e8c98a&currStreakLabel=8d85e8&exclude_days=Sun%2CSat" alt="GitHub Streak graph for D4T4R" loading="lazy"/>
+          </div>
+        </a>
+      </div>
+      <div class="card" data-reveal>
+        <a href="https://github.com/anuraghazra/github-readme-stats" target="_blank" rel="noopener" class="no-underline">
+          <div class="img-center">
+            <img src="https://github-stats-extended.vercel.app/api/top-langs/?username=D4T4R&hide_border=true&card_width=550&theme=vision-friendly-dark" alt="Top languages chart for D4T4R" loading="lazy"/>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
 
-  <script>
-    // Year + Theme toggle
-    document.getElementById('y').textContent = new Date().getFullYear();
-    const root = document.documentElement;
-    const themeBtn = document.getElementById('theme');
-    const saved = localStorage.getItem('theme') || (matchMedia('(prefers-color-scheme: light)').matches ? 'light':'dark');
-    if(saved === 'light'){ root.classList.add('light'); themeBtn.textContent='☀'; }
-    themeBtn.addEventListener('click', () => {
-      root.classList.toggle('light');
-      const mode = root.classList.contains('light') ? 'light':'dark';
-      themeBtn.textContent = mode==='light' ? '☀' : '☾';
-      localStorage.setItem('theme', mode);
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="sec-head" data-reveal>
+      <span class="eyebrow">reach out</span>
+      <h2>Contact</h2>
+    </div>
+    <div class="contact-grid">
+      <a class="contact-link" data-reveal href="https://github.com/D4T4R" target="_blank" rel="noopener">
+        <span><span class="k">github</span><span class="v">@D4T4R</span></span>
+      </a>
+      <a class="contact-link" data-reveal href="https://www.linkedin.com/in/ezpuns" target="_blank" rel="noopener">
+        <span><span class="k">linkedin</span><span class="v">/in/ezpuns</span></span>
+      </a>
+      <a class="contact-link" data-reveal href="mailto:aniketdatar@cyberservices.com">
+        <span><span class="k">email</span><span class="v">aniketdatar@cyberservices.com</span></span>
+      </a>
+      <a class="contact-link" data-reveal href="https://www.buymeacoffee.com/ezpuns" target="_blank" rel="noopener">
+        <span><span class="k">support</span><span class="v">buy me a coffee</span></span>
+      </a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container">© <span id="y"></span> Aniket Datar · built on GitHub Pages · <a href="#top">back to top ↑</a></div>
+</footer>
+
+<!-- ============ LIBS (cdnjs, all free) ============ -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+<script>
+"use strict";
+document.documentElement.classList.add('js');
+const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- year ---------- */
+document.getElementById('y').textContent = new Date().getFullYear();
+
+/* ---------- theme ---------- */
+const root = document.documentElement, themeBtn = document.getElementById('theme');
+const saved = localStorage.getItem('theme') || (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+if (saved === 'light') { root.classList.add('light'); themeBtn.textContent = '☀'; }
+themeBtn.addEventListener('click', () => {
+  root.classList.toggle('light');
+  const mode = root.classList.contains('light') ? 'light' : 'dark';
+  themeBtn.textContent = mode === 'light' ? '☀' : '☾';
+  localStorage.setItem('theme', mode);
+  if (window.__setSurfaceTheme) window.__setSurfaceTheme(mode);
+});
+
+/* ---------- header offset (accurate sticky measurement) ---------- */
+const headerEl = document.querySelector('header');
+function setHeaderOffset(){
+  const h = headerEl ? headerEl.getBoundingClientRect().height : 66;
+  root.style.setProperty('--header-offset', Math.ceil(h) + 'px');
+}
+setHeaderOffset();
+addEventListener('resize', () => requestAnimationFrame(setHeaderOffset), { passive:true });
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(setHeaderOffset);
+
+/* ---------- mobile nav ---------- */
+const menuBtn = document.getElementById('menu'), navmenu = document.getElementById('navmenu'), backdrop = document.getElementById('backdrop');
+const mq = matchMedia('(max-width: 920px)');
+function setMode(){
+  if (mq.matches) navmenu.classList.add('mobile');
+  else { navmenu.classList.remove('mobile','open'); document.body.classList.remove('menu-open'); menuBtn.setAttribute('aria-expanded','false'); backdrop.hidden = true; }
+  setHeaderOffset();
+}
+setMode(); mq.addEventListener('change', setMode);
+function setMenu(open){
+  if (!navmenu.classList.contains('mobile')) return;
+  navmenu.classList.toggle('open', open);
+  document.body.classList.toggle('menu-open', open);
+  menuBtn.setAttribute('aria-expanded', String(open));
+  backdrop.hidden = !open;
+}
+menuBtn.addEventListener('click', () => setMenu(!navmenu.classList.contains('open')));
+backdrop.addEventListener('click', () => setMenu(false));
+addEventListener('keydown', e => { if (e.key === 'Escape') setMenu(false); });
+navmenu.addEventListener('click', e => { if (e.target.tagName === 'A') setMenu(false); });
+
+/* ---------- scroll progress ---------- */
+const progress = document.getElementById('progress'), doc = document.documentElement;
+function updateProgress(){
+  const max = doc.scrollHeight - doc.clientHeight;
+  progress.style.width = (max ? (doc.scrollTop / max) * 100 : 0) + '%';
+}
+updateProgress();
+addEventListener('scroll', updateProgress, { passive:true });
+addEventListener('resize', updateProgress);
+
+/* ---------- skeleton loaders for remote images ---------- */
+document.querySelectorAll('.img-wrap[data-remote]').forEach(wrap => {
+  const img = wrap.querySelector('img'), sk = wrap.querySelector('.skeleton');
+  const finish = ok => {
+    wrap.classList.remove('loading'); wrap.setAttribute('aria-busy','false'); if (sk) sk.remove();
+    if (!ok) wrap.insertAdjacentHTML('beforeend', '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--muted);font-family:var(--mono);font-size:.8rem;background:rgba(0,0,0,.2)">image unavailable</div>');
+  };
+  if (img.complete) return finish(img.naturalWidth > 0);
+  img.addEventListener('load', () => finish(true), { once:true });
+  img.addEventListener('error', () => finish(false), { once:true });
+});
+
+/* =========================================================
+   HEADLINE word-split reveal + GSAP scroll reveals
+   ========================================================= */
+function splitWords(el){
+  const walk = node => {
+    [...node.childNodes].forEach(n => {
+      if (n.nodeType === 3) {
+        const frag = document.createDocumentFragment();
+        n.textContent.split(/(\s+)/).forEach(part => {
+          if (part.trim() === '') frag.appendChild(document.createTextNode(part));
+          else { const s = document.createElement('span'); s.className = 'word'; s.textContent = part; frag.appendChild(s); }
+        });
+        n.replaceWith(frag);
+      } else if (n.nodeType === 1) {
+        if (n.classList.contains('grad-text')) { n.classList.add('word'); n.style.display = 'inline-block'; }
+        else walk(n);
+      }
     });
+  };
+  walk(el);
+  return el.querySelectorAll('.word');
+}
 
-    // --- Mobile nav ---
-    const menuBtn = document.getElementById('menu');
-    const navmenu = document.getElementById('navmenu');
-    const backdrop = document.getElementById('backdrop');
-    const headerEl = document.querySelector('header');   // FIX 1: measure the whole header, not just nav
-    const mq = matchMedia('(max-width: 900px)');
+if (window.gsap) {
+  if (window.ScrollTrigger) gsap.registerPlugin(ScrollTrigger);
 
-    // FIX 1: measure the full header element height (includes border, padding on container etc.)
-    // This ensures --header-offset is always pixel-accurate so the mobile menu top and
-    // section scroll-margin-top are correctly aligned.
-    function setHeaderOffset(){
-      const h = headerEl ? headerEl.getBoundingClientRect().height : 64;
-      document.documentElement.style.setProperty('--header-offset', Math.ceil(h) + 'px');
-    }
-    setHeaderOffset();
-    window.addEventListener('resize', () => requestAnimationFrame(setHeaderOffset), { passive: true });
-    window.addEventListener('orientationchange', () => requestAnimationFrame(setHeaderOffset));
-    if (document.fonts && document.fonts.ready) { document.fonts.ready.then(setHeaderOffset); }
+  if (!REDUCED) {
+    // hero load orchestration
+    const words = splitWords(document.getElementById('headline'));
+    const tl = gsap.timeline({ defaults:{ ease:'power3.out' } });
+    tl.from(headerEl, { y:-20, opacity:0, duration:.5 })
+      .from('.hero .eyebrow', { y:10, opacity:0, duration:.5 }, '-=.2')
+      .from(words, { yPercent:120, opacity:0, duration:.7, stagger:.045 }, '-=.3')
+      .from('.surface-panel', { opacity:0, scale:.96, duration:.9, ease:'power2.out' }, '-=.6');
 
-    function setMode() {
-      if (mq.matches) navmenu.classList.add('mobile');
-      else {
-        navmenu.classList.remove('mobile','open');
-        document.body.classList.remove('menu-open');
-        if (menuBtn) menuBtn.setAttribute('aria-expanded','false');
-        backdrop.hidden = true;
-      }
-      setHeaderOffset();
-    }
-    setMode(); mq.addEventListener('change', setMode);
-
-    function setMenu(open){
-      if (!navmenu.classList.contains('mobile')) return;
-      navmenu.classList.toggle('open', open);
-      document.body.classList.toggle('menu-open', open);
-      if (menuBtn) menuBtn.setAttribute('aria-expanded', String(open));
-      backdrop.hidden = !open;
-    }
-
-    if (menuBtn) menuBtn.addEventListener('click', () => setMenu(!navmenu.classList.contains('open')));
-    backdrop.addEventListener('click', () => setMenu(false));
-    window.addEventListener('keydown', (e) => { if (e.key === 'Escape') setMenu(false); });
-    navmenu.addEventListener('click', (e) => { if (e.target.tagName === 'A') setMenu(false); });
-
-    // --- Scroll progress bar ---
-    const progress = document.getElementById('progress');
-    const doc = document.documentElement;
-    function updateProgress(){
-      const scrollTop = doc.scrollTop || document.body.scrollTop;
-      const scrollHeight = doc.scrollHeight - doc.clientHeight;
-      const pct = scrollHeight ? (scrollTop / scrollHeight) * 100 : 0;
-      progress.style.width = pct + '%';
-    }
-    updateProgress();
-    window.addEventListener('scroll', updateProgress, { passive:true });
-    window.addEventListener('resize', updateProgress);
-
-    // --- Scroll reveal ---
-    const revealEls = Array.from(document.querySelectorAll('.reveal .card, .reveal'));
-    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (!prefersReduced && 'IntersectionObserver' in window){
-      revealEls.forEach(el => el.style.opacity = 0);
-      const io = new IntersectionObserver((entries) => {
-        for (const e of entries){
-          if (e.isIntersecting){
-            e.target.animate(
-              [{opacity:0, transform:'translateY(8px)'},{opacity:1, transform:'translateY(0)'}],
-              {duration:380, easing:'ease-out', fill:'forwards'}
-            );
-            io.unobserve(e.target);
-          }
-        }
-      }, {threshold: .12, rootMargin: '0px 0px -40px 0px'});
-      revealEls.forEach(el => io.observe(el));
-    }
-
-    // --- Skeleton loader for remote images (Activity) ---
-    document.querySelectorAll('.img-wrap[data-remote]').forEach((wrap) => {
-      const img = wrap.querySelector('img');
-      const skeleton = wrap.querySelector('.skeleton');
-
-      function finish(ok) {
-        wrap.classList.remove('loading');
-        wrap.setAttribute('aria-busy', 'false');
-        if (skeleton) skeleton.remove();
-        if (!ok) {
-          wrap.insertAdjacentHTML(
-            'beforeend',
-            '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--muted);font-weight:700;background:rgba(0,0,0,.2)">Image unavailable</div>'
-          );
-        }
-      }
-
-      if (img.complete) {
-        finish(img.naturalWidth > 0);
-        return;
-      }
-
-      if ('decode' in img) {
-        img.decode().then(() => finish(true)).catch(() => { /* fall back to events */ });
-      }
-
-      img.addEventListener('load',  () => finish(true),  { once: true });
-      img.addEventListener('error', () => finish(false), { once: true });
+    // staggered reveal for everything tagged [data-reveal]
+    document.querySelectorAll('[data-reveal]').forEach(el => {
+      gsap.to(el, {
+        opacity:1, y:0, duration:.6, ease:'power2.out',
+        scrollTrigger:{ trigger:el, start:'top 88%', once:true }
+      });
     });
-  </script>
+  } else {
+    gsap.set('[data-reveal]', { opacity:1, y:0 });
+  }
+}
+
+/* =========================================================
+   Magnetic buttons (pointer-follow micro-interaction)
+   ========================================================= */
+if (!REDUCED && matchMedia('(pointer:fine)').matches) {
+  document.querySelectorAll('.magnetic').forEach(btn => {
+    const inner = btn.querySelector('.mag-inner') || btn;
+    const strength = 0.35;
+    btn.addEventListener('pointermove', e => {
+      const r = btn.getBoundingClientRect();
+      const x = (e.clientX - r.left - r.width/2) * strength;
+      const y = (e.clientY - r.top - r.height/2) * strength;
+      btn.style.transform = `translate(${x*0.4}px,${y*0.4}px)`;
+      inner.style.transform = `translate(${x}px,${y}px)`;
+    });
+    btn.addEventListener('pointerleave', () => {
+      btn.style.transform = ''; inner.style.transform = '';
+    });
+  });
+}
+
+/* =========================================================
+   CANVAS STRIPS — GitOps delivery loop + Monte Carlo paths
+   ========================================================= */
+function cssVar(n){ return getComputedStyle(document.documentElement).getPropertyValue(n).trim() || '#999'; }
+
+function makeStrip(id, init, draw){
+  const cv = document.getElementById(id);
+  if (!cv || !cv.getContext) return;
+  const ctx = cv.getContext('2d');
+  let raf = 0, running = false, state = null;
+
+  function size(){
+    const r = cv.parentElement.getBoundingClientRect();
+    const dpr = Math.min(devicePixelRatio || 1, 2);
+    cv.width = Math.max(1, r.width * dpr); cv.height = Math.max(1, r.height * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    state = init(r.width, r.height);
+    if (REDUCED) { state.static = true; draw(ctx, state); } // single calm frame
+  }
+  function frame(){ draw(ctx, state); raf = requestAnimationFrame(frame); }
+  const start = () => { if (!running && !REDUCED && state){ running = true; raf = requestAnimationFrame(frame); } };
+  const stop  = () => { running = false; cancelAnimationFrame(raf); };
+
+  size();
+  addEventListener('resize', () => requestAnimationFrame(size), { passive:true });
+  if ('IntersectionObserver' in window)
+    new IntersectionObserver(es => es.forEach(e => e.isIntersecting ? start() : stop()), { threshold:.1 }).observe(cv);
+  else start();
+  document.addEventListener('visibilitychange', () => document.hidden ? stop() : start());
+}
+
+/* --- GitOps delivery loop: packets flowing commit → build → argocd → k8s --- */
+makeStrip('pipelineCanvas',
+  (w, h) => ({ w, h, t: 0,
+    nodes: [{p:0,label:'commit'},{p:1/3,label:'build'},{p:2/3,label:'argocd'},{p:1,label:'k8s'}] }),
+  (ctx, s) => {
+    const { w, h, nodes } = s;
+    if (!s.static) s.t += 0.0035;
+    ctx.clearRect(0, 0, w, h);
+    const y = h * 0.52, x0 = w * 0.08, x1 = w * 0.92;
+    const cols = [cssVar('--violet'), cssVar('--magenta'), cssVar('--amber')];
+
+    ctx.strokeStyle = 'rgba(150,152,176,.22)'; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(x0, y); ctx.lineTo(x1, y); ctx.stroke();
+
+    for (let i = 0; i < 3; i++){
+      const tt = (s.t + i / 3) % 1;
+      const x = x0 + (x1 - x0) * tt;
+      ctx.beginPath(); ctx.arc(x, y, 2.6, 0, 7);
+      ctx.fillStyle = cols[i % 3]; ctx.globalAlpha = .9; ctx.fill(); ctx.globalAlpha = 1;
+    }
+
+    ctx.font = '10px JetBrains Mono, monospace'; ctx.textAlign = 'center';
+    nodes.forEach((nd, i) => {
+      const x = x0 + (x1 - x0) * nd.p;
+      let glow = 0;
+      for (let j = 0; j < 3; j++){
+        const tt = (s.t + j / 3) % 1;
+        glow = Math.max(glow, Math.max(0, 1 - Math.abs(tt - nd.p) * 16));
+      }
+      ctx.beginPath(); ctx.arc(x, y, 4.5 + glow * 2, 0, 7);
+      ctx.fillStyle = cssVar('--bg-2'); ctx.fill();
+      ctx.lineWidth = 1.4; ctx.strokeStyle = cols[i % 3];
+      ctx.globalAlpha = .45 + glow * .55; ctx.stroke(); ctx.globalAlpha = 1;
+      ctx.fillStyle = 'rgba(154,160,181,.85)';
+      ctx.fillText(nd.label, x, y + 24);
+    });
+  });
+
+/* --- Monte Carlo: GBM sample paths drawing in, then regenerating --- */
+function genPaths(w, h){
+  const n = 200, P = 32, paths = [];
+  for (let p = 0; p < P; p++){
+    const drift = (Math.random() - 0.5) * 0.10;
+    let v = 0; const arr = [];
+    for (let k = 0; k < n; k++){
+      v += (Math.random() - 0.5) * 2.0 + drift - v * 0.008; // mean-reverting-ish random walk
+      arr.push(h * 0.55 - v * (h / 95));
+    }
+    paths.push(arr);
+  }
+  return { w, h, n, paths, head: 0, hold: 0 };
+}
+makeStrip('mcCanvas',
+  (w, h) => genPaths(w, h),
+  (ctx, s) => {
+    const { w, h, paths, n } = s;
+    if (s.static) s.head = n;
+    else {
+      s.head = Math.min(s.head + 1.5, n);
+      if (s.head >= n && ++s.hold > 110) Object.assign(s, genPaths(w, h));
+    }
+    ctx.clearRect(0, 0, w, h);
+    const cols = [cssVar('--violet'), cssVar('--magenta'), cssVar('--amber')];
+    const m = Math.floor(s.head);
+    ctx.lineWidth = 1;
+    paths.forEach((p, i) => {
+      ctx.beginPath();
+      for (let k = 0; k < m; k++){
+        const x = (k / (n - 1)) * w, y = Math.max(8, Math.min(h - 8, p[k]));
+        k ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+      }
+      ctx.strokeStyle = cols[i % 3]; ctx.globalAlpha = .30; ctx.stroke();
+    });
+    ctx.globalAlpha = 1;
+    // strike line
+    ctx.setLineDash([3, 5]); ctx.strokeStyle = 'rgba(154,160,181,.30)';
+    ctx.beginPath(); ctx.moveTo(0, h * 0.55); ctx.lineTo(w, h * 0.55); ctx.stroke();
+    ctx.setLineDash([]);
+  });
+
+/* =========================================================
+   SIGNATURE — animated implied volatility surface (three.js)
+   ========================================================= */
+(function volSurface(){
+  const panel = document.getElementById('surfacePanel');
+  const fallback = document.getElementById('surfaceFallback');
+  if (!panel || typeof THREE === 'undefined') return; // fallback gradient stays visible
+
+  let renderer, scene, camera, mesh, raf = 0, running = false, t = 0;
+  const SEG = (matchMedia('(max-width:920px)').matches ? 28 : 46);
+  const W = 4.2, H = 4.2;
+
+  // plasma colormap stops — muted
+  const STOPS = [
+    [0.28,0.26,0.48],  // dusk violet
+    [0.55,0.52,0.91],  // soft violet
+    [0.85,0.52,0.74],  // rose
+    [0.91,0.79,0.54]   // sand
+  ];
+  function ramp(x){
+    x = Math.max(0, Math.min(1, x));
+    const seg = (STOPS.length - 1), f = x * seg, i = Math.min(Math.floor(f), seg-1), k = f - i;
+    const a = STOPS[i], b = STOPS[i+1];
+    return [a[0]+(b[0]-a[0])*k, a[1]+(b[1]-a[1])*k, a[2]+(b[2]-a[2])*k];
+  }
+
+  // implied-vol-ish height field: smile (strike) + term hump + animated ripple
+  function heightAt(u, v, time){
+    const smile = 0.42 * u * u;                       // vol smile across moneyness
+    const term  = 0.16 * Math.sin(v * Math.PI * 0.8); // term-structure hump
+    const skew  = 0.10 * u * (1 - v);                 // skew that decays with maturity
+    const rip   = 0.07 * Math.sin(3.0*u + time) * Math.cos(2.2*v - time*0.7);
+    return smile + term + skew + rip;
+  }
+
+  function build(){
+    scene = new THREE.Scene();
+    const w = panel.clientWidth, h = panel.clientHeight;
+    camera = new THREE.PerspectiveCamera(42, w/h, 0.1, 100);
+    camera.position.set(0, 2.2, 4.4);
+    camera.lookAt(0, 0.15, 0);
+
+    renderer = new THREE.WebGLRenderer({ antialias:true, alpha:true, powerPreference:'low-power' });
+    renderer.setPixelRatio = renderer.setPixelRatio || function(){};
+    renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+    renderer.setSize(w, h);
+    renderer.setClearColor(0x000000, 0);
+    panel.appendChild(renderer.domElement);
+
+    const geo = new THREE.PlaneGeometry(W, H, SEG, SEG);
+    const count = geo.attributes.position.count;
+    geo.setAttribute('color', new THREE.BufferAttribute(new Float32Array(count*3), 3));
+    const mat = new THREE.MeshBasicMaterial({ wireframe:true, vertexColors:true, transparent:true, opacity:0.78 });
+    mesh = new THREE.Mesh(geo, mat);
+    mesh.rotation.x = -Math.PI / 2.18;
+    scene.add(mesh);
+
+    fallback.style.opacity = '0';
+    deform(0);
+  }
+
+  function deform(time){
+    const pos = mesh.geometry.attributes.position, col = mesh.geometry.attributes.color;
+    for (let i = 0; i < pos.count; i++){
+      const x = pos.getX(i), y = pos.getY(i);
+      const u = x / (W/2), v = (y + H/2) / H;       // u:[-1,1], v:[0,1]
+      const z = heightAt(u, v, time);
+      pos.setZ(i, z);
+      const c = ramp((z + 0.25) / 1.05);
+      col.setXYZ(i, c[0], c[1], c[2]);
+    }
+    pos.needsUpdate = true; col.needsUpdate = true;
+  }
+
+  // pointer parallax
+  let targRX = -Math.PI/2.18, targRZ = 0, curRX = targRX, curRZ = 0;
+  panel.addEventListener('pointermove', e => {
+    const r = panel.getBoundingClientRect();
+    const nx = (e.clientX - r.left)/r.width - 0.5, ny = (e.clientY - r.top)/r.height - 0.5;
+    targRZ = nx * 0.25; targRX = -Math.PI/2.18 + ny * 0.18;
+  });
+  panel.addEventListener('pointerleave', () => { targRZ = 0; targRX = -Math.PI/2.18; });
+
+  function frame(){
+    t += 0.012;
+    deform(t);
+    curRX += (targRX - curRX) * 0.06; curRZ += (targRZ - curRZ) * 0.06;
+    mesh.rotation.x = curRX; mesh.rotation.z = curRZ + Math.sin(t*0.2)*0.04;
+    renderer.render(scene, camera);
+    raf = requestAnimationFrame(frame);
+  }
+  function start(){ if (!running && mesh){ running = true; raf = requestAnimationFrame(frame); } }
+  function stop(){ running = false; cancelAnimationFrame(raf); }
+
+  function resize(){
+    if (!renderer) return;
+    const w = panel.clientWidth, h = panel.clientHeight;
+    camera.aspect = w/h; camera.updateProjectionMatrix(); renderer.setSize(w, h);
+    if (!running) renderer.render(scene, camera);
+  }
+
+  // theme retint (amber pops a touch more on light bg)
+  window.__setSurfaceTheme = mode => {
+    if (mesh) mesh.material.opacity = (mode === 'light') ? 0.72 : 0.78;
+  };
+
+  try { build(); } catch(e){ fallback.style.opacity = '0.5'; return; }
+  addEventListener('resize', () => requestAnimationFrame(resize), { passive:true });
+
+  if (REDUCED){ renderer.render(scene, camera); return; } // static frame, no loop
+
+  // run only while visible & tab active
+  if ('IntersectionObserver' in window){
+    new IntersectionObserver(es => es.forEach(en => en.isIntersecting ? start() : stop()), { threshold:0.05 }).observe(panel);
+  } else start();
+  document.addEventListener('visibilitychange', () => document.hidden ? stop() : start());
+})();
+</script>
 </body>
 </html>
