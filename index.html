@@ -51,6 +51,8 @@
   --header-offset: 66px;
 
   --mono:'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --ok:#57b894;
+  --err:#e5675f;
   --display:'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
   --body:'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
 }
@@ -70,6 +72,8 @@
   --magenta:#b14a93;
   --amber:#b9831f;
   --grad: linear-gradient(100deg, #5b50c9 0%, #b14a93 52%, #b9831f 100%);
+  --ok:#2f9e6e;
+  --err:#cf4b43;
 }
 
 @supports (color: color-mix(in oklab, red, blue)) {
@@ -352,6 +356,41 @@ section{padding:48px 0}
 /* contextual mini-canvas at the top of a card */
 .card-anim{position:relative;height:74px;margin:-2px 0 16px;border-radius:10px;overflow:hidden}
 .card-anim canvas{display:block;width:100%;height:100%}
+
+/* interactive deploy console */
+.deploy-console{padding:0;overflow:hidden;margin-bottom:18px}
+.dc-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:13px 16px;border-bottom:1px solid var(--border)}
+.dc-title{font-family:var(--mono);font-size:.78rem;letter-spacing:.03em;color:var(--muted);display:inline-flex;align-items:center;gap:7px}
+.dc-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.dc-seg{display:inline-flex;border:1px solid var(--border-strong);border-radius:9px;overflow:hidden}
+.dc-seg button{font-family:var(--mono);font-size:.74rem;color:var(--muted);background:transparent;border:0;padding:.34rem .62rem;cursor:pointer;transition:background .15s,color .15s}
+.dc-seg button+button{border-left:1px solid var(--border)}
+.dc-seg button.on{background:var(--grad);color:#fff;font-weight:600}
+:root.light .dc-seg button.on{color:#fff}
+.dc-chaos{font-family:var(--mono);font-size:.74rem;color:var(--muted);display:inline-flex;align-items:center;gap:5px;cursor:pointer;user-select:none}
+.dc-chaos input{accent-color:var(--err);cursor:pointer}
+.dc-deploy{padding:.4rem .82rem;font-size:.78rem}
+.dc-deploy:disabled{opacity:.55;cursor:default}
+.dc-deploy.approve{background:var(--ok);color:#fff;animation:approvePulse 1.3s ease-in-out infinite}
+@keyframes approvePulse{0%,100%{box-shadow:0 0 0 0 rgba(87,184,148,.0)}50%{box-shadow:0 0 0 5px rgba(87,184,148,.18)}}
+.dc-stage-wrap{position:relative;height:96px}
+.dc-stage-wrap canvas{display:block;width:100%;height:100%}
+.dc-term{height:140px;overflow-y:auto;background:rgba(0,0,0,.22);border-top:1px solid var(--border);scrollbar-width:thin}
+:root.light .dc-term{background:rgba(20,19,31,.04)}
+.dc-log{font-family:var(--mono);font-size:.72rem;line-height:1.5;padding:10px 16px}
+.dc-log .ll{white-space:pre-wrap;word-break:break-word}
+.dc-log .ll .pf{display:inline-block;width:1.1em;color:var(--faint)}
+.dc-log .cmd{color:var(--fg)}
+.dc-log .cmd .pf{color:var(--violet)}
+.dc-log .info{color:var(--muted)}
+.dc-log .ok{color:var(--ok)} .dc-log .ok .pf{color:var(--ok)}
+.dc-log .err{color:var(--err)} .dc-log .err .pf{color:var(--err)}
+.dc-log .warn{color:var(--amber)} .dc-log .warn .pf{color:var(--amber)}
+.dc-log .cur{color:var(--amber)}
+.dc-status{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:9px 16px;border-top:1px solid var(--border);font-family:var(--mono);font-size:.7rem;color:var(--faint)}
+.dc-status b{color:var(--muted);font-weight:500}
+.dc-status .dot{width:7px;height:7px;border-radius:50%;background:var(--faint);display:inline-block;margin-right:5px;vertical-align:middle}
+.dc-status .dot.run{background:var(--amber)} .dc-status .dot.ok{background:var(--ok)} .dc-status .dot.err{background:var(--err)}
 .deploy-btn{position:absolute;top:11px;right:12px;z-index:2;padding:.4rem .8rem;font-size:.78rem;border-radius:10px}
 .deploy-btn:disabled{opacity:.55;cursor:default}
 
@@ -386,6 +425,10 @@ footer a:hover{color:var(--magenta)}
   .surface-panel{aspect-ratio:16/10;max-height:280px}
   .anim-strip.tall{height:210px}
   .anim-strip.interactive{height:190px}
+  .dc-head{padding:11px 13px}
+  .dc-actions{width:100%;justify-content:space-between}
+  .dc-stage-wrap{height:84px}
+  .dc-term{height:120px}
   .cols-3,.cols-2{grid-template-columns:1fr}
   .contact-grid{grid-template-columns:1fr}
 }
@@ -475,10 +518,22 @@ footer a:hover{color:var(--magenta)}
       <span class="eyebrow">cloud economics</span>
       <h2>FinOps &amp; Hybrid Cloud</h2>
     </div>
-    <div class="anim-strip interactive card" data-reveal>
-      <canvas id="pipelineCanvas" aria-hidden="true"></canvas>
-      <span class="strip-label">gitops delivery loop · interactive</span>
-      <button id="deployBtn" class="btn primary deploy-btn" type="button" aria-label="Run a simulated deployment">▶ deploy</button>
+    <div class="deploy-console card" data-reveal>
+      <div class="dc-head">
+        <span class="dc-title"><span class="live-dot"></span>gitops delivery · pipeline</span>
+        <div class="dc-actions">
+          <div class="dc-seg" id="dcEnv" role="group" aria-label="Target environment">
+            <button type="button" data-env="dev">dev</button>
+            <button type="button" data-env="staging" class="on" aria-pressed="true">staging</button>
+            <button type="button" data-env="prod">prod</button>
+          </div>
+          <label class="dc-chaos"><input type="checkbox" id="dcChaos"> <span>chaos</span></label>
+          <button id="deployBtn" class="btn primary dc-deploy" type="button">▶ deploy</button>
+        </div>
+      </div>
+      <div class="dc-stage-wrap"><canvas id="pipelineCanvas" aria-hidden="true"></canvas></div>
+      <div class="dc-term" id="deployTerm"><div class="dc-log" id="deployLog" role="log" aria-live="polite" aria-label="Deployment log"></div></div>
+      <div class="dc-status" id="deployStatus" aria-live="polite"></div>
     </div>
     <div class="grid cols-2">
       <article class="card" data-reveal>
@@ -905,206 +960,241 @@ function makeStrip(id, init, draw){
    idle ambient flow → press deploy → commit hash travels commit→build→argocd→k8s
    with per-stage progress rings, checkmarks, typewriter log, and a rolling
    pod update. Version counter persists across deploys. */
-(function deployLoop(){
+(function deployConsole(){
   const cv = document.getElementById('pipelineCanvas');
   const btn = document.getElementById('deployBtn');
+  const logEl = document.getElementById('deployLog');
+  const statusEl = document.getElementById('deployStatus');
+  const termEl = document.getElementById('deployTerm');
+  const envSeg = document.getElementById('dcEnv');
+  const chaosEl = document.getElementById('dcChaos');
   if (!cv || !cv.getContext || !btn) return;
   const ctx = cv.getContext('2d');
   const wrap = cv.parentElement;
 
-  const STAGES = [
-    { p:0,   label:'commit', log:'$ git push origin main' },
-    { p:1/3, label:'build',  log:'building image \u00b7 tests passing' },
-    { p:2/3, label:'argocd', log:'argocd app sync \u00b7 manifests applied' },
-    { p:1,   label:'k8s',    log:'rolling update \u00b7 cycling pods' }
-  ];
   const HEX = '0123456789abcdef';
   const newHash = () => Array.from({ length: 7 }, () => HEX[(Math.random()*16)|0]).join('');
+  const rid = () => Math.random().toString(36).slice(2, 7);
+  const STAGES = ['checkout','build','sync','rollout'];
 
   let W = 0, H = 0, raf = 0, running = false, t = 0;
-  const D = { phase:'idle', stage:0, prog:0, hash:newHash(), version:1,
-              rolled:-1, podFlip:[0,0,0], hold:0, rings:[], logShown:0 };
+  const D = {
+    phase:'idle', env:'staging', chaos:false, hash:newHash(), version:1,
+    stageStatus:{}, activeStage:null, workArc:0,
+    pods:[0,0,0], podPop:[0,0,0], rings:[],
+    queue:[], stepTimer:0, elapsed:0, failAt:null,
+    statusText:'ready', statusKind:''
+  };
+  function resetStages(){ D.stageStatus = {}; STAGES.forEach(s => D.stageStatus[s] = 'pending'); D.activeStage = null; D.workArc = 0; }
+  resetStages();
 
-  function size(){
-    const r = wrap.getBoundingClientRect();
-    const dpr = Math.min(devicePixelRatio || 1, 2);
-    cv.width = Math.max(1, r.width * dpr); cv.height = Math.max(1, r.height * dpr);
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    W = r.width; H = r.height;
-    if (REDUCED) draw();
+  /* ---------- terminal ---------- */
+  function escapeHtml(s){ return s.replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
+  function logLine(level, text){
+    const pf = ({ cmd:'$', info:'\u25b8', ok:'\u2713', err:'\u2717', warn:'\u26a0' })[level] || ' ';
+    const div = document.createElement('div');
+    div.className = 'll ' + level;
+    div.innerHTML = '<span class="pf">' + pf + '</span>' + escapeHtml(text);
+    logEl.appendChild(div);
+    while (logEl.childNodes.length > 120) logEl.removeChild(logEl.firstChild);
+    termEl.scrollTop = termEl.scrollHeight;
+  }
+  function clearLog(){ logEl.innerHTML = ''; }
+
+  /* ---------- status bar ---------- */
+  function status(text, kind){ D.statusText = text; D.statusKind = kind || ''; renderStatus(); }
+  function renderStatus(){
+    const ready = D.pods.filter(p => p === 1).length;
+    statusEl.innerHTML =
+      '<span><span class="dot ' + D.statusKind + '"></span><b>' + D.statusText + '</b></span>' +
+      '<span>env <b>' + D.env + '</b></span>' +
+      '<span>commit <b>' + D.hash + '</b></span>' +
+      '<span>elapsed <b>' + (D.elapsed/1000).toFixed(1) + 's</b></span>' +
+      '<span>pods <b>' + ready + '/3</b></span>' +
+      '<span>version <b>v' + D.version + '</b></span>';
   }
 
-  function deploy(){
-    if (D.phase === 'run') return;
-    D.phase = 'run'; D.stage = 0; D.prog = 0; D.logShown = 0;
-    D.rolled = -1; D.hash = newHash(); D.rings.length = 0;
-    btn.disabled = true; btn.textContent = 'deploying\u2026';
-    if (REDUCED){ // jump straight to the result, no motion
-      D.version++; D.phase = 'done'; D.hold = 0;
-      btn.disabled = false; btn.textContent = '\u25b6 deploy';
+  /* ---------- canvas geometry ---------- */
+  function geom(){ const y = H*0.46, x0 = W*0.07, x1 = W*0.74; return { y, x0, x1, nx: p => x0 + (x1-x0)*(p/(STAGES.length-1)) }; }
+  function ring(idx){ const { y, nx } = geom(); D.rings.push({ x: nx(idx), y, r:6, a:.5 }); }
+
+  /* ---------- step queue ---------- */
+  function enqueue(delay, run){ D.queue.push({ delay, run }); }
+  function setStage(name, st){ D.stageStatus[name] = st; if (st === 'running'){ D.activeStage = name; D.workArc = 0; } }
+  function flipPod(i){ D.pods[i] = 1; D.podPop[i] = t; ring(3); }
+
+  function buildQueue(){
+    const env = D.env, hash = D.hash;
+    D.failAt = D.chaos ? (Math.random() < 0.5 ? 'build' : 'rollout')
+                       : (Math.random() < 0.14 ? (Math.random() < 0.6 ? 'build' : 'rollout') : null);
+    enqueue(0,   () => { setStage('checkout','running'); status('running','run'); logLine('cmd','git push origin main'); });
+    enqueue(420, () => logLine('info','Enumerating objects: 36, done.'));
+    enqueue(360, () => logLine('info','remote: pipeline #' + D.version + ' queued on ' + env));
+    enqueue(420, () => { logLine('ok','checkout complete'); setStage('checkout','passed'); ring(0); });
+
+    enqueue(260, () => { setStage('build','running'); logLine('cmd','docker build -t finops-core:' + hash); });
+    enqueue(520, () => logLine('info','[1/4] FROM python:3.12-slim'));
+    enqueue(560, () => logLine('info','[2/4] RUN pip install -r requirements.txt'));
+    enqueue(520, () => logLine('info','[3/4] COPY . /app'));
+    enqueue(420, () => logLine('info','[4/4] running pytest (142 tests)\u2026'));
+    enqueue(760, () => {
+      if (D.failAt === 'build'){ logLine('err','FAILED tests/test_billing.py::test_reconcile  (2 failed)'); setStage('build','failed'); return fail('build'); }
+      logLine('ok','142 passed in 8.4s'); logLine('info','pushed finops-core:' + hash + ' (14.2 MB)'); setStage('build','passed'); ring(1);
+    });
+
+    enqueue(280, () => { setStage('sync','running'); logLine('cmd','argocd app sync finops-core --env ' + env); });
+    enqueue(520, () => logLine('info','comparing live state \u2194 desired (git)'));
+    enqueue(520, () => logLine('info','applying 7 manifests'));
+    enqueue(480, () => { logLine('ok','Deployment/api  configured'); setStage('sync','passed'); ring(2); });
+
+    if (env === 'prod') enqueue(220, () => awaitApproval());
+
+    enqueue(280, () => { setStage('rollout','running'); logLine('cmd','kubectl rollout status deploy/api -w'); });
+    for (let i = 0; i < 3; i++){
+      enqueue(560, () => {
+        if (D.failAt === 'rollout' && i === 1){ logLine('err','pod api-' + rid() + '  CrashLoopBackOff'); setStage('rollout','failed'); return fail('rollout'); }
+        flipPod(i); logLine('info','pod api-' + rid() + '  Ready  (' + (i+1) + '/3)');
+      });
+    }
+    enqueue(360, () => { logLine('ok','deployment "api" successfully rolled out'); setStage('rollout','passed'); succeed(); });
+  }
+
+  function fail(stage){
+    status('failed \u00b7 ' + stage, 'err');
+    D.queue = [];
+    enqueue(620, () => logLine('warn','rolling back to v' + D.version + ' (last known good)'));
+    enqueue(460, () => { D.pods = [0,0,0]; D.podPop = [t,t,t]; });
+    enqueue(520, () => { logLine('ok','rollback complete \u00b7 v' + D.version + ' stable'); finish('rolled back \u00b7 v' + D.version, 'err'); });
+    D.phase = 'running';
+  }
+  function awaitApproval(){
+    D.phase = 'awaiting'; status('awaiting approval','run');
+    logLine('warn','manual approval required for prod \u2014 click Approve');
+    btn.disabled = false; btn.textContent = '\u2713 approve'; btn.classList.add('approve');
+  }
+  function approve(){
+    btn.classList.remove('approve'); btn.textContent = 'deploying\u2026'; btn.disabled = true;
+    logLine('ok','approved by @aniketdatar'); status('running','run'); D.phase = 'running';
+  }
+  function succeed(){ D.version++; finish('deployed \u2713 ' + D.hash + ' live', 'ok'); }
+  function finish(text, kind){
+    D.phase = 'done'; status(text, kind);
+    const g = geom(); for (let i = 0; i < 3; i++) D.rings.push({ x:g.nx(3), y:g.y, r:6+i*4, a:.4 });
+    btn.disabled = false; btn.textContent = '\u25b6 deploy'; btn.classList.remove('approve');
+  }
+
+  function startDeploy(){
+    if (D.phase === 'running') return;
+    if (D.phase === 'awaiting'){ approve(); return; }
+    clearLog(); resetStages(); D.pods = [0,0,0]; D.podPop = [0,0,0]; D.rings.length = 0;
+    D.hash = newHash(); D.elapsed = 0; D.stepTimer = 0; D.queue = [];
+    D.phase = 'running'; btn.disabled = true; btn.textContent = 'deploying\u2026';
+    buildQueue();
+    if (REDUCED){
+      let guard = 0;
+      while (D.queue.length && guard++ < 200){ const s = D.queue.shift(); s.run(); if (D.phase === 'awaiting') approve(); }
       draw();
     }
   }
-  btn.addEventListener('click', e => { e.stopPropagation(); deploy(); });
-  cv.addEventListener('click', deploy);
+  btn.addEventListener('click', startDeploy);
+  if (envSeg) envSeg.addEventListener('click', e => {
+    const b = e.target.closest('button[data-env]');
+    if (!b || D.phase === 'running' || D.phase === 'awaiting') return;
+    D.env = b.dataset.env;
+    [...envSeg.children].forEach(c => { const on = c === b; c.classList.toggle('on', on); c.setAttribute('aria-pressed', on); });
+    status('ready \u00b7 ' + D.env, '');
+  });
+  if (chaosEl) chaosEl.addEventListener('change', () => { D.chaos = chaosEl.checked; });
 
-  function geom(){
-    const y = H * 0.42, x0 = W * 0.08, x1 = W * 0.78;
-    return { y, x0, x1, nx: p => x0 + (x1 - x0) * p };
-  }
-
-  function step(){
-    t += 0.016;
-    if (D.phase === 'run'){
-      D.prog += 0.013;            // ~1.3s per stage
-      D.logShown += 1.3;
-      // rolling update during final stage
-      if (D.stage === 3){
-        const r = Math.min(2, Math.floor(Math.max(0, (D.prog - 0.4) / 0.6) * 3));
-        if (r > D.rolled){ D.rolled = r; D.podFlip[r] = t; }
-      }
-      if (D.prog >= 1){
-        const { y, nx } = geom();
-        D.rings.push({ x: nx(STAGES[D.stage].p), y, r: 6, a: .5 });
-        D.stage++; D.prog = 0; D.logShown = 0;
-        if (D.stage > 3){
-          D.version++; D.phase = 'done'; D.hold = 0;
-          // celebratory burst on k8s node
-          for (let i = 0; i < 3; i++) D.rings.push({ x: nx(1), y, r: 6 + i*4, a: .45 });
-          btn.disabled = false; btn.textContent = '\u25b6 deploy';
-        }
-      }
-    } else if (D.phase === 'done'){
-      if (++D.hold > 200) D.phase = 'idle';
+  /* ---------- engine tick ---------- */
+  function step(dt){
+    t += dt/1000;
+    if (D.phase !== 'running') return;
+    D.elapsed += dt;
+    if (D.activeStage) D.workArc = Math.min(1, D.workArc + dt/900);
+    D.stepTimer += dt;
+    let guard = 0;
+    while (D.queue.length && D.phase === 'running' && guard++ < 60){
+      const s = D.queue[0];
+      if (D.stepTimer >= s.delay){ D.stepTimer -= s.delay; D.queue.shift(); s.run(); }
+      else break;
     }
+    renderStatus();
   }
 
-  function check(x, y, c){
-    ctx.strokeStyle = c; ctx.lineWidth = 1.6; ctx.beginPath();
-    ctx.moveTo(x - 3.2, y + 0.4); ctx.lineTo(x - 0.8, y + 2.8); ctx.lineTo(x + 3.6, y - 2.6);
-    ctx.stroke();
-  }
+  /* ---------- drawing ---------- */
+  function check(x, y, c){ ctx.strokeStyle = c; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.moveTo(x-3.2,y+.4); ctx.lineTo(x-.8,y+2.8); ctx.lineTo(x+3.6,y-2.6); ctx.stroke(); }
+  function cross(x, y, c){ ctx.strokeStyle = c; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.moveTo(x-2.6,y-2.6); ctx.lineTo(x+2.6,y+2.6); ctx.moveTo(x+2.6,y-2.6); ctx.lineTo(x-2.6,y+2.6); ctx.stroke(); }
 
   function draw(){
     ctx.clearRect(0, 0, W, H);
     const { y, x0, x1, nx } = geom();
-    const violet = cssVar('--violet'), magenta = cssVar('--magenta'), amber = cssVar('--amber');
-    const cols = [violet, magenta, amber, violet];
-    const ink = themeInk();
-    const faint = ink.text;
+    const ink = themeInk(), violet = cssVar('--violet'), magenta = cssVar('--magenta'),
+          amber = cssVar('--amber'), ok = cssVar('--ok'), err = cssVar('--err');
 
-    // base line
     ctx.strokeStyle = ink.line; ctx.lineWidth = 1;
     ctx.beginPath(); ctx.moveTo(x0, y); ctx.lineTo(x1, y); ctx.stroke();
 
-    // completed segment lights up during a run
-    if (D.phase === 'run' && D.stage > 0){
-      ctx.strokeStyle = magenta; ctx.globalAlpha = .35; ctx.lineWidth = 1.5;
-      ctx.beginPath(); ctx.moveTo(x0, y); ctx.lineTo(nx(STAGES[D.stage - 1].p), y); ctx.stroke();
+    let last = -1; STAGES.forEach((s, i) => { if (D.stageStatus[s] === 'passed' || D.stageStatus[s] === 'running') last = Math.max(last, i); });
+    if (last > 0){ ctx.strokeStyle = magenta; ctx.globalAlpha = .4; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.moveTo(x0, y); ctx.lineTo(nx(last), y); ctx.stroke(); ctx.globalAlpha = 1; }
+
+    if (D.phase === 'idle' || D.phase === 'done' || D.phase === 'failed'){
+      for (let i = 0; i < 3; i++){ const tt = (t*0.22 + i/3) % 1; ctx.beginPath(); ctx.arc(x0+(x1-x0)*tt, y, 2.1, 0, 7); ctx.fillStyle = [violet,magenta,amber][i%3]; ctx.globalAlpha = .25; ctx.fill(); }
       ctx.globalAlpha = 1;
     }
 
-    // idle ambient packets
-    if (D.phase !== 'run'){
-      for (let i = 0; i < 3; i++){
-        const tt = (t * 0.22 + i / 3) % 1;
-        ctx.beginPath(); ctx.arc(x0 + (x1 - x0) * tt, y, 2.2, 0, 7);
-        ctx.fillStyle = cols[i % 3]; ctx.globalAlpha = .3; ctx.fill();
-      }
-      ctx.globalAlpha = 1;
-    }
-
-    // traveling commit packet + per-stage work arc
-    if (D.phase === 'run'){
-      const s = D.stage, st = STAGES[s];
-      const px = (s > 0 && D.prog < 0.4)
-        ? nx(STAGES[s-1].p) + (nx(st.p) - nx(STAGES[s-1].p)) * (D.prog / 0.4)
-        : nx(st.p);
-      ctx.beginPath(); ctx.arc(px, y, 3.2, 0, 7);
-      ctx.fillStyle = amber; ctx.fill();
-      // work progress arc around active node
-      const work = (s === 0) ? D.prog : Math.max(0, (D.prog - 0.4) / 0.6);
-      if (work > 0){
-        ctx.beginPath(); ctx.arc(nx(st.p), y, 9, -Math.PI/2, -Math.PI/2 + work * Math.PI * 2);
-        ctx.strokeStyle = amber; ctx.lineWidth = 1.6; ctx.stroke();
-      }
-    }
-
-    // rings
-    D.rings = D.rings.filter(rg => rg.a > 0.03);
-    D.rings.forEach(rg => {
-      ctx.beginPath(); ctx.arc(rg.x, rg.y, rg.r, 0, 7);
-      ctx.strokeStyle = magenta; ctx.globalAlpha = rg.a; ctx.lineWidth = 1.2; ctx.stroke();
-      ctx.globalAlpha = 1;
-      if (!REDUCED){ rg.r += 0.6; rg.a *= 0.95; }
-    });
-
-    // nodes
     ctx.font = '10px JetBrains Mono, monospace'; ctx.textAlign = 'center';
-    STAGES.forEach((st, i) => {
-      const x = nx(st.p);
-      const doneNode = (D.phase === 'run' && i < D.stage) || D.phase === 'done' ||
-                       (D.phase === 'idle' && false);
-      ctx.beginPath(); ctx.arc(x, y, 5, 0, 7);
-      ctx.fillStyle = cssVar('--bg-2'); ctx.fill();
-      ctx.lineWidth = 1.4; ctx.strokeStyle = cols[i];
-      const active = D.phase === 'run' && i === D.stage;
-      ctx.globalAlpha = active ? 1 : (doneNode ? .9 : .45);
-      ctx.stroke(); ctx.globalAlpha = 1;
-      if (doneNode) check(x, y, cols[i]);
-      ctx.fillStyle = faint;
-      ctx.fillText(st.label, x, y + 24);
+    STAGES.forEach((name, i) => {
+      const x = nx(i), st = D.stageStatus[name];
+      const col = st === 'failed' ? err : st === 'passed' ? ok : st === 'running' ? amber : ink.line;
+      if (st === 'running'){
+        ctx.beginPath(); ctx.arc(x, y, 9, -Math.PI/2, -Math.PI/2 + D.workArc*Math.PI*2); ctx.strokeStyle = amber; ctx.lineWidth = 1.6; ctx.stroke();
+        const pulse = 0.5 + 0.5*Math.sin(t*5);
+        ctx.beginPath(); ctx.arc(x, y, 5+pulse*1.5, 0, 7); ctx.strokeStyle = amber; ctx.globalAlpha = .4; ctx.stroke(); ctx.globalAlpha = 1;
+      }
+      ctx.beginPath(); ctx.arc(x, y, 5, 0, 7); ctx.fillStyle = cssVar('--bg-2'); ctx.fill();
+      ctx.strokeStyle = col; ctx.lineWidth = 1.5; ctx.globalAlpha = st === 'pending' ? .5 : 1; ctx.stroke(); ctx.globalAlpha = 1;
+      if (st === 'passed') check(x, y, ok);
+      else if (st === 'failed') cross(x, y, err);
+      ctx.fillStyle = ink.text; ctx.fillText(name, x, y+22);
     });
 
-    // pod cluster (rolling update), right side
-    const podX = W * 0.86, podY = y - 8, size_ = 13, gap = 19;
-    ctx.textAlign = 'center'; ctx.fillStyle = faint;
-    ctx.fillText('pods', podX + gap, podY - 12);
-    const oldC = (D.version % 2 === 0) ? violet : amber;
-    const newC = (D.version % 2 === 0) ? amber : violet;
-    for (let i = 0; i < 3; i++){
-      const flipped = (D.phase === 'run' && D.stage === 3 && i <= D.rolled) ||
-                      D.phase === 'done' || D.phase === 'idle';
-      // pop scale shortly after flip
-      const dt = t - D.podFlip[i];
-      const pop = (D.podFlip[i] > 0 && dt < 0.5) ? 1 + Math.sin(dt / 0.5 * Math.PI) * 0.25 : 1;
-      const s_ = size_ * pop, ox = podX + i * gap;
-      ctx.fillStyle = flipped ? newC : oldC;
-      ctx.globalAlpha = flipped ? .85 : .45;
-      const r_ = 3.5;
-      ctx.beginPath();
-      ctx.roundRect ? ctx.roundRect(ox - s_/2, podY - s_/2, s_, s_, r_)
-                    : ctx.rect(ox - s_/2, podY - s_/2, s_, s_);
-      ctx.fill();
-      ctx.globalAlpha = 1;
+    if (D.phase === 'running' && D.activeStage){
+      const idx = STAGES.indexOf(D.activeStage);
+      if (idx > 0 && D.workArc < 0.5){
+        const p = D.workArc/0.5, px = nx(idx-1) + (nx(idx)-nx(idx-1))*p;
+        ctx.beginPath(); ctx.arc(px, y, 3, 0, 7); ctx.fillStyle = amber; ctx.fill();
+      }
     }
-    ctx.fillStyle = faint;
-    const ready = (D.phase === 'run' && D.stage === 3) ? (D.rolled + 1) : 3;
-    ctx.fillText(`${Math.max(0, ready)}/3 ready \u00b7 v${D.version}`, podX + gap, podY + 26);
 
-    // log line, typewriter
-    ctx.textAlign = 'left'; ctx.fillStyle = faint;
-    let log;
-    if (D.phase === 'run'){
-      const full = `[${D.hash}] ${STAGES[D.stage] ? STAGES[D.stage].log : ''}`;
-      log = full.slice(0, Math.floor(D.logShown)) + (Math.sin(t * 8) > 0 ? '\u258c' : '');
-    } else if (D.phase === 'done'){
-      log = `deployed \u2713 ${D.hash} live \u00b7 v${D.version}`;
-    } else {
-      log = 'press deploy to ship a commit \u2192';
+    D.rings = D.rings.filter(r => r.a > 0.03);
+    D.rings.forEach(r => { ctx.beginPath(); ctx.arc(r.x, r.y, r.r, 0, 7); ctx.strokeStyle = magenta; ctx.globalAlpha = r.a; ctx.lineWidth = 1.2; ctx.stroke(); ctx.globalAlpha = 1; if (!REDUCED){ r.r += 0.6; r.a *= 0.95; } });
+
+    const podX = W*0.82, podY = y, gap = Math.min(20, (W*0.16)/2.2), sz = 12;
+    const oldC = (D.version % 2 === 0) ? violet : amber, newC = (D.version % 2 === 0) ? amber : violet;
+    ctx.textAlign = 'center'; ctx.fillStyle = ink.text; ctx.font = '9px JetBrains Mono, monospace';
+    ctx.fillText('pods', podX + gap, podY - 13);
+    for (let i = 0; i < 3; i++){
+      const dtp = t - D.podPop[i], pop = (D.podPop[i] > 0 && dtp < 0.5) ? 1 + Math.sin(dtp/0.5*Math.PI)*0.25 : 1;
+      const s_ = sz*pop, ox = podX + i*gap;
+      ctx.fillStyle = D.pods[i] === 1 ? newC : oldC; ctx.globalAlpha = D.pods[i] === 1 ? .85 : .4;
+      rrect(ctx, ox-s_/2, podY-s_/2, s_, s_, 3); ctx.fill(); ctx.globalAlpha = 1;
     }
-    ctx.fillText(log, 14, H - 16);
   }
 
-  function frame(){ step(); draw(); raf = requestAnimationFrame(frame); }
-  const start = () => { if (!running && !REDUCED){ running = true; raf = requestAnimationFrame(frame); } };
+  function frame(ts){ const dt = Math.min(48, ts - (D._last || ts)); D._last = ts; step(dt); draw(); raf = requestAnimationFrame(frame); }
+  const start = () => { if (!running && !REDUCED){ running = true; D._last = 0; raf = requestAnimationFrame(frame); } };
   const stop  = () => { running = false; cancelAnimationFrame(raf); };
 
-  size();
-  THEME_HOOKS.push(() => draw());
+  function size(){
+    const r = wrap.getBoundingClientRect(), dpr = Math.min(devicePixelRatio || 1, 2);
+    cv.width = Math.max(1, r.width*dpr); cv.height = Math.max(1, r.height*dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0); W = r.width; H = r.height; draw();
+  }
+  size(); status('ready \u00b7 ' + D.env, '');
+  THEME_HOOKS.push(() => { draw(); renderStatus(); });
   addEventListener('resize', () => requestAnimationFrame(size), { passive:true });
-  if ('IntersectionObserver' in window)
-    new IntersectionObserver(es => es.forEach(e => e.isIntersecting ? start() : stop()), { threshold:.1 }).observe(cv);
+  if ('IntersectionObserver' in window) new IntersectionObserver(es => es.forEach(e => e.isIntersecting ? start() : stop()), { threshold:.05 }).observe(cv);
   else start();
   document.addEventListener('visibilitychange', () => document.hidden ? stop() : start());
 })();
