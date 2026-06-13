@@ -299,6 +299,8 @@ section{padding:48px 0}
 .card code{font-family:var(--mono);font-size:.85em;background:rgba(255,255,255,.06);padding:.06em .4em;border-radius:5px;color:var(--fg)}
 .card .stack{font-family:var(--mono);font-size:.82rem;color:var(--faint);margin-top:.3rem}
 .card .stack b{color:var(--violet);font-weight:500}
+.card .stack a{color:var(--magenta);font-weight:500}
+.card .stack a:hover{text-decoration:underline}
 
 /* stack tags + icon wall */
 .tagwall{display:flex;flex-wrap:wrap;gap:.5rem}
@@ -347,6 +349,9 @@ section{padding:48px 0}
 .anim-strip.interactive{height:200px;cursor:pointer}
 .anim-strip canvas{display:block;width:100%;height:100%}
 .strip-label{position:absolute;top:10px;left:14px;font-family:var(--mono);font-size:.68rem;letter-spacing:.04em;color:var(--faint);pointer-events:none}
+/* contextual mini-canvas at the top of a card */
+.card-anim{position:relative;height:74px;margin:-2px 0 16px;border-radius:10px;overflow:hidden}
+.card-anim canvas{display:block;width:100%;height:100%}
 .deploy-btn{position:absolute;top:11px;right:12px;z-index:2;padding:.4rem .8rem;font-size:.78rem;border-radius:10px}
 .deploy-btn:disabled{opacity:.55;cursor:default}
 
@@ -477,6 +482,7 @@ footer a:hover{color:var(--magenta)}
     </div>
     <div class="grid cols-2">
       <article class="card" data-reveal>
+        <div class="card-anim"><canvas id="animCost" aria-hidden="true"></canvas></div>
         <h3>Cost Intelligence &amp; Billing Reconciliation</h3>
         <p>End-to-end pipelines that normalize provider bills (EA/MCA/GCP/AWS/OCI) to SKU-level usage, map to accounts/projects, and surface anomalies for audits and exports.</p>
         <ul>
@@ -486,6 +492,7 @@ footer a:hover{color:var(--magenta)}
         </ul>
       </article>
       <article class="card" data-reveal>
+        <div class="card-anim"><canvas id="animGpu" aria-hidden="true"></canvas></div>
         <h3>Automated GPU Provisioning &amp; Governance</h3>
         <p>Declarative flows to create tenants/subscriptions, allocate NVIDIA GPU SKUs, map billing IDs, and enforce quota + policy guardrails.</p>
         <ul>
@@ -495,6 +502,7 @@ footer a:hover{color:var(--magenta)}
         </ul>
       </article>
       <article class="card" data-reveal>
+        <div class="card-anim"><canvas id="animKube" aria-hidden="true"></canvas></div>
         <h3>Managed Kubeflow: Auto-Install on Clusters</h3>
         <p>Automated, repeatable installation of managed Kubeflow on Kubernetes clusters with standard policies, integration hooks, and operational checks.</p>
         <ul>
@@ -504,6 +512,7 @@ footer a:hover{color:var(--magenta)}
         </ul>
       </article>
       <article class="card" data-reveal>
+        <div class="card-anim"><canvas id="animDevex" aria-hidden="true"></canvas></div>
         <h3>DevEx Automation: PR Auto-Approvals</h3>
         <p>Safe auto-approval windows for specific branches/paths (e.g. <code>Replica</code> or <code>prod</code>, only <code>track1.list</code>/<code>track2.list</code> diffs), reducing toil while preserving controls.</p>
         <ul>
@@ -552,24 +561,28 @@ footer a:hover{color:var(--magenta)}
     </div>
     <div class="grid cols-2">
       <article class="card" data-reveal>
+        <div class="card-anim"><canvas id="animHcmp" aria-hidden="true"></canvas></div>
         <h3>HCMP FinOps Core</h3>
-        <p>Multi-provider cost normalization, anomaly detection, and billing exports supporting both consumption-based and auto-metering billing models.</p>
+        <p>A single control plane that unifies multiple cloud providers — cost management, observability, governance, ITSM, and SaaS integrations — into one platform, with anomaly detection and billing exports across consumption and auto-metering models.</p>
         <div class="stack"><b>stack</b> · K8s · Helm · ArgoCD · Oracle/BigQuery · Spring · Python</div>
       </article>
       <article class="card" data-reveal>
-        <h3>GPU Provisioning Orchestrator</h3>
-        <p>Automated GPU SKU provisioning, mapping SKUs to billing accounts, quota/policy guardrails, and usage tracking.</p>
-        <div class="stack"><b>stack</b> · Kubernetes · Helm/YAML · ArgoCD · Vault</div>
+        <div class="card-anim"><canvas id="animTender" aria-hidden="true"></canvas></div>
+        <h3>TenderChain</h3>
+        <p>Decentralized tender-management dApp: government officers, contractors, and verifiers transact on-chain with stake-based security, encrypted bidding, and milestone verification — evidence pinned to IPFS for tamper-proof transparency.</p>
+        <div class="stack"><b>stack</b> · Solidity · Truffle · Web3 · IPFS · Node/Mongo · <a href="https://github.com/D4T4R/TenderChain" target="_blank" rel="noopener">repo ↗</a></div>
       </article>
       <article class="card" data-reveal>
+        <div class="card-anim"><canvas id="animInstaller" aria-hidden="true"></canvas></div>
         <h3>Managed Kubeflow Installer</h3>
         <p>Repeatable Kubeflow auto-installation on Kubernetes clusters with validation checks and environment parity.</p>
         <div class="stack"><b>stack</b> · GitOps · Helm/YAML · Kubernetes</div>
       </article>
       <article class="card" data-reveal>
-        <h3>Quant Lab</h3>
-        <p>Pricing engines, greeks, Monte Carlo, and strategy payoff visualizers.</p>
-        <div class="stack"><b>stack</b> · Python · NumPy · Matplotlib · notebooks + scripts</div>
+        <div class="card-anim"><canvas id="animAnon" aria-hidden="true"></canvas></div>
+        <h3>GoAnon</h3>
+        <p>A layered privacy bootstrap for Linux: chained Tor + obfs4, two-level OpenVPN, randomized proxychains, VPS SOCKS tunnel, and VirtualBox isolation — all behind an nftables kill-switch that fails closed.</p>
+        <div class="stack"><b>stack</b> · Shell · Tor/obfs4 · OpenVPN · nftables · I2P/IPFS · <a href="https://github.com/D4T4R/GoAnon" target="_blank" rel="noopener">repo ↗</a></div>
       </article>
     </div>
   </section>
@@ -1182,6 +1195,300 @@ makeStrip('mcCanvas',
     ctx.fillText(`${paths.length} paths · ITM ${Math.round(itm * 100)}%`, w - 12, 20);
     if (m < n) ctx.fillText('simulating\u2026', w - 12, 34);
     else ctx.fillText('terminal dist \u2192', w - 12, 34);
+  });
+
+/* =========================================================
+   CONTEXTUAL CARD ANIMATIONS (reuse makeStrip engine)
+   ========================================================= */
+function rrect(ctx, x, y, w, h, r){
+  ctx.beginPath();
+  if (ctx.roundRect) ctx.roundRect(x, y, w, h, Math.min(r, Math.abs(w)/2, Math.abs(h)/2));
+  else ctx.rect(x, y, w, h);
+}
+const SPIN = ['\u280b','\u2819','\u2839','\u2838','\u283c','\u2834','\u2826','\u2827','\u2807','\u280f'];
+
+/* 1 — Cost reconciliation: provider bars breathe, an anomaly bar breaches budget */
+makeStrip('animCost',
+  (w, h) => ({ w, h, t:0, n:6, anomaly:3, seed:Array.from({length:6}, () => Math.random()*6.28) }),
+  (ctx, s) => {
+    const { w, h, n, seed } = s; if (!s.static) s.t += 0.02;
+    ctx.clearRect(0, 0, w, h);
+    const ink = themeInk(), violet = cssVar('--violet'), magenta = cssVar('--magenta'), amber = cssVar('--amber');
+    const cols = [violet, magenta, amber], pad = 10, base = h - 12, top = 22;
+    const span = w - pad*2, gap = span/n, bw = gap*0.56, thr = top + (base-top)*0.30;
+
+    ctx.setLineDash([3,4]); ctx.strokeStyle = ink.dash; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(pad, thr); ctx.lineTo(w-pad, thr); ctx.stroke(); ctx.setLineDash([]);
+
+    for (let i = 0; i < n; i++){
+      const x = pad + gap*i + (gap-bw)/2;
+      const amp = s.static ? 0.5 : (0.5 + 0.5*Math.sin(s.t + seed[i]));
+      const isAnom = i === s.anomaly;
+      const spike = isAnom ? (s.static ? 1 : Math.max(0, Math.sin(s.t*0.6))) : 0;
+      let hgt = (base-top)*(0.22 + 0.45*amp) + (isAnom ? (base-top)*0.5*spike : 0);
+      hgt = Math.min(hgt, base-top); const y = base - hgt;
+      const breach = isAnom && y < thr;
+      ctx.fillStyle = breach ? amber : cols[i%3]; ctx.globalAlpha = isAnom ? .9 : .6;
+      rrect(ctx, x, y, bw, hgt, 3); ctx.fill(); ctx.globalAlpha = 1;
+      if (breach){ ctx.strokeStyle = amber; ctx.lineWidth = 1.4; rrect(ctx, x-1.5, y-1.5, bw+3, hgt+3, 4); ctx.stroke(); }
+    }
+    ctx.strokeStyle = ink.line; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(pad, base); ctx.lineTo(w-pad, base); ctx.stroke();
+
+    if (!s.static){
+      const sx = pad + ((s.t*0.16) % 1) * span;
+      const g = ctx.createLinearGradient(sx-14, 0, sx+14, 0);
+      g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(.5, magenta); g.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.globalAlpha = .22; ctx.fillStyle = g; ctx.fillRect(sx-14, top, 28, base-top); ctx.globalAlpha = 1;
+    }
+    ctx.font = '8px JetBrains Mono, monospace'; ctx.fillStyle = ink.text; ctx.textAlign = 'left';
+    ctx.fillText('cost / provider \u00b7 anomaly watch', pad, 11);
+  });
+
+/* 2 — GPU provisioning: a rack of SKUs allocates cell by cell, holds, recycles */
+makeStrip('animGpu',
+  (w, h) => ({ w, h, k:0, hold:0, rows:2, colsN:6 }),
+  (ctx, s) => {
+    const { w, h, rows, colsN } = s, n = rows*colsN;
+    if (s.static) s.k = 8;
+    else { if (s.k < n) s.k += 0.05; else if (++s.hold > 150){ s.k = 0; s.hold = 0; } }
+    ctx.clearRect(0, 0, w, h);
+    const ink = themeInk(), violet = cssVar('--violet'), amber = cssVar('--amber');
+    const pad = 10, top = 20, cw = (w-pad*2)/colsN, ch = (h-top-4)/rows;
+    const gw = cw*0.74, gh = ch*0.6, alloc = Math.floor(s.k);
+
+    for (let i = 0; i < n; i++){
+      const r = Math.floor(i/colsN), c = i % colsN;
+      const x = pad + c*cw + (cw-gw)/2, y = top + r*ch + (ch-gh)/2;
+      const filled = i < alloc, active = i === alloc && !s.static;
+      if (filled){ ctx.fillStyle = violet; ctx.globalAlpha = .8; rrect(ctx, x, y, gw, gh, 3); ctx.fill(); }
+      else if (active){ const p = s.k - alloc; ctx.fillStyle = amber; ctx.globalAlpha = .3 + .5*p; rrect(ctx, x, y, gw, gh, 3); ctx.fill(); }
+      else { ctx.globalAlpha = 1; ctx.strokeStyle = ink.line; ctx.lineWidth = 1; rrect(ctx, x, y, gw, gh, 3); ctx.stroke(); }
+      ctx.globalAlpha = 1;
+    }
+    ctx.font = '8px JetBrains Mono, monospace'; ctx.fillStyle = ink.text; ctx.textAlign = 'left';
+    ctx.fillText('gpu sku allocation', pad, 11);
+    ctx.textAlign = 'right';
+    ctx.fillText(`${Math.min(alloc, n)}/${n} allocated`, w-pad, 11);
+  });
+
+/* 3 — Kubeflow auto-install: components fly in and dock onto cluster nodes */
+makeStrip('animKube',
+  (w, h) => ({ w, h, c:0, hold:0, total:9 }),
+  (ctx, s) => {
+    const { w, h, total } = s;
+    if (s.static) s.c = total;
+    else { if (s.c < total) s.c += 0.035; else if (++s.hold > 150){ s.c = 0; s.hold = 0; } }
+    ctx.clearRect(0, 0, w, h);
+    const ink = themeInk(), violet = cssVar('--violet'), magenta = cssVar('--magenta'), amber = cssVar('--amber');
+    const cols = [violet, magenta, amber];
+    const pad = 12, gap = 10, nodeY = h*0.42, nodeH = h - nodeY - 8;
+    const nodeW = (w - pad*2 - gap*2)/3, placed = Math.floor(s.c);
+
+    // cluster nodes
+    for (let nIdx = 0; nIdx < 3; nIdx++){
+      const nx = pad + nIdx*(nodeW+gap);
+      ctx.strokeStyle = ink.line; ctx.lineWidth = 1; rrect(ctx, nx, nodeY, nodeW, nodeH, 5); ctx.stroke();
+      // docked components (3 slots per node)
+      for (let i = 0; i < total; i++){
+        if (i % 3 !== nIdx) continue;
+        const slot = Math.floor(i/3); if (i >= placed) continue;
+        const sq = 7, sx = nx + 7 + slot*(sq+5), sy = nodeY + nodeH/2 - sq/2;
+        ctx.fillStyle = cols[nIdx]; ctx.globalAlpha = .85; rrect(ctx, sx, sy, sq, sq, 2); ctx.fill(); ctx.globalAlpha = 1;
+      }
+    }
+    // in-flight component
+    if (!s.static && s.c < total){
+      const i = placed, nIdx = i % 3, slot = Math.floor(i/3), p = s.c - placed;
+      const nx = pad + nIdx*(nodeW+gap), sq = 7;
+      const tx = nx + 7 + slot*(sq+5), ty = nodeY + nodeH/2 - sq/2;
+      const fx = w*0.5, fy = 6;
+      const cx = fx + (tx-fx)*p, cy = fy + (ty-fy)*(p*p);
+      ctx.fillStyle = amber; rrect(ctx, cx, cy, sq, sq, 2); ctx.fill();
+    }
+    ctx.font = '8px JetBrains Mono, monospace'; ctx.fillStyle = ink.text; ctx.textAlign = 'left';
+    ctx.fillText('installing components \u2192 cluster', pad, 11);
+  });
+
+/* 4 — Kubeflow installer: terminal checklist ticking through with a progress bar */
+makeStrip('animInstaller',
+  (w, h) => ({ w, h, t:0, idx:0, hold:0,
+    tasks:['apply namespace','install CRDs','deploy controllers','sync pipelines','enable katib','verify health'] }),
+  (ctx, s) => {
+    const { w, h, tasks } = s; const T = tasks.length;
+    if (!s.static) s.t += 1;
+    if (s.static) s.idx = T;
+    else { if (s.idx < T) s.idx += 0.012; else if (++s.hold > 130){ s.idx = 0; s.hold = 0; } }
+    ctx.clearRect(0, 0, w, h);
+    const ink = themeInk(), violet = cssVar('--violet'), amber = cssVar('--amber');
+    const done = Math.floor(s.idx), pad = 12;
+    const lineY = [24, 37, 50]; // last 3 visible rows
+    ctx.font = '9px JetBrains Mono, monospace'; ctx.textAlign = 'left';
+
+    const start = Math.max(0, done - 2);
+    for (let row = 0; row < 3; row++){
+      const i = start + row; if (i > T) break;
+      const y = lineY[row];
+      if (i < done || (s.static && i < T)){ ctx.fillStyle = violet; ctx.fillText('\u2713 ' + tasks[i], pad, y); }
+      else if (i === done && i < T){ const sp = SPIN[Math.floor(s.t/4) % SPIN.length]; ctx.fillStyle = amber; ctx.fillText(sp + ' ' + tasks[i], pad, y); }
+      else if (i === T){ ctx.fillStyle = violet; ctx.fillText('\u2713 ready', pad, y); }
+    }
+    ctx.font = '8px JetBrains Mono, monospace'; ctx.fillStyle = ink.text; ctx.textAlign = 'right';
+    ctx.fillText(`${Math.min(done, T)}/${T}`, w-pad, 11);
+    ctx.textAlign = 'left'; ctx.fillText('helm install kubeflow', pad, 11);
+    // progress bar
+    const by = h-9, bw = w - pad*2, p = Math.min(1, s.idx / T);
+    ctx.fillStyle = ink.grid; rrect(ctx, pad, by, bw, 3, 2); ctx.fill();
+    ctx.fillStyle = violet; rrect(ctx, pad, by, bw*p, 3, 2); ctx.fill();
+  });
+
+/* helpers for the anonymity circuit */
+function randIp(){ return (10 + (Math.random()*240|0)) + '.' + (Math.random()*256|0) + '.' + (Math.random()*256|0) + '.' + (Math.random()*256|0); }
+function newCircuit(h){ const a = 24, b = h - 16; return [0,0,0].map(() => a + Math.random()*(b-a)); }
+
+/* 5 — DevEx: a PR diff is scanned top-to-bottom, then auto-approved */
+makeStrip('animDevex',
+  (w, h) => ({ w, h, scan:0, hold:0,
+    lines:[{g:'+',ln:0.62},{g:'+',ln:0.8},{g:' ',ln:0.45},{g:'-',ln:0.7},{g:'+',ln:0.55}] }),
+  (ctx, s) => {
+    const { w, h, lines } = s;
+    if (s.static) s.scan = 1.2;
+    else { if (s.scan < 1.4) s.scan += 0.012; else if (++s.hold > 120){ s.scan = 0; s.hold = 0; } }
+    ctx.clearRect(0, 0, w, h);
+    const ink = themeInk(), violet = cssVar('--violet'), magenta = cssVar('--magenta'), amber = cssVar('--amber');
+    const pad = 12, top = 20, gut = pad + 9, barMax = (w - gut - pad - 60);
+    const rowH = (h - top - 6) / lines.length;
+    ctx.font = '8px JetBrains Mono, monospace'; ctx.fillStyle = ink.text; ctx.textAlign = 'left';
+    ctx.fillText('PR auto-approve \u00b7 track*.list', pad, 11);
+
+    lines.forEach((L, i) => {
+      const y = top + i*rowH + rowH/2, scanned = s.scan*lines.length >= i + 0.5;
+      if (L.g !== ' '){ ctx.fillStyle = L.g === '+' ? violet : magenta; ctx.fillText(L.g, pad, y+3); }
+      ctx.globalAlpha = scanned ? 0.9 : 0.4;
+      ctx.fillStyle = L.g === '+' ? violet : L.g === '-' ? magenta : ink.grid;
+      rrect(ctx, gut, y-2.5, Math.max(6, barMax*L.ln), 5, 2); ctx.fill(); ctx.globalAlpha = 1;
+    });
+    if (!s.static && s.scan < 1){
+      const sy = top + s.scan*(h - top - 6);
+      ctx.strokeStyle = amber; ctx.globalAlpha = .7; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(pad, sy); ctx.lineTo(w-pad, sy); ctx.stroke(); ctx.globalAlpha = 1;
+    }
+    if (s.scan >= 1){
+      const p = Math.min(1, (s.scan - 1)/0.3), bw = 52, bh = 16, bx = w - pad - bw, by = h/2 - bh/2;
+      ctx.globalAlpha = p; ctx.fillStyle = violet; rrect(ctx, bx, by, bw, bh, 8); ctx.fill();
+      ctx.fillStyle = '#fff'; ctx.font = '8px JetBrains Mono, monospace'; ctx.textAlign = 'center';
+      ctx.fillText('\u2713 approved', bx + bw/2, by + bh/2 + 3); ctx.globalAlpha = 1; ctx.textAlign = 'left';
+    }
+  });
+
+/* 6 — HCMP: providers stream into one core that fans out to capabilities */
+makeStrip('animHcmp',
+  (w, h) => ({ w, h, t:0 }),
+  (ctx, s) => {
+    const { w, h } = s; if (!s.static) s.t += 0.03;
+    ctx.clearRect(0, 0, w, h);
+    const ink = themeInk(), violet = cssVar('--violet'), magenta = cssVar('--magenta'), amber = cssVar('--amber');
+    const cols = [violet, magenta, amber, violet];
+    const top = 18, lx = 16, coreX = w*0.5, py0 = top + 6, py1 = h - 8, coreY = (py0 + py1)/2;
+
+    for (let i = 0; i < 4; i++){
+      const py = py0 + (py1 - py0)*(i/3);
+      ctx.strokeStyle = ink.line; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(lx, py); ctx.lineTo(coreX, coreY); ctx.stroke();
+      const ph = s.static ? 0.5 : ((s.t*0.5 + i*0.25) % 1);
+      ctx.fillStyle = cols[i]; ctx.globalAlpha = .85;
+      ctx.beginPath(); ctx.arc(lx + (coreX-lx)*ph, py + (coreY-py)*ph, 1.8, 0, 7); ctx.fill(); ctx.globalAlpha = 1;
+      ctx.beginPath(); ctx.arc(lx, py, 2.6, 0, 7); ctx.fill();
+    }
+    const caps = ['cost','obsv','gov','itsm'], capX = w - 16;
+    for (let i = 0; i < 4; i++){
+      const cy = py0 + (py1 - py0)*(i/3);
+      ctx.strokeStyle = ink.line; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(coreX, coreY); ctx.lineTo(capX - 22, cy); ctx.stroke();
+      const lit = s.static ? true : Math.sin(s.t*1.4 - i) > 0.2;
+      ctx.fillStyle = lit ? amber : ink.grid; ctx.globalAlpha = lit ? .9 : .5;
+      ctx.beginPath(); ctx.arc(capX - 22, cy, 2.2, 0, 7); ctx.fill(); ctx.globalAlpha = 1;
+      ctx.font = '7px JetBrains Mono, monospace'; ctx.fillStyle = ink.text; ctx.textAlign = 'left';
+      ctx.fillText(caps[i], capX - 17, cy + 2.5);
+    }
+    const pulse = s.static ? 0 : 0.5 + 0.5*Math.sin(s.t*2);
+    ctx.beginPath(); ctx.arc(coreX, coreY, 8 + pulse*2, 0, 7);
+    ctx.fillStyle = cssVar('--bg-2'); ctx.fill(); ctx.strokeStyle = violet; ctx.lineWidth = 1.6; ctx.stroke();
+    ctx.fillStyle = violet; ctx.font = '7px JetBrains Mono, monospace'; ctx.textAlign = 'center';
+    ctx.fillText('HCMP', coreX, coreY + 2.5);
+    ctx.fillStyle = ink.text; ctx.font = '8px JetBrains Mono, monospace'; ctx.textAlign = 'left';
+    ctx.fillText('multi-cloud \u2192 one platform', lx - 2, 11);
+  });
+
+/* 7 — TenderChain: blocks link into a chain, each sealing an encrypted bid */
+makeStrip('animTender',
+  (w, h) => ({ w, h, t:0, n:0, max:5, hold:0 }),
+  (ctx, s) => {
+    const { w, h, max } = s; if (!s.static) s.t += 1;
+    if (s.static) s.n = max;
+    else { if (s.n < max){ if (s.t % 42 < 1) s.n++; } else if (++s.hold > 120){ s.n = 0; s.hold = 0; } }
+    ctx.clearRect(0, 0, w, h);
+    const ink = themeInk(), violet = cssVar('--violet'), magenta = cssVar('--magenta'), amber = cssVar('--amber');
+    const pad = 12, gap = 14, by = h*0.42, bh = 28;
+    const bw = (w - pad*2 - gap*(max-1)) / max;
+    ctx.font = '8px JetBrains Mono, monospace'; ctx.fillStyle = ink.text; ctx.textAlign = 'left';
+    ctx.fillText('blockchain \u00b7 sealed bids', pad, 11);
+
+    for (let i = 0; i < s.n; i++){
+      const x = pad + i*(bw + gap);
+      if (i > 0){ ctx.strokeStyle = magenta; ctx.globalAlpha = .6; ctx.lineWidth = 1.4;
+        ctx.beginPath(); ctx.moveTo(x - gap, by + bh/2); ctx.lineTo(x, by + bh/2); ctx.stroke(); ctx.globalAlpha = 1; }
+      ctx.strokeStyle = violet; ctx.lineWidth = 1.4; ctx.fillStyle = cssVar('--bg-2');
+      rrect(ctx, x, by, bw, bh, 4); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = ink.text; ctx.font = '7px JetBrains Mono, monospace'; ctx.textAlign = 'center';
+      ctx.fillText('0x' + ((i*37 + 11) & 255).toString(16).padStart(2,'0'), x + bw/2, by - 3);
+      // tiny padlock = encrypted bid
+      const lx = x + bw/2, ly = by + bh/2 + 2;
+      ctx.strokeStyle = amber; ctx.lineWidth = 1.2;
+      ctx.beginPath(); ctx.arc(lx, ly - 3, 2.2, Math.PI, 0); ctx.stroke();
+      ctx.fillStyle = amber; rrect(ctx, lx - 3, ly - 1, 6, 5, 1); ctx.fill();
+    }
+    if (!s.static && s.n < max){
+      const x = pad + s.n*(bw + gap);
+      ctx.globalAlpha = 0.3 + 0.3*Math.sin(s.t*0.2);
+      ctx.setLineDash([3,3]); ctx.strokeStyle = ink.dash; ctx.lineWidth = 1;
+      rrect(ctx, x, by, bw, bh, 4); ctx.stroke(); ctx.setLineDash([]); ctx.globalAlpha = 1;
+    }
+  });
+
+/* 8 — GoAnon: a packet hops a Tor circuit that reshuffles with a new exit IP */
+makeStrip('animAnon',
+  (w, h) => ({ w, h, ys:newCircuit(h), packet:0, ip:randIp() }),
+  (ctx, s) => {
+    const { w, h } = s;
+    const midY = (24 + (h - 16))/2;
+    if (!s.static){ s.packet += 0.012; if (s.packet >= 1){ s.packet = 0; s.ys = newCircuit(h); s.ip = randIp(); } }
+    ctx.clearRect(0, 0, w, h);
+    const ink = themeInk(), violet = cssVar('--violet'), magenta = cssVar('--magenta'), amber = cssVar('--amber');
+    const cx = 16, dx = w - 16, rx = [0.34, 0.54, 0.74].map(f => f*w);
+    const pts = [[cx,midY],[rx[0],s.ys[0]],[rx[1],s.ys[1]],[rx[2],s.ys[2]],[dx,midY]];
+    const segs = pts.length - 1;
+
+    for (let i = 0; i < segs; i++){
+      const active = !s.static && s.packet >= i/segs && s.packet <= (i+1)/segs;
+      ctx.strokeStyle = active ? magenta : ink.line; ctx.globalAlpha = active ? .9 : .5; ctx.lineWidth = active ? 1.5 : 1;
+      ctx.beginPath(); ctx.moveTo(pts[i][0], pts[i][1]); ctx.lineTo(pts[i+1][0], pts[i+1][1]); ctx.stroke(); ctx.globalAlpha = 1;
+    }
+    if (!s.static){
+      const seg = Math.min(segs - 1, Math.floor(s.packet*segs)), local = s.packet*segs - seg;
+      const px = pts[seg][0] + (pts[seg+1][0]-pts[seg][0])*local, py = pts[seg][1] + (pts[seg+1][1]-pts[seg][1])*local;
+      ctx.fillStyle = amber; ctx.globalAlpha = .3; ctx.beginPath(); ctx.arc(px, py, 5, 0, 7); ctx.fill();
+      ctx.globalAlpha = 1; ctx.beginPath(); ctx.arc(px, py, 2.6, 0, 7); ctx.fill();
+    }
+    const node = (x, y, r, c, fill) => { ctx.beginPath(); ctx.arc(x, y, r, 0, 7);
+      if (fill){ ctx.fillStyle = c; ctx.fill(); } else { ctx.fillStyle = cssVar('--bg-2'); ctx.fill(); ctx.strokeStyle = c; ctx.lineWidth = 1.4; ctx.stroke(); } };
+    node(cx, midY, 4, violet, true);
+    rx.forEach((x, i) => node(x, s.ys[i], 3.4, magenta, false));
+    node(dx, midY, 4, amber, true);
+    ctx.font = '7px JetBrains Mono, monospace'; ctx.fillStyle = ink.text; ctx.textAlign = 'center';
+    ctx.fillText('you', cx, midY + 13); ctx.fillText('dst', dx, midY + 13);
+    ctx.textAlign = 'left'; ctx.font = '8px JetBrains Mono, monospace';
+    ctx.fillText('tor circuit \u00b7 exit ' + s.ip, 12, 11);
   });
 
 /* =========================================================
