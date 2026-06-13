@@ -132,6 +132,21 @@ header{
 :root.light header{background:rgba(244,245,250,0.72)}
 :root.light .btn.primary{color:#fff}
 :root.light .brand .glyph::after{color:#fff}
+/* light mode: kill the milky veil — opaque cards, crisp icons, calmer page */
+:root.light{
+  --card:#ffffff;
+  --border:rgba(20,19,31,0.12);
+  --border-strong:rgba(20,19,31,0.18);
+  --shadow:0 10px 30px rgba(30,24,60,0.08);
+}
+:root.light body{
+  background:
+    radial-gradient(1100px 620px at 8% -8%, rgba(91,80,201,.05), transparent 55%),
+    radial-gradient(900px 560px at 96% -12%, rgba(177,74,147,.035), transparent 55%),
+    var(--bg);
+}
+:root.light .icon-wall img{opacity:.95;filter:grayscale(0) drop-shadow(0 1px 1px rgba(0,0,0,.10))}
+:root.light .tag,:root.light .chip{background:#fff}
 :root.light .surface-panel{
   background:
     radial-gradient(120% 120% at 50% 0%, rgba(91,80,201,.07), transparent 60%),
