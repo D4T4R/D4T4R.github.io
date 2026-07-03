@@ -184,6 +184,8 @@ nav{display:flex;align-items:center;justify-content:space-between;gap:12px;min-h
 .links a:hover::after{width:100%}
 
 .actions{display:flex;align-items:center;gap:8px}
+.hire-btn{padding:.42rem .8rem;font-size:.78rem;border-radius:10px;white-space:nowrap}
+@media (max-width:420px){.hire-btn{padding:.36rem .55rem;font-size:.72rem}}
 .icon-btn{
   display:inline-grid;place-items:center;width:38px;height:38px;border-radius:11px;
   background:transparent;border:1px solid var(--border-strong);color:var(--fg);
@@ -508,6 +510,7 @@ footer a:hover{color:var(--magenta)}
         <a href="#contact">contact</a>
       </div>
       <div class="actions">
+        <a id="hireBtn" class="btn primary hire-btn" href="mailto:aniketdatar@cyberservices.com?subject=Opportunity%20-%20redirected%20from%20portfolio&body=Hi%20Aniket%2C%0A%0AI%20came%20across%20your%20portfolio%20(d4t4r.github.io)%20and%20would%20like%20to%20discuss%20an%20opportunity%20with%20you.%0A%0ARole%20%2F%20Company%3A%0AWhat%20caught%20my%20eye%3A%0A%0ABest%20regards%2C">✦ For Recruiters</a>
         <button id="theme" class="icon-btn" type="button" aria-label="Toggle theme">☾</button>
         <button id="menu" class="nav-toggle icon-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="navmenu">☰</button>
       </div>
@@ -2062,8 +2065,24 @@ function bsPrice(type, S, K, T, sig, r){
     if (prevFocus && prevFocus.focus) prevFocus.focus();
   }
 
+  const HIRE_MAILTO = 'mailto:aniketdatar@cyberservices.com'
+    + '?subject=' + encodeURIComponent('Opportunity - redirected from portfolio')
+    + '&body=' + encodeURIComponent('Hi Aniket,\n\nI came across your portfolio (d4t4r.github.io) and would like to discuss an opportunity with you.\n\nRole / Company:\nWhat caught my eye:\n\nBest regards,\n');
+  function hireSeq(){
+    const lines = [
+      ['ok', 'locating candidate\u2026 found: <b>Aniket Datar</b>'],
+      ['ok', 'checking availability\u2026 open to opportunities'],
+      ['ok', '<b>Hiring Aniket Datar</b> \u2014 opening mail draft \u2192']
+    ];
+    if (REDUCED){ lines.forEach(l => print(l[1], l[0])); location.href = HIRE_MAILTO; return; }
+    lines.forEach((l, i) => setTimeout(() => {
+      print(l[1], l[0]);
+      if (i === lines.length - 1) setTimeout(() => { location.href = HIRE_MAILTO; }, 450);
+    }, i * 420));
+  }
+
   const CMDS = {
-    help(){ print('commands: <b>whoami</b> \u00b7 <b>projects</b> \u00b7 <b>stack</b> \u00b7 <b>contact</b> \u00b7 <b>ls</b> \u00b7 <b>goto &lt;section&gt;</b> \u00b7 <b>deploy [dev|staging|prod]</b> \u00b7 <b>theme</b> \u00b7 <b>clear</b> \u00b7 <b>exit</b>'); },
+    help(){ print('commands: <b>whoami</b> \u00b7 <b>projects</b> \u00b7 <b>stack</b> \u00b7 <b>contact</b> \u00b7 <b>hire</b> \u00b7 <b>ls</b> \u00b7 <b>goto &lt;section&gt;</b> \u00b7 <b>deploy [dev|staging|prod]</b> \u00b7 <b>theme</b> \u00b7 <b>clear</b> \u00b7 <b>exit</b>'); },
     whoami(){ print('Aniket Datar \u2014 DevOps engineer \u00b7 hybrid-cloud R&amp;D \u00b7 FinOps &amp; GPU provisioning by day, derivatives pricing by night.'); },
     projects(){ print('<span class="ac">HCMP FinOps Core</span> \u2014 multi-cloud cost platform\n<span class="ac">TenderChain</span> \u2014 on-chain tender management (Solidity/IPFS)\n<span class="ac">Managed Kubeflow Installer</span> \u2014 GitOps auto-install\n<span class="ac">GoAnon</span> \u2014 layered Linux anonymity (Tor/VPN/nftables)'); },
     stack(){ print('k8s \u00b7 helm \u00b7 argocd \u00b7 vault \u00b7 kubeflow \u00b7 oracle/bigquery \u00b7 spring \u00b7 python \u00b7 terraform \u00b7 prometheus/grafana'); },
@@ -2094,8 +2113,9 @@ function bsPrice(type, S, K, T, sig, r){
     theme(){ themeBtn.click(); print('theme \u2192 ' + (root.classList.contains('light') ? 'light' : 'dark')); },
     clear(){ out.innerHTML = ''; },
     exit(){ closeTerm(); },
+    hire(){ hireSeq(); },
     sudo(args){
-      if (args.join(' ') === 'hire-me'){ print('<b>Permission granted.</b> \u2192 aniketdatar@cyberservices.com \u2713'); }
+      if (args.join(' ') === 'hire-me'){ hireSeq(); }
       else print('guest is not in the sudoers file. This incident will be reported.');
     }
   };
