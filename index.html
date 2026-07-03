@@ -315,7 +315,16 @@ section{padding:48px 0}
 }
 .tag:hover{color:var(--fg);border-color:var(--magenta)}
 .caps{font-family:var(--mono);letter-spacing:.04em;text-transform:lowercase;font-weight:500;font-size:.78rem;color:var(--faint);margin-bottom:12px}
-.icon-wall{display:flex;flex-wrap:wrap;gap:13px 15px;align-items:center}
+.icon-wall{display:flex;flex-wrap:wrap;gap:13px 15px;align-items:center;position:relative}
+.icon-wall.magnify img{transition:filter .15s ease,opacity .15s ease}
+.icon-tip{
+  position:absolute;top:0;left:0;transform:translate(-50%,-100%);
+  padding:.22rem .55rem;border-radius:7px;white-space:nowrap;
+  background:var(--bg-2);border:1px solid var(--border-strong);
+  font-family:var(--mono);font-size:.68rem;color:var(--fg);
+  pointer-events:none;opacity:0;transition:opacity .12s ease;z-index:6;box-shadow:var(--shadow);
+}
+.icon-tip.show{opacity:1}
 .icon-wall img{
   width:38px;height:38px;object-fit:contain;opacity:.72;border-radius:8px;
   transition:transform .16s ease,opacity .16s ease,filter .16s ease;
@@ -716,6 +725,9 @@ footer a:hover{color:var(--magenta)}
         <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/yaml/yaml-original.svg" title="YAML" alt="YAML" width="40" height="40" loading="lazy"/>
         <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/tomcat/tomcat-original.svg" title="Apache Tomcat" alt="Apache Tomcat" width="40" height="40" loading="lazy"/>
         <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/web3js/web3js-original.svg" title="Web3.js" alt="Web3.js" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/zatosource/zato/main/code/zato-openapi/src/zato/openapi/app/static/swagger-ui/android-chrome-192x192.png" title="Zato" alt="Zato" width="40" height="40" loading="lazy"/>
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRivy-Oqgqx4JRPY18gvvMc-nXO7HMbu05zcQ&s" title="Apigee" alt="Apigee" width="40" height="40" loading="lazy"/>
+        <img src="https://avatars.githubusercontent.com/u/1393215" title="Zipline" alt="Zipline" width="40" height="40" loading="lazy"/>
       </div>
     </div>
   </section>
@@ -731,7 +743,7 @@ footer a:hover{color:var(--magenta)}
         <a href="https://git.io/streak-stats" target="_blank" rel="noopener" class="no-underline">
           <div class="img-wrap loading" data-remote aria-busy="true">
             <div class="skeleton" aria-hidden="true"></div>
-            <img src="https://github-readme-streak-stats.herokuapp.com/?user=d4t4r&theme=transparent&hide_border=true&short_numbers=true&date_format=M%20j[%2C%20Y]&ring=d984bd&fire=e8c98a&currStreakLabel=8d85e8&exclude_days=Sun%2CSat" alt="GitHub Streak graph for D4T4R" loading="lazy"/>
+            <img src="https://github-readme-streak-stats.herokuapp.com/?user=d4t4r&theme=microsoft-dark&card_width=550&hide_border=true&short_numbers=true&date_format=M%20j[%2C%20Y]&exclude_days=Sun%2CSat" alt="GitHub Streak graph for D4T4R" loading="lazy"/>
           </div>
         </a>
       </div>
@@ -1681,6 +1693,64 @@ if (!REDUCED && matchMedia('(pointer:fine)').matches){
     card.addEventListener('pointerleave', () => { card.style.transform = ''; });
   });
 }
+
+/* =========================================================
+   ICON DOCK — proximity magnification on the "also used" wall
+   ========================================================= */
+(function iconDock(){
+  if (REDUCED || !matchMedia('(pointer:fine)').matches) return; // CSS lift remains as fallback
+  const wall = document.querySelector('.icon-wall');
+  if (!wall) return;
+  const icons = [...wall.querySelectorAll('img')];
+  if (!icons.length) return;
+  const tip = document.createElement('div');
+  tip.className = 'icon-tip'; tip.setAttribute('aria-hidden', 'true');
+  wall.appendChild(tip);
+
+  let rect = null, centers = [], raf = 0, mx = 0, my = 0, inside = false;
+  const SIGMA = 80, GROW = 0.5, LIFT = 9;
+
+  function capture(){
+    rect = wall.getBoundingClientRect();
+    centers = icons.map(im => ({ x: im.offsetLeft + im.offsetWidth/2, y: im.offsetTop + im.offsetHeight/2 }));
+  }
+
+  function frame(){
+    raf = 0;
+    let best = -1, bestF = 0;
+    for (let i = 0; i < icons.length; i++){
+      const im = icons[i], c = centers[i];
+      const dx = mx - c.x, dy = my - c.y;
+      const f = Math.exp(-(dx*dx + dy*dy) / (2 * SIGMA * SIGMA));
+      im.style.transform = `translateY(${(-LIFT*f).toFixed(2)}px) scale(${(1 + GROW*f).toFixed(3)})`;
+      im.style.zIndex = 1 + Math.round(f * 100);
+      im.style.opacity = (0.72 + 0.28*f).toFixed(3);
+      im.style.filter = `grayscale(${(0.2*(1-f)).toFixed(3)}) drop-shadow(0 ${(3 + 6*f).toFixed(1)}px ${(5 + 9*f).toFixed(1)}px rgba(0,0,0,${(0.16 + 0.22*f).toFixed(3)}))`;
+      if (f > bestF){ bestF = f; best = i; }
+    }
+    if (best >= 0 && bestF > 0.55){
+      const c = centers[best], im = icons[best];
+      tip.textContent = im.title || im.alt || '';
+      tip.style.left = c.x + 'px';
+      tip.style.top = (c.y - im.offsetHeight/2 - 10) + 'px';
+      tip.classList.add('show');
+    } else tip.classList.remove('show');
+  }
+
+  wall.addEventListener('pointerenter', () => { inside = true; capture(); wall.classList.add('magnify'); });
+  wall.addEventListener('pointermove', e => {
+    if (!rect) capture();
+    mx = e.clientX - rect.left; my = e.clientY - rect.top;
+    if (!raf) raf = requestAnimationFrame(frame);
+  });
+  wall.addEventListener('pointerleave', () => {
+    inside = false; if (raf){ cancelAnimationFrame(raf); raf = 0; }
+    wall.classList.remove('magnify'); tip.classList.remove('show');
+    icons.forEach(im => { im.style.transform = ''; im.style.zIndex = ''; im.style.opacity = ''; im.style.filter = ''; });
+  });
+  addEventListener('resize', () => { if (inside) capture(); }, { passive:true });
+  addEventListener('scroll', () => { if (inside) rect = wall.getBoundingClientRect(); }, { passive:true });
+})();
 
 /* =========================================================
    SIGNATURE — animated implied volatility surface (three.js)
