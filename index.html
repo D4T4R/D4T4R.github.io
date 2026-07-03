@@ -315,14 +315,14 @@ section{padding:48px 0}
 }
 .tag:hover{color:var(--fg);border-color:var(--magenta)}
 .caps{font-family:var(--mono);letter-spacing:.04em;text-transform:lowercase;font-weight:500;font-size:.78rem;color:var(--faint);margin-bottom:12px}
-.icon-wall{display:flex;flex-wrap:wrap;gap:13px 15px;align-items:center;position:relative}
+.icon-wall{display:flex;flex-wrap:wrap;gap:15px 18px;align-items:center;position:relative}
 .icon-wall.magnify img{transition:filter .15s ease,opacity .15s ease}
 .icon-tip{
   position:absolute;top:0;left:0;transform:translate(-50%,-100%);
   padding:.22rem .55rem;border-radius:7px;white-space:nowrap;
   background:var(--bg-2);border:1px solid var(--border-strong);
   font-family:var(--mono);font-size:.68rem;color:var(--fg);
-  pointer-events:none;opacity:0;transition:opacity .12s ease;z-index:6;box-shadow:var(--shadow);
+  pointer-events:none;opacity:0;transition:opacity .12s ease;z-index:300;box-shadow:var(--shadow);
 }
 .icon-tip.show{opacity:1}
 .icon-wall img{
@@ -1706,9 +1706,14 @@ if (!REDUCED && matchMedia('(pointer:fine)').matches){
   const tip = document.createElement('div');
   tip.className = 'icon-tip'; tip.setAttribute('aria-hidden', 'true');
   wall.appendChild(tip);
+  // move names out of title attrs so the native browser tooltip never doubles ours
+  icons.forEach(im => {
+    im.dataset.name = im.getAttribute('title') || im.alt || '';
+    im.removeAttribute('title');
+  });
 
   let rect = null, centers = [], raf = 0, mx = 0, my = 0, inside = false;
-  const SIGMA = 80, GROW = 0.5, LIFT = 9;
+  const SIGMA = 65, GROW = 0.28, LIFT = 6;
 
   function capture(){
     rect = wall.getBoundingClientRect();
@@ -1723,14 +1728,14 @@ if (!REDUCED && matchMedia('(pointer:fine)').matches){
       const dx = mx - c.x, dy = my - c.y;
       const f = Math.exp(-(dx*dx + dy*dy) / (2 * SIGMA * SIGMA));
       im.style.transform = `translateY(${(-LIFT*f).toFixed(2)}px) scale(${(1 + GROW*f).toFixed(3)})`;
-      im.style.zIndex = 1 + Math.round(f * 100);
+      im.style.zIndex = 1 + Math.round(f * 50);
       im.style.opacity = (0.72 + 0.28*f).toFixed(3);
       im.style.filter = `grayscale(${(0.2*(1-f)).toFixed(3)}) drop-shadow(0 ${(3 + 6*f).toFixed(1)}px ${(5 + 9*f).toFixed(1)}px rgba(0,0,0,${(0.16 + 0.22*f).toFixed(3)}))`;
       if (f > bestF){ bestF = f; best = i; }
     }
     if (best >= 0 && bestF > 0.55){
       const c = centers[best], im = icons[best];
-      tip.textContent = im.title || im.alt || '';
+      tip.textContent = im.dataset.name || '';
       tip.style.left = c.x + 'px';
       tip.style.top = (c.y - im.offsetHeight/2 - 10) + 'px';
       tip.classList.add('show');
