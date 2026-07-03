@@ -400,6 +400,45 @@ section{padding:48px 0}
 .dc-status b{color:var(--muted);font-weight:500}
 .dc-status .dot{width:7px;height:7px;border-radius:50%;background:var(--faint);display:inline-block;margin-right:5px;vertical-align:middle}
 .dc-status .dot.run{background:var(--amber)} .dc-status .dot.ok{background:var(--ok)} .dc-status .dot.err{background:var(--err)}
+
+/* theme wipe (View Transitions) */
+::view-transition-old(root),::view-transition-new(root){animation:none;mix-blend-mode:normal}
+::view-transition-old(root){z-index:1}
+::view-transition-new(root){z-index:2}
+
+/* guest shell (press ~) */
+#guestTerm{
+  position:fixed;left:0;right:0;top:0;z-index:400;
+  background:rgba(7,7,13,.94);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border-strong);box-shadow:var(--shadow);
+  transform:translateY(-105%);transition:transform .22s ease;font-family:var(--mono);
+}
+#guestTerm.open{transform:translateY(0)}
+:root.light #guestTerm{background:rgba(244,245,250,.96)}
+.gt-head{display:flex;justify-content:space-between;gap:10px;padding:8px 16px;font-size:.72rem;color:var(--faint);border-bottom:1px solid var(--border)}
+.gt-out{max-height:34vh;overflow-y:auto;padding:10px 16px;font-size:.78rem;line-height:1.55;scrollbar-width:thin}
+.gt-l{white-space:pre-wrap;word-break:break-word;color:var(--muted)}
+.gt-l b{color:var(--fg);font-weight:600}
+.gt-l.cmd{color:var(--fg)}
+.gt-l.cmd .ps{color:var(--violet)}
+.gt-l .ac{color:var(--magenta)}
+.gt-line{display:flex;align-items:center;gap:8px;padding:9px 16px;border-top:1px solid var(--border)}
+.gt-ps{color:var(--violet);font-size:.78rem;white-space:nowrap}
+.gt-in{flex:1;background:transparent;border:0;outline:0;color:var(--fg);font:inherit;font-size:.78rem;caret-color:var(--amber)}
+footer kbd{font-family:var(--mono);border:1px solid var(--border-strong);border-radius:4px;padding:0 .32em;font-size:.9em;color:var(--muted)}
+
+/* options payoff lab */
+.payoff-lab{padding:0;overflow:hidden;margin-bottom:16px}
+.pl-head{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border)}
+.pl-controls{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;font-family:var(--mono);font-size:.72rem;color:var(--muted)}
+.pl-controls select{font-family:var(--mono);font-size:.74rem;background:var(--bg-2);color:var(--fg);border:1px solid var(--border-strong);border-radius:8px;padding:.32rem .5rem;cursor:pointer}
+.pl-controls label{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.pl-controls input[type=range]{width:84px;accent-color:var(--magenta);cursor:pointer}
+.pl-controls .val{color:var(--fg);min-width:3.4ch;display:inline-block}
+.pl-canvas-wrap{height:250px;position:relative}
+.pl-canvas-wrap canvas{display:block;width:100%;height:100%;cursor:crosshair}
+.pl-read{display:flex;flex-wrap:wrap;gap:6px 16px;padding:9px 16px;border-top:1px solid var(--border);font-family:var(--mono);font-size:.7rem;color:var(--faint)}
+.pl-read b{color:var(--muted);font-weight:500}
 .deploy-btn{position:absolute;top:11px;right:12px;z-index:2;padding:.4rem .8rem;font-size:.78rem;border-radius:10px}
 .deploy-btn:disabled{opacity:.55;cursor:default}
 
@@ -437,6 +476,8 @@ footer a:hover{color:var(--magenta)}
   .dc-actions{width:100%;justify-content:space-between}
   .dc-stage-wrap{height:84px}
   .dc-term{height:120px}
+  .pl-canvas-wrap{height:200px}
+  .pl-controls input[type=range]{width:70px}
   .cols-3,.cols-2{grid-template-columns:1fr}
   .contact-grid{grid-template-columns:1fr}
 }
@@ -595,6 +636,26 @@ footer a:hover{color:var(--magenta)}
     <div class="anim-strip tall card" data-reveal aria-hidden="true">
       <canvas id="mcCanvas"></canvas>
       <span class="strip-label">monte carlo pricing engine · live</span>
+    </div>
+    <div class="payoff-lab card" data-reveal>
+      <div class="pl-head">
+        <span class="dc-title">options payoff lab · interactive</span>
+        <div class="pl-controls">
+          <select id="plStrat" aria-label="Option strategy">
+            <option value="call">long call</option>
+            <option value="put">long put</option>
+            <option value="straddle" selected>straddle</option>
+            <option value="bullcall">bull call spread</option>
+            <option value="condor">iron condor</option>
+          </select>
+          <label>K <input type="range" id="plK" min="80" max="120" value="100" step="1" aria-label="Strike"><span class="val" id="plKv">100</span></label>
+          <label id="plWL">w <input type="range" id="plW" min="5" max="20" value="10" step="1" aria-label="Wing width"><span class="val" id="plWv">10</span></label>
+          <label>σ <input type="range" id="plV" min="10" max="80" value="30" step="1" aria-label="Implied volatility"><span class="val" id="plVv">30%</span></label>
+          <label>dte <input type="range" id="plT" min="5" max="180" value="45" step="1" aria-label="Days to expiry"><span class="val" id="plTv">45d</span></label>
+        </div>
+      </div>
+      <div class="pl-canvas-wrap"><canvas id="payoffCanvas" aria-label="Payoff diagram"></canvas></div>
+      <div class="pl-read" id="plRead"></div>
     </div>
     <div class="grid cols-2">
       <article class="card" data-reveal>
@@ -780,7 +841,7 @@ footer a:hover{color:var(--magenta)}
 </main>
 
 <footer>
-  <div class="container">© <span id="y"></span> Aniket Datar · built on GitHub Pages · <a href="#top">back to top ↑</a></div>
+  <div class="container">© <span id="y"></span> Aniket Datar · built on GitHub Pages · press <kbd>~</kbd> for shell · <a href="#top">back to top ↑</a></div>
 </footer>
 
 <!-- ============ LIBS (cdnjs, all free) ============ -->
@@ -801,12 +862,25 @@ document.getElementById('y').textContent = new Date().getFullYear();
 const root = document.documentElement, themeBtn = document.getElementById('theme');
 const saved = localStorage.getItem('theme') || (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
 if (saved === 'light') { root.classList.add('light'); themeBtn.textContent = '☀'; }
-themeBtn.addEventListener('click', () => {
+function applyTheme(){
   root.classList.toggle('light');
   const mode = root.classList.contains('light') ? 'light' : 'dark';
   themeBtn.textContent = mode === 'light' ? '☀' : '☾';
   localStorage.setItem('theme', mode);
   THEME_HOOKS.forEach(f => f(mode));
+}
+themeBtn.addEventListener('click', () => {
+  if (!document.startViewTransition || REDUCED){ applyTheme(); return; }
+  const r = themeBtn.getBoundingClientRect();
+  const cx = r.left + r.width/2, cy = r.top + r.height/2;
+  const maxR = Math.hypot(Math.max(cx, innerWidth - cx), Math.max(cy, innerHeight - cy));
+  const vt = document.startViewTransition(applyTheme);
+  vt.ready.then(() => {
+    document.documentElement.animate(
+      { clipPath: [`circle(0px at ${cx}px ${cy}px)`, `circle(${maxR}px at ${cx}px ${cy}px)`] },
+      { duration: 520, easing: 'cubic-bezier(.4,0,.2,1)', pseudoElement: '::view-transition-new(root)' }
+    );
+  }).catch(() => {});
 });
 
 /* ---------- header offset (accurate sticky measurement) ---------- */
@@ -1754,6 +1828,300 @@ if (!REDUCED && matchMedia('(pointer:fine)').matches){
   });
   addEventListener('resize', () => { if (inside) capture(); }, { passive:true });
   addEventListener('scroll', () => { if (inside) rect = wall.getBoundingClientRect(); }, { passive:true });
+})();
+
+/* =========================================================
+   OPTIONS PAYOFF LAB — Black-Scholes pricing, live payoff plot
+   ========================================================= */
+function stdN(x){
+  const t = 1/(1 + 0.2316419*Math.abs(x));
+  const d = Math.exp(-x*x/2)/Math.sqrt(2*Math.PI);
+  const p = d*t*(0.319381530 + t*(-0.356563782 + t*(1.781477937 + t*(-1.821255978 + t*1.330274429))));
+  return x >= 0 ? 1 - p : p;
+}
+function pdfN(x){ return Math.exp(-x*x/2)/Math.sqrt(2*Math.PI); }
+function bsPrice(type, S, K, T, sig, r){
+  if (T <= 1e-6){
+    const intr = type === 'c' ? Math.max(S-K, 0) : Math.max(K-S, 0);
+    return { price:intr, delta:0, theta:0, vega:0 };
+  }
+  const sq = sig*Math.sqrt(T);
+  const d1 = (Math.log(S/K) + (r + sig*sig/2)*T)/sq, d2 = d1 - sq;
+  const disc = Math.exp(-r*T);
+  let price, delta, sgn;
+  if (type === 'c'){ price = S*stdN(d1) - K*disc*stdN(d2); delta = stdN(d1); sgn = 1; }
+  else { price = K*disc*stdN(-d2) - S*stdN(-d1); delta = stdN(d1) - 1; sgn = -1; }
+  const theta = (-(S*pdfN(d1)*sig)/(2*Math.sqrt(T)) - sgn*r*K*disc*stdN(sgn*d2))/365;
+  const vega = S*pdfN(d1)*Math.sqrt(T)/100;
+  return { price, delta, theta, vega };
+}
+
+(function payoffLab(){
+  const cvs = document.getElementById('payoffCanvas');
+  if (!cvs || !cvs.getContext) return;
+  const ctx = cvs.getContext('2d');
+  const wrapEl = cvs.parentElement;
+  const el = id => document.getElementById(id);
+  const strat = el('plStrat'), rK = el('plK'), rW = el('plW'), rV = el('plV'), rT = el('plT');
+  const vK = el('plKv'), vW = el('plWv'), vV = el('plVv'), vT = el('plTv');
+  const wLabel = el('plWL'), read = el('plRead');
+  const S0 = 100, RATE = 0.05, SMIN = 55, SMAX = 145, NPTS = 181;
+  let W = 0, H = 0, hoverS = null;
+
+  function legsFor(s, K, w){
+    switch(s){
+      case 'call':     return [{q:1,t:'c',K}];
+      case 'put':      return [{q:1,t:'p',K}];
+      case 'straddle': return [{q:1,t:'c',K},{q:1,t:'p',K}];
+      case 'bullcall': return [{q:1,t:'c',K},{q:-1,t:'c',K:K+w}];
+      case 'condor':   return [{q:1,t:'p',K:K-2*w},{q:-1,t:'p',K:K-w},{q:-1,t:'c',K:K+w},{q:1,t:'c',K:K+2*w}];
+      default:         return [{q:1,t:'c',K}];
+    }
+  }
+  function model(){
+    const s = strat.value, K = +rK.value, w = +rW.value;
+    const sig = (+rV.value)/100, T = (+rT.value)/365;
+    const legs = legsFor(s, K, w);
+    let prem = 0, delta = 0, theta = 0, vega = 0;
+    legs.forEach(L => {
+      const g = bsPrice(L.t, S0, L.K, T, sig, RATE);
+      prem += L.q*g.price; delta += L.q*g.delta; theta += L.q*g.theta; vega += L.q*g.vega;
+    });
+    const expiry = S => legs.reduce((a,L) => a + L.q*(L.t==='c' ? Math.max(S-L.K,0) : Math.max(L.K-S,0)), 0) - prem;
+    const now = S => legs.reduce((a,L) => a + L.q*bsPrice(L.t, S, L.K, T, sig, RATE).price, 0) - prem;
+    return { legs, prem, delta, theta, vega, expiry, now };
+  }
+
+  function fmt(v, d){ return (v >= 0 ? '+' : '\u2212') + Math.abs(v).toFixed(d === undefined ? 2 : d); }
+
+  function draw(){
+    const m = model();
+    ctx.clearRect(0, 0, W, H);
+    const ink = themeInk(), amber = cssVar('--amber'), violet = cssVar('--violet'),
+          ok = cssVar('--ok'), err = cssVar('--err');
+    const padL = 46, padR = 14, padT = 16, padB = 24;
+    const Ss = [], eArr = [], nArr = [];
+    for (let i = 0; i < NPTS; i++){
+      const S = SMIN + (SMAX - SMIN)*i/(NPTS - 1);
+      Ss.push(S); eArr.push(m.expiry(S)); nArr.push(m.now(S));
+    }
+    let lo = Math.min(0, ...eArr, ...nArr), hi = Math.max(0, ...eArr, ...nArr);
+    const range = Math.max(4, hi - lo); lo -= range*0.10; hi += range*0.10;
+    const X = S => padL + (S - SMIN)/(SMAX - SMIN)*(W - padL - padR);
+    const Y = v => padT + (hi - v)/(hi - lo)*(H - padT - padB);
+    const Y0 = Y(0);
+
+    // profit/loss shading under expiry payoff
+    for (let i = 0; i < NPTS; i++){
+      const v = eArr[i]; if (Math.abs(v) < 1e-9) continue;
+      const x = X(Ss[i]), y = Y(v);
+      ctx.fillStyle = v > 0 ? ok : err; ctx.globalAlpha = .10;
+      ctx.fillRect(x - 0.7, Math.min(Y0, y), 1.6, Math.abs(Y0 - y));
+    }
+    ctx.globalAlpha = 1;
+
+    // grid + zero line + y ticks
+    ctx.font = '9px JetBrains Mono, monospace'; ctx.textAlign = 'right'; ctx.fillStyle = ink.text;
+    [lo + range*0.25, 0, hi - range*0.25].forEach(v => {
+      const y = Y(v);
+      ctx.strokeStyle = v === 0 ? ink.dash : ink.grid; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(W - padR, y); ctx.stroke();
+      ctx.fillText((v >= 0 ? '+' : '') + v.toFixed(0), padL - 6, y + 3);
+    });
+
+    // strike ticks + spot line
+    ctx.textAlign = 'center';
+    m.legs.forEach(L => {
+      const x = X(L.K);
+      ctx.strokeStyle = ink.line; ctx.beginPath(); ctx.moveTo(x, H - padB); ctx.lineTo(x, H - padB + 5); ctx.stroke();
+      ctx.fillText(L.K, x, H - 8);
+    });
+    const xs = X(S0);
+    ctx.setLineDash([3, 4]); ctx.strokeStyle = ink.dash;
+    ctx.beginPath(); ctx.moveTo(xs, padT); ctx.lineTo(xs, H - padB); ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillText('S\u2080', xs, padT - 4 + 10);
+
+    // curves: today (violet dashed) then expiry (amber solid)
+    const trace = (arr, color, dash) => {
+      ctx.setLineDash(dash || []); ctx.strokeStyle = color; ctx.lineWidth = dash ? 1.4 : 1.9;
+      ctx.beginPath();
+      for (let i = 0; i < NPTS; i++){ const x = X(Ss[i]), y = Y(arr[i]); i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }
+      ctx.stroke(); ctx.setLineDash([]);
+    };
+    trace(nArr, violet, [4, 4]);
+    trace(eArr, amber);
+
+    // breakevens on expiry curve
+    for (let i = 1; i < NPTS; i++){
+      if ((eArr[i-1] < 0) !== (eArr[i] < 0)){
+        const f = eArr[i-1]/(eArr[i-1] - eArr[i]);
+        const S = Ss[i-1] + (Ss[i] - Ss[i-1])*f;
+        ctx.beginPath(); ctx.arc(X(S), Y0, 3, 0, 7);
+        ctx.fillStyle = cssVar('--bg-2'); ctx.fill();
+        ctx.strokeStyle = amber; ctx.lineWidth = 1.4; ctx.stroke();
+      }
+    }
+
+    // legend
+    ctx.textAlign = 'left'; ctx.fillStyle = ink.text;
+    ctx.fillText('\u2014 at expiry', W - padR - 120, padT + 4);
+    ctx.fillStyle = violet; ctx.fillText('--', W - padR - 58, padT + 4);
+    ctx.fillStyle = ink.text; ctx.fillText(' today', W - padR - 50, padT + 4);
+
+    // hover crosshair
+    if (hoverS !== null){
+      const x = X(hoverS), ve = m.expiry(hoverS), vn = m.now(hoverS);
+      ctx.strokeStyle = ink.dash; ctx.globalAlpha = .7;
+      ctx.beginPath(); ctx.moveTo(x, padT); ctx.lineTo(x, H - padB); ctx.stroke(); ctx.globalAlpha = 1;
+      [[ve, amber],[vn, violet]].forEach(([v, c]) => {
+        ctx.beginPath(); ctx.arc(x, Y(v), 3, 0, 7); ctx.fillStyle = c; ctx.fill();
+      });
+      const label = `S ${hoverS.toFixed(0)} \u00b7 exp ${fmt(ve)} \u00b7 now ${fmt(vn)}`;
+      ctx.font = '9px JetBrains Mono, monospace';
+      const tw = ctx.measureText(label).width + 12;
+      const bx = Math.min(Math.max(x - tw/2, padL), W - padR - tw);
+      ctx.fillStyle = cssVar('--bg-2'); ctx.globalAlpha = .95;
+      rrect(ctx, bx, padT, tw, 16, 4); ctx.fill(); ctx.globalAlpha = 1;
+      ctx.strokeStyle = ink.line; rrect(ctx, bx, padT, tw, 16, 4); ctx.stroke();
+      ctx.fillStyle = ink.text; ctx.textAlign = 'left';
+      ctx.fillText(label, bx + 6, padT + 11);
+    }
+
+    // readout
+    const maxP = Math.max(...eArr), maxL = Math.min(...eArr);
+    const openHi = eArr[NPTS-1] > eArr[NPTS-2] + 0.02 || eArr[0] > eArr[1] + 0.02;
+    const openLo = eArr[NPTS-1] < eArr[NPTS-2] - 0.02 || eArr[0] < eArr[1] - 0.02;
+    read.innerHTML =
+      `<span>net ${m.prem >= 0 ? 'debit' : 'credit'} <b>${Math.abs(m.prem).toFixed(2)}</b></span>` +
+      `<span>max P <b>${openHi ? '\u221e' : fmt(maxP)}</b></span>` +
+      `<span>max L <b>${openLo ? '\u2212\u221e' : fmt(maxL)}</b></span>` +
+      `<span>\u0394 <b>${m.delta.toFixed(2)}</b></span>` +
+      `<span>\u0398 <b>${m.theta.toFixed(3)}/d</b></span>` +
+      `<span>\u03bd <b>${m.vega.toFixed(2)}</b></span>`;
+  }
+
+  function refreshLabels(){
+    vK.textContent = rK.value; vW.textContent = rW.value;
+    vV.textContent = rV.value + '%'; vT.textContent = rT.value + 'd';
+    const needsW = strat.value === 'bullcall' || strat.value === 'condor';
+    wLabel.style.display = needsW ? '' : 'none';
+  }
+  function size(){
+    const r = wrapEl.getBoundingClientRect(), dpr = Math.min(devicePixelRatio || 1, 2);
+    cvs.width = Math.max(1, r.width*dpr); cvs.height = Math.max(1, r.height*dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0); W = r.width; H = r.height; draw();
+  }
+  [strat, rK, rW, rV, rT].forEach(c => c.addEventListener('input', () => { refreshLabels(); draw(); }));
+  cvs.addEventListener('pointermove', e => {
+    const r = cvs.getBoundingClientRect();
+    const frac = (e.clientX - r.left - 46)/(r.width - 46 - 14);
+    hoverS = Math.max(SMIN, Math.min(SMAX, SMIN + frac*(SMAX - SMIN)));
+    draw();
+  });
+  cvs.addEventListener('pointerleave', () => { hoverS = null; draw(); });
+  refreshLabels(); size();
+  THEME_HOOKS.push(() => draw());
+  addEventListener('resize', () => requestAnimationFrame(size), { passive:true });
+})();
+
+/* =========================================================
+   GUEST SHELL — press ~ anywhere
+   ========================================================= */
+(function guestShell(){
+  const term = document.createElement('div');
+  term.id = 'guestTerm'; term.hidden = true;
+  term.setAttribute('role', 'dialog'); term.setAttribute('aria-label', 'Guest shell');
+  term.innerHTML =
+    '<div class="gt-head"><span>aniket@d4t4r \u2014 guest shell</span><span>esc to close</span></div>' +
+    '<div class="gt-out" role="log" aria-live="polite"></div>' +
+    '<div class="gt-line"><span class="gt-ps">guest@d4t4r:~$</span>' +
+    '<input class="gt-in" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Shell command input"></div>';
+  document.body.appendChild(term);
+  const out = term.querySelector('.gt-out'), inp = term.querySelector('.gt-in');
+  let prevFocus = null; const hist = []; let hi = 0;
+
+  const escT = s => s.replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+  function print(html, cls){
+    const d = document.createElement('div');
+    d.className = 'gt-l' + (cls ? ' ' + cls : '');
+    d.innerHTML = html;
+    out.appendChild(d);
+    while (out.childNodes.length > 200) out.removeChild(out.firstChild);
+    out.scrollTop = out.scrollHeight;
+  }
+  function openTerm(){
+    prevFocus = document.activeElement;
+    term.hidden = false;
+    requestAnimationFrame(() => term.classList.add('open'));
+    if (!out.childNodes.length) print('welcome to the guest shell \u2014 type <b>help</b>');
+    setTimeout(() => inp.focus(), 60);
+  }
+  function closeTerm(){
+    term.classList.remove('open');
+    setTimeout(() => { term.hidden = true; }, 230);
+    if (prevFocus && prevFocus.focus) prevFocus.focus();
+  }
+
+  const CMDS = {
+    help(){ print('commands: <b>whoami</b> \u00b7 <b>projects</b> \u00b7 <b>stack</b> \u00b7 <b>contact</b> \u00b7 <b>ls</b> \u00b7 <b>goto &lt;section&gt;</b> \u00b7 <b>deploy [dev|staging|prod]</b> \u00b7 <b>theme</b> \u00b7 <b>clear</b> \u00b7 <b>exit</b>'); },
+    whoami(){ print('Aniket Datar \u2014 DevOps engineer \u00b7 hybrid-cloud R&amp;D \u00b7 FinOps &amp; GPU provisioning by day, derivatives pricing by night.'); },
+    projects(){ print('<span class="ac">HCMP FinOps Core</span> \u2014 multi-cloud cost platform\n<span class="ac">TenderChain</span> \u2014 on-chain tender management (Solidity/IPFS)\n<span class="ac">Managed Kubeflow Installer</span> \u2014 GitOps auto-install\n<span class="ac">GoAnon</span> \u2014 layered Linux anonymity (Tor/VPN/nftables)'); },
+    stack(){ print('k8s \u00b7 helm \u00b7 argocd \u00b7 vault \u00b7 kubeflow \u00b7 oracle/bigquery \u00b7 spring \u00b7 python \u00b7 terraform \u00b7 prometheus/grafana'); },
+    contact(){ print('email  <a href="mailto:aniketdatar@cyberservices.com">aniketdatar@cyberservices.com</a>\ngithub <a href="https://github.com/D4T4R" target="_blank" rel="noopener">github.com/D4T4R</a>\nlinkedin <a href="https://www.linkedin.com/in/ezpuns" target="_blank" rel="noopener">/in/ezpuns</a>'); },
+    ls(){ print('finops/  quant/  projects/  stack/  contact/'); },
+    goto(args){
+      const id = (args[0] || '').replace(/\W/g, '');
+      const sec = document.getElementById(id);
+      if (!sec){ print('goto: no such section \u2014 try <b>ls</b>', ''); return; }
+      print('\u2192 ' + id); closeTerm();
+      sec.scrollIntoView({ behavior: REDUCED ? 'auto' : 'smooth' });
+    },
+    deploy(args){
+      const env = (args[0] || '').toLowerCase();
+      const seg = document.getElementById('dcEnv');
+      if (env && seg){
+        const b = seg.querySelector('button[data-env="' + env + '"]');
+        if (b) b.click(); else { print('deploy: unknown env "' + escT(env) + '" \u2014 dev|staging|prod'); return; }
+      }
+      const dBtn = document.getElementById('deployBtn');
+      if (!dBtn){ print('deploy: pipeline console not found'); return; }
+      print('triggering pipeline' + (env ? ' \u2192 ' + env : '') + ' \u2026 watch the delivery console');
+      closeTerm();
+      const consoleEl = document.querySelector('.deploy-console');
+      if (consoleEl) consoleEl.scrollIntoView({ behavior: REDUCED ? 'auto' : 'smooth', block: 'center' });
+      setTimeout(() => dBtn.click(), REDUCED ? 0 : 550);
+    },
+    theme(){ themeBtn.click(); print('theme \u2192 ' + (root.classList.contains('light') ? 'light' : 'dark')); },
+    clear(){ out.innerHTML = ''; },
+    exit(){ closeTerm(); },
+    sudo(args){
+      if (args.join(' ') === 'hire-me'){ print('<b>Permission granted.</b> \u2192 aniketdatar@cyberservices.com \u2713'); }
+      else print('guest is not in the sudoers file. This incident will be reported.');
+    }
+  };
+
+  function run(line){
+    const clean = line.trim();
+    print('<span class="ps">guest@d4t4r:~$</span> ' + escT(clean), 'cmd');
+    if (!clean) return;
+    hist.push(clean); hi = hist.length;
+    const parts = clean.split(/\s+/), cmd = parts[0].toLowerCase(), args = parts.slice(1);
+    if (CMDS[cmd]) CMDS[cmd](args);
+    else print(escT(cmd) + ': command not found \u2014 try <b>help</b>');
+  }
+
+  inp.addEventListener('keydown', e => {
+    if (e.key === 'Enter'){ run(inp.value); inp.value = ''; }
+    else if (e.key === 'ArrowUp'){ if (hi > 0){ hi--; inp.value = hist[hi] || ''; e.preventDefault(); } }
+    else if (e.key === 'ArrowDown'){ if (hi < hist.length){ hi++; inp.value = hist[hi] || ''; e.preventDefault(); } }
+  });
+  addEventListener('keydown', e => {
+    if ((e.key === '`' || e.key === '~') && term.hidden){
+      const tag = (document.activeElement || {}).tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+      e.preventDefault(); openTerm();
+    } else if (e.key === 'Escape' && !term.hidden) closeTerm();
+  });
 })();
 
 /* =========================================================
