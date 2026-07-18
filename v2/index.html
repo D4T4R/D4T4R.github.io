@@ -1,0 +1,2567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Aniket Datar (D4T4R) — FinOps • Hybrid Cloud • Quant</title>
+
+<!-- SEO -->
+<meta name="description" content="FinOps & Hybrid-Cloud automation engineer building cost intelligence, provisioning, and quant systems." />
+<meta name="author" content="Aniket Datar" />
+<link rel="canonical" href="https://d4t4r.github.io/" />
+<meta name="robots" content="noindex" />
+
+<!-- Open Graph -->
+<meta property="og:title" content="Aniket Datar — FinOps • Hybrid Cloud • Quant" />
+<meta property="og:description" content="Multi-cloud cost management, GPU SKU provisioning, managed Kubeflow automation, and quantitative tooling for derivatives." />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://d4t4r.github.io/" />
+<meta property="og:image" content="/og-image.png" />
+
+<!-- Fonts: display / body / data -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+<!-- boot flag: set before first paint so the preloader never flashes late -->
+<script>try{if(!sessionStorage.getItem('boot')&&!matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.classList.add('booting')}catch(e){}</script>
+
+<style>
+/* ============================================================
+   THEME — "volatility surface" plasma colormap as the identity
+   ============================================================ */
+:root{
+  --bg:#07070d;
+  --bg-2:#0c0d16;
+  --fg:#ECEAF4;
+  --muted:#9aa0b5;
+  --faint:#6a7088;
+
+  /* plasma ramp — muted */
+  --violet:#8d85e8;
+  --magenta:#d984bd;
+  --amber:#e8c98a;
+  --grad: linear-gradient(100deg, #8d85e8 0%, #d984bd 52%, #e8c98a 100%);
+
+  --card: rgba(18,20,32,0.55);
+  --border: rgba(255,255,255,0.10);
+  --border-strong: rgba(255,255,255,0.16);
+  --ring: 0 0 0 1px rgba(255,255,255,0.07);
+  --shadow: 0 18px 50px rgba(0,0,0,0.45);
+
+  --radius: 16px;
+  --radius-lg: 22px;
+  --header-min-h: 58px;
+  --header-offset: 66px;
+  --ticker-h: 34px;
+
+  --mono:'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --ok:#57b894;
+  --err:#e5675f;
+  --display:'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+  --body:'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+}
+:root.light{
+  --bg:#f4f5fa;
+  --bg-2:#e9ebf3;
+  --fg:#14131f;
+  --muted:#545a72;
+  --faint:#7e849c;
+  --card: rgba(255,255,255,0.72);
+  --border: rgba(20,19,31,0.10);
+  --border-strong: rgba(20,19,31,0.16);
+  --ring: 0 0 0 1px rgba(20,19,31,0.07);
+  --shadow: 0 16px 40px rgba(30,20,60,0.10);
+  /* deeper accents — pastels wash out on light backgrounds */
+  --violet:#5b50c9;
+  --magenta:#b14a93;
+  --amber:#b9831f;
+  --grad: linear-gradient(100deg, #5b50c9 0%, #b14a93 52%, #b9831f 100%);
+  --ok:#2f9e6e;
+  --err:#cf4b43;
+}
+
+@supports (color: color-mix(in oklab, red, blue)) {
+  :root{
+    --card: color-mix(in oklab, var(--bg-2), transparent 30%);
+    --border: color-mix(in oklab, var(--fg), transparent 90%);
+    --border-strong: color-mix(in oklab, var(--fg), transparent 84%);
+  }
+}
+
+/* ============================================================ RESET / BASE */
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+html,body{margin:0;padding:0}
+body{
+  color:var(--fg);
+  background:
+    radial-gradient(1100px 620px at 8% -8%, rgba(141,133,232,.10), transparent 55%),
+    radial-gradient(900px 560px at 96% -12%, rgba(217,132,189,.07), transparent 55%),
+    radial-gradient(800px 600px at 50% 110%, rgba(232,201,138,.04), transparent 55%),
+    var(--bg);
+  font:16px/1.65 var(--body);
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+  padding-top:var(--ticker-h); /* room for the pinned ticker */
+}
+.container{max-width:1140px;margin:0 auto;padding:24px}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;height:auto;border:0}
+section{scroll-margin-top:calc(var(--header-offset) + 18px)}
+
+::selection{background:rgba(141,133,232,.28);color:#fff}
+:focus-visible{outline:2px solid var(--magenta);outline-offset:3px;border-radius:6px}
+
+.mono{font-family:var(--mono)}
+.eyebrow{
+  font-family:var(--mono);font-size:.74rem;font-weight:500;letter-spacing:.04em;
+  color:var(--faint);text-transform:lowercase;display:inline-flex;gap:.5ch;align-items:center;
+}
+.eyebrow::before{content:"";width:18px;height:1px;background:var(--grad);display:inline-block}
+.grad-text{
+  background:var(--grad);background-size:220% 100%;
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  animation:gradShift 7s ease-in-out infinite alternate;
+}
+@keyframes gradShift{from{background-position:0% 50%}to{background-position:100% 50%}}
+
+/* ============================================================ PROGRESS */
+.progress{
+  position:fixed;top:0;left:0;height:2px;width:0%;
+  background:var(--grad);z-index:75;pointer-events:none;
+}
+
+/* ============================================================ HEADER */
+header{
+  position:sticky;top:var(--ticker-h);z-index:60;
+  background:rgba(8,9,16,0.7);
+  backdrop-filter:saturate(160%) blur(14px);
+  border-bottom:1px solid var(--border);
+}
+:root.light header{background:rgba(244,245,250,0.72)}
+:root.light .btn.primary{color:#fff}
+:root.light .brand .glyph::after{color:#fff}
+/* light mode: kill the milky veil — opaque cards, crisp icons, calmer page */
+:root.light{
+  --card:#ffffff;
+  --border:rgba(20,19,31,0.12);
+  --border-strong:rgba(20,19,31,0.18);
+  --shadow:0 10px 30px rgba(30,24,60,0.08);
+}
+:root.light body{
+  background:
+    radial-gradient(1100px 620px at 8% -8%, rgba(91,80,201,.05), transparent 55%),
+    radial-gradient(900px 560px at 96% -12%, rgba(177,74,147,.035), transparent 55%),
+    var(--bg);
+}
+:root.light .icon-wall img{opacity:.95;filter:grayscale(0) drop-shadow(0 1px 1px rgba(0,0,0,.10))}
+:root.light .tag,:root.light .chip{background:#fff}
+:root.light .surface-panel{
+  background:
+    radial-gradient(120% 120% at 50% 0%, rgba(91,80,201,.07), transparent 60%),
+    linear-gradient(180deg, rgba(255,255,255,.65), rgba(233,235,243,.85));
+}
+@supports (color: color-mix(in oklab, red, blue)) {
+  header{background:color-mix(in oklab, var(--bg), transparent 28%)}
+}
+header .container{padding:9px 22px}
+nav{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:var(--header-min-h)}
+.brand{display:flex;align-items:center;gap:11px;min-width:0}
+.brand .glyph{
+  width:30px;height:30px;border-radius:9px;flex:none;position:relative;
+  background:var(--grad);box-shadow:0 4px 12px rgba(0,0,0,.30);
+  display:grid;place-items:center;
+}
+.brand .glyph::after{
+  content:"σ";font-family:var(--display);font-weight:700;font-size:.95rem;color:#0a0a12;
+}
+.brand strong{font-family:var(--display);font-size:.98rem;font-weight:600;letter-spacing:.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.links{display:flex;align-items:center;gap:18px}
+.links a{
+  font-family:var(--mono);font-size:.82rem;font-weight:500;color:var(--muted);
+  position:relative;padding:2px 0;transition:color .18s ease;
+}
+.links a:hover{color:var(--fg)}
+.links a::after{
+  content:"";position:absolute;left:0;bottom:-5px;height:2px;width:0;
+  background:var(--grad);border-radius:2px;transition:width .22s ease;
+}
+.links a:hover::after{width:100%}
+
+.actions{display:flex;align-items:center;gap:8px;flex:none}
+.hire-btn{
+  height:38px;padding:0 .85rem;display:inline-flex;align-items:center;
+  font-size:.78rem;line-height:1;border-radius:11px;white-space:nowrap;
+}
+@media (max-width:480px){
+  .actions{gap:6px}
+  .hire-btn{height:34px;padding:0 .55rem;font-size:.7rem;border-radius:9px}
+  .actions .icon-btn{width:34px;height:34px}
+}
+.icon-btn{
+  display:inline-grid;place-items:center;width:38px;height:38px;border-radius:11px;
+  background:transparent;border:1px solid var(--border-strong);color:var(--fg);
+  cursor:pointer;font-size:1rem;transition:background .18s ease,border-color .18s ease;
+}
+.icon-btn:hover{background:rgba(255,255,255,.06);border-color:var(--magenta)}
+.nav-toggle{display:none}
+
+/* ============================================================ BUTTONS */
+.btn{
+  display:inline-flex;align-items:center;gap:.55rem;cursor:pointer;
+  font-family:var(--mono);font-weight:500;font-size:.86rem;letter-spacing:.01em;
+  padding:.62rem 1.05rem;border-radius:12px;border:1px solid transparent;
+  transition:transform .12s ease,border-color .18s ease,background .18s ease;
+  will-change:transform;
+}
+.btn.primary{background:var(--grad);color:#0a0a12;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.28)}
+.btn.primary:hover{transform:translateY(-1px)}
+.btn.ghost{background:rgba(255,255,255,.03);color:var(--fg);border-color:var(--border-strong)}
+.btn.ghost:hover{border-color:var(--magenta);background:rgba(255,255,255,.06)}
+.mag-inner{display:inline-flex;align-items:center;gap:.55rem;will-change:transform}
+
+/* ============================================================ HERO */
+.hero{
+  display:grid;grid-template-columns:1.22fr .78fr;gap:36px;align-items:center;
+  padding:54px 0 30px;position:relative;isolation:isolate;
+}
+#heroParticles{
+  position:absolute;inset:0;z-index:-1;width:100%;height:100%;
+  pointer-events:none;opacity:.55;
+}
+.hero h1{
+  font-family:var(--display);font-weight:700;
+  font-size:clamp(2.1rem,1.1rem + 4.2vw,3.5rem);line-height:1.04;
+  letter-spacing:-.02em;margin:.5rem 0 .8rem;
+}
+.hero h1 .word{display:inline-block}
+.lead{font-size:1.06rem;color:var(--muted);max-width:54ch;margin:0}
+.lead strong{color:var(--fg);font-weight:600}
+
+.chips{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:18px}
+.chip{
+  font-family:var(--mono);font-size:.76rem;color:var(--muted);
+  padding:.34rem .62rem;border-radius:9px;border:1px solid var(--border);
+  background:rgba(255,255,255,.02);
+}
+.cta-row{display:flex;gap:11px;margin-top:24px;flex-wrap:wrap}
+
+.id-row{
+  display:flex;align-items:center;gap:12px;margin-top:26px;
+  padding-top:22px;border-top:1px solid var(--border);
+}
+.id-row img{width:46px;height:46px;border-radius:50%;object-fit:cover;border:2px solid var(--border-strong)}
+.id-row .who{font-family:var(--display);font-weight:600;font-size:.98rem}
+.id-row .meta{font-family:var(--mono);font-size:.76rem;color:var(--faint)}
+.id-row a{color:var(--muted)}
+.id-row a:hover{color:var(--magenta)}
+
+/* ---- the signature: vol surface viewport ---- */
+.surface-panel{
+  position:relative;aspect-ratio:4/3.4;max-height:340px;width:100%;
+  border-radius:var(--radius-lg);align-self:center;
+  border:1px solid var(--border-strong);overflow:hidden;isolation:isolate;
+  background:
+    radial-gradient(120% 120% at 50% 0%, rgba(141,133,232,.06), transparent 60%),
+    linear-gradient(180deg, rgba(12,13,22,.6), rgba(7,7,13,.7));
+  box-shadow:var(--shadow);
+}
+.surface-panel canvas{display:block;width:100%;height:100%}
+.surface-fallback{
+  position:absolute;inset:0;background:
+    repeating-linear-gradient(115deg, rgba(139,92,246,.18) 0 1px, transparent 1px 22px),
+    repeating-linear-gradient(65deg, rgba(232,90,200,.14) 0 1px, transparent 1px 22px),
+    var(--grad);
+  opacity:.5;filter:blur(.3px);
+}
+.panel-tag{
+  position:absolute;font-family:var(--mono);font-size:.68rem;color:var(--faint);
+  letter-spacing:.04em;pointer-events:none;z-index:2;
+}
+.panel-tag.tl{top:14px;left:16px;color:var(--muted)}
+.panel-tag.tl b{color:var(--fg);font-weight:600}
+.panel-tag.br{bottom:14px;right:16px}
+.panel-axis{position:absolute;font-family:var(--mono);font-size:.66rem;color:var(--faint);z-index:2;pointer-events:none}
+.panel-axis.x{bottom:13px;left:50%;transform:translateX(-50%)}
+.panel-axis.y{top:50%;left:13px;transform:translateY(-50%) rotate(-90deg);transform-origin:left center}
+.live-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--amber);box-shadow:0 0 5px rgba(232,201,138,.55);animation:pulse 2.4s ease-in-out infinite;vertical-align:middle;margin-right:5px}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+
+/* ============================================================ SECTIONS */
+section{padding:48px 0}
+.sec-head{margin-bottom:26px}
+.sec-head h2{
+  font-family:var(--display);font-weight:600;letter-spacing:-.01em;
+  font-size:clamp(1.5rem,1.1rem + 1.4vw,2rem);margin:.4rem 0 0;
+}
+
+.grid{display:grid;gap:16px}
+.cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+
+.card{
+  background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+  padding:24px;box-shadow:var(--shadow);position:relative;overflow:hidden;
+  transition:transform .22s ease,border-color .22s ease;
+}
+.card::before{
+  content:"";position:absolute;left:0;top:0;height:2px;width:0;
+  background:var(--grad);transition:width .35s ease;
+}
+.card:hover{transform:translateY(-4px);border-color:var(--border-strong)}
+.card:hover::before{width:100%}
+.card h3{font-family:var(--display);font-weight:600;font-size:1.12rem;margin:0 0 .55rem}
+.card p{margin:0 0 .6rem;color:var(--muted)}
+.card ul{margin:.4rem 0 0;padding-left:1.1rem;color:var(--muted)}
+.card li{margin:.28rem 0}
+.card code{font-family:var(--mono);font-size:.85em;background:rgba(255,255,255,.06);padding:.06em .4em;border-radius:5px;color:var(--fg)}
+.card .stack{font-family:var(--mono);font-size:.82rem;color:var(--faint);margin-top:.3rem}
+.card .stack b{color:var(--violet);font-weight:500}
+.card .stack a{color:var(--magenta);font-weight:500}
+.card .stack a:hover{text-decoration:underline}
+
+/* stack tags + icon wall */
+.tagwall{display:flex;flex-wrap:wrap;gap:.5rem}
+.tag{
+  font-family:var(--mono);font-size:.8rem;color:var(--muted);
+  border:1px solid var(--border);padding:.4rem .66rem;border-radius:9px;
+  background:rgba(255,255,255,.02);transition:color .15s ease,border-color .15s ease;
+}
+.tag:hover{color:var(--fg);border-color:var(--magenta)}
+.caps{font-family:var(--mono);letter-spacing:.04em;text-transform:lowercase;font-weight:500;font-size:.78rem;color:var(--faint);margin-bottom:12px}
+.icon-wall{display:flex;flex-wrap:wrap;gap:15px 18px;align-items:center;position:relative}
+.icon-wall.magnify img{transition:filter .15s ease,opacity .15s ease}
+.icon-tip{
+  position:absolute;top:0;left:0;transform:translate(-50%,-100%);
+  padding:.22rem .55rem;border-radius:7px;white-space:nowrap;
+  background:var(--bg-2);border:1px solid var(--border-strong);
+  font-family:var(--mono);font-size:.68rem;color:var(--fg);
+  pointer-events:none;opacity:0;transition:opacity .12s ease;z-index:300;box-shadow:var(--shadow);
+}
+.icon-tip.show{opacity:1}
+.icon-wall img{
+  width:38px;height:38px;object-fit:contain;opacity:.72;border-radius:8px;
+  transition:transform .16s ease,opacity .16s ease,filter .16s ease;
+  filter:grayscale(.2) drop-shadow(0 1px 0 rgba(0,0,0,.2));
+}
+.icon-wall img:hover{transform:translateY(-3px) scale(1.06);opacity:1;filter:grayscale(0) drop-shadow(0 6px 14px rgba(0,0,0,.35))}
+
+/* activity */
+.stats img{width:100%;height:auto;border-radius:12px}
+.img-wrap{position:relative;border-radius:12px;overflow:hidden;border:1px solid var(--border);min-height:170px;isolation:isolate;background:rgba(255,255,255,.02)}
+.img-wrap.loading img{opacity:0}
+.img-wrap img{display:block;width:100%;height:auto}
+.skeleton{position:absolute;inset:0;background:linear-gradient(90deg,rgba(255,255,255,.04),rgba(255,255,255,.12),rgba(255,255,255,.04));background-size:200% 100%;animation:shimmer 1.1s linear infinite;border-radius:inherit;pointer-events:none}
+.img-wrap:not(.loading) .skeleton{opacity:0;visibility:hidden;transition:opacity .2s ease}
+.img-wrap:not(.loading) img{opacity:1;transition:opacity .25s ease}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+.img-center{display:flex;align-items:center;justify-content:center;min-height:170px;border-radius:12px;border:1px solid var(--border);overflow:hidden;background:rgba(255,255,255,.02)}
+.img-center img{display:block;max-width:96%;height:auto}
+.no-underline:hover{text-decoration:none}
+
+/* contact */
+.contact-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.contact-link{
+  display:flex;align-items:center;gap:12px;padding:16px 18px;border-radius:14px;
+  border:1px solid var(--border);background:var(--card);font-family:var(--mono);font-size:.9rem;
+  transition:transform .18s ease,border-color .18s ease;
+}
+.contact-link:hover{transform:translateY(-3px);border-color:var(--magenta)}
+.contact-link .k{color:var(--faint);font-size:.72rem;display:block;text-transform:lowercase}
+.contact-link .v{color:var(--fg);font-weight:500}
+
+/* animated canvas strips */
+.anim-strip{position:relative;height:122px;padding:0;margin-bottom:18px;overflow:hidden}
+.anim-strip.tall{height:300px}
+.anim-strip.interactive{height:200px;cursor:pointer}
+.anim-strip canvas{display:block;width:100%;height:100%}
+.strip-label{position:absolute;top:10px;left:14px;font-family:var(--mono);font-size:.68rem;letter-spacing:.04em;color:var(--faint);pointer-events:none}
+/* contextual mini-canvas at the top of a card */
+.card-anim{position:relative;height:74px;margin:-2px 0 16px;border-radius:10px;overflow:hidden}
+.card-anim canvas{display:block;width:100%;height:100%}
+
+/* interactive deploy console */
+.deploy-console{padding:0;overflow:hidden;margin-bottom:18px}
+.dc-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:13px 16px;border-bottom:1px solid var(--border)}
+.dc-title{font-family:var(--mono);font-size:.78rem;letter-spacing:.03em;color:var(--muted);display:inline-flex;align-items:center;gap:7px}
+.dc-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.dc-seg{display:inline-flex;border:1px solid var(--border-strong);border-radius:9px;overflow:hidden}
+.dc-seg button{font-family:var(--mono);font-size:.74rem;color:var(--muted);background:transparent;border:0;padding:.34rem .62rem;cursor:pointer;transition:background .15s,color .15s}
+.dc-seg button+button{border-left:1px solid var(--border)}
+.dc-seg button.on{background:var(--grad);color:#fff;font-weight:600}
+:root.light .dc-seg button.on{color:#fff}
+.dc-chaos{font-family:var(--mono);font-size:.74rem;color:var(--muted);display:inline-flex;align-items:center;gap:5px;cursor:pointer;user-select:none}
+.dc-chaos input{accent-color:var(--err);cursor:pointer}
+.dc-deploy{padding:.4rem .82rem;font-size:.78rem}
+.dc-deploy:disabled{opacity:.55;cursor:default}
+.dc-deploy.approve{background:var(--ok);color:#fff;animation:approvePulse 1.3s ease-in-out infinite}
+@keyframes approvePulse{0%,100%{box-shadow:0 0 0 0 rgba(87,184,148,.0)}50%{box-shadow:0 0 0 5px rgba(87,184,148,.18)}}
+.dc-stage-wrap{position:relative;height:96px}
+.dc-stage-wrap canvas{display:block;width:100%;height:100%}
+.dc-term{height:140px;overflow-y:auto;background:rgba(0,0,0,.22);border-top:1px solid var(--border);scrollbar-width:thin}
+:root.light .dc-term{background:rgba(20,19,31,.04)}
+.dc-log{font-family:var(--mono);font-size:.72rem;line-height:1.5;padding:10px 16px}
+.dc-log .ll{white-space:pre-wrap;word-break:break-word}
+.dc-log .ll .pf{display:inline-block;width:1.1em;color:var(--faint)}
+.dc-log .cmd{color:var(--fg)}
+.dc-log .cmd .pf{color:var(--violet)}
+.dc-log .info{color:var(--muted)}
+.dc-log .ok{color:var(--ok)} .dc-log .ok .pf{color:var(--ok)}
+.dc-log .err{color:var(--err)} .dc-log .err .pf{color:var(--err)}
+.dc-log .warn{color:var(--amber)} .dc-log .warn .pf{color:var(--amber)}
+.dc-log .cur{color:var(--amber)}
+.dc-status{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:9px 16px;border-top:1px solid var(--border);font-family:var(--mono);font-size:.7rem;color:var(--faint)}
+.dc-status b{color:var(--muted);font-weight:500}
+.dc-status .dot{width:7px;height:7px;border-radius:50%;background:var(--faint);display:inline-block;margin-right:5px;vertical-align:middle}
+.dc-status .dot.run{background:var(--amber)} .dc-status .dot.ok{background:var(--ok)} .dc-status .dot.err{background:var(--err)}
+
+/* cross-document transition: smooth fade-and-rise between /v2/ and / */
+@view-transition{navigation:auto}
+::view-transition-old(root){animation:vtOut .26s ease both}
+::view-transition-new(root){animation:vtIn .34s ease both}
+@keyframes vtOut{to{opacity:0;transform:translateY(-10px)}}
+@keyframes vtIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+/* theme wipe (same-document): suppress defaults while JS drives the clip-path */
+html.tw::view-transition-old(root),html.tw::view-transition-new(root){animation:none;mix-blend-mode:normal}
+html.tw::view-transition-old(root){z-index:1}
+html.tw::view-transition-new(root){z-index:2}
+
+/* guest shell (press ~) */
+#guestTerm{
+  position:fixed;left:0;right:0;top:0;z-index:400;
+  background:rgba(7,7,13,.94);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border-strong);box-shadow:var(--shadow);
+  transform:translateY(-105%);transition:transform .22s ease;font-family:var(--mono);
+}
+#guestTerm.open{transform:translateY(0)}
+:root.light #guestTerm{background:rgba(244,245,250,.96)}
+.gt-head{display:flex;justify-content:space-between;gap:10px;padding:8px 16px;font-size:.72rem;color:var(--faint);border-bottom:1px solid var(--border)}
+.gt-out{max-height:34vh;overflow-y:auto;padding:10px 16px;font-size:.78rem;line-height:1.55;scrollbar-width:thin}
+.gt-l{white-space:pre-wrap;word-break:break-word;color:var(--muted)}
+.gt-l b{color:var(--fg);font-weight:600}
+.gt-l.cmd{color:var(--fg)}
+.gt-l.cmd .ps{color:var(--violet)}
+.gt-l .ac{color:var(--magenta)}
+.gt-line{display:flex;align-items:center;gap:8px;padding:9px 16px;border-top:1px solid var(--border)}
+.gt-ps{color:var(--violet);font-size:.78rem;white-space:nowrap}
+.gt-in{flex:1;background:transparent;border:0;outline:0;color:var(--fg);font:inherit;font-size:.78rem;caret-color:var(--amber)}
+footer kbd{font-family:var(--mono);border:1px solid var(--border-strong);border-radius:4px;padding:0 .32em;font-size:.9em;color:var(--muted)}
+
+/* options payoff lab */
+.payoff-lab{padding:0;overflow:hidden;margin-bottom:16px}
+.pl-head{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--border)}
+.pl-controls{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;font-family:var(--mono);font-size:.72rem;color:var(--muted)}
+.pl-controls select{font-family:var(--mono);font-size:.74rem;background:var(--bg-2);color:var(--fg);border:1px solid var(--border-strong);border-radius:8px;padding:.32rem .5rem;cursor:pointer}
+.pl-controls label{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.pl-controls input[type=range]{width:84px;accent-color:var(--magenta);cursor:pointer}
+.pl-controls .val{color:var(--fg);min-width:3.4ch;display:inline-block}
+.pl-canvas-wrap{height:250px;position:relative}
+.pl-canvas-wrap canvas{display:block;width:100%;height:100%;cursor:crosshair}
+.pl-read{display:flex;flex-wrap:wrap;gap:6px 16px;padding:9px 16px;border-top:1px solid var(--border);font-family:var(--mono);font-size:.7rem;color:var(--faint)}
+.pl-read b{color:var(--muted);font-weight:500}
+.deploy-btn{position:absolute;top:11px;right:12px;z-index:2;padding:.4rem .8rem;font-size:.78rem;border-radius:10px}
+.deploy-btn:disabled{opacity:.55;cursor:default}
+
+footer{padding:46px 0;color:var(--faint);text-align:center;border-top:1px solid var(--border);font-family:var(--mono);font-size:.82rem}footer a{color:var(--muted)}
+footer a:hover{color:var(--magenta)}
+
+.skip{position:absolute;left:-9999px}
+.skip:focus{position:fixed;left:12px;top:calc(var(--ticker-h) + 8px);z-index:100;padding:.6rem .9rem;background:var(--magenta);color:#fff;border-radius:9px}
+
+/* reveal default state (JS adds animation) */
+[data-reveal]{opacity:1}
+.js [data-reveal]{opacity:0;transform:translateY(14px)}
+
+/* ============================================================ NEW MOTION SYSTEMS */
+
+/* ---- 1. boot preloader (once per session) ---- */
+#boot{display:none}
+html.booting{overflow:hidden}
+html.booting #boot{
+  display:grid;place-items:center;position:fixed;inset:0;z-index:1000;
+  background:var(--bg);transition:opacity .45s ease;
+}
+html.booting.boot-done #boot{opacity:0;pointer-events:none}
+.boot-log{font-family:var(--mono);font-size:.82rem;line-height:1.9;color:var(--muted);width:min(430px,84vw)}
+.boot-log .bl{opacity:0;transform:translateY(5px);transition:opacity .2s ease,transform .2s ease;white-space:pre-wrap}
+.boot-log .bl.on{opacity:1;transform:none}
+.boot-log .bl .pf{display:inline-block;width:1.4em;color:var(--faint)}
+.boot-log .bl.cmd{color:var(--fg)} .boot-log .bl.cmd .pf{color:var(--violet)}
+.boot-log .bl.ok{color:var(--ok)} .boot-log .bl.ok .pf{color:var(--ok)}
+
+/* ---- 2. market ticker marquee — pinned status bar at the very top ---- */
+.ticker{
+  position:fixed;top:0;left:0;right:0;z-index:70;height:var(--ticker-h);
+  overflow:hidden;display:flex;align-items:center;
+  border-bottom:1px solid var(--border);
+  background:rgba(8,9,16,0.7);
+  backdrop-filter:saturate(160%) blur(14px);-webkit-backdrop-filter:saturate(160%) blur(14px);
+  transform:translateY(var(--tick-push,0px));transition:transform .22s ease;
+}
+:root.light .ticker{background:rgba(244,245,250,0.72)}
+@supports (color: color-mix(in oklab, red, blue)) {
+  .ticker{background:color-mix(in oklab, var(--bg), transparent 28%)}
+}
+.ticker-track{display:flex;width:max-content;animation:tick 40s linear infinite}
+.ticker:hover .ticker-track{animation-play-state:paused}
+@keyframes tick{to{transform:translateX(-50%)}}
+.ticker-set{display:flex;white-space:nowrap;
+  font-family:var(--mono);font-size:.72rem;letter-spacing:.02em;color:var(--faint)}
+.tk{display:inline-flex;align-items:center;gap:.55ch;padding:0 1.35rem}
+.tk b{color:var(--muted);font-weight:500}
+.tk .up{color:var(--ok)} .tk .dn{color:var(--err)}
+.tk::after{content:"·";margin-left:1.35rem;color:var(--border-strong)}
+
+/* ---- 3. rotating word in hero eyebrow ---- */
+.rot-wrap{display:inline-block;overflow:hidden;vertical-align:bottom;min-width:17ch}
+.rot-word{display:inline-block;transition:transform .38s cubic-bezier(.65,0,.35,1),opacity .38s ease}
+.rot-word.out{transform:translateY(-115%);opacity:0}
+.rot-word.in{transform:translateY(115%);opacity:0;transition:none}
+
+/* ---- 4. cursor spotlight on cards / contact links ---- */
+.card::after{
+  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:radial-gradient(260px circle at var(--mx,50%) var(--my,-20%), rgba(217,132,189,.13), transparent 62%);
+  opacity:0;transition:opacity .3s ease;
+}
+.card:hover::after{opacity:1}
+:root.light .card::after{background:radial-gradient(260px circle at var(--mx,50%) var(--my,-20%), rgba(177,74,147,.08), transparent 62%)}
+.contact-link{position:relative;overflow:hidden}
+.contact-link::after{
+  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:radial-gradient(220px circle at var(--mx,50%) var(--my,50%), rgba(141,133,232,.14), transparent 65%);
+  opacity:0;transition:opacity .3s ease;
+}
+.contact-link:hover::after{opacity:1}
+
+/* ---- 5. header auto-hide on scroll down ---- */
+header{transition:transform .32s cubic-bezier(.4,0,.2,1)}
+header.hide{transform:translateY(-110%)}
+
+/* ---- 6. film grain overlay ---- */
+.grain{
+  position:fixed;left:-100%;top:-100%;width:300%;height:300%;
+  pointer-events:none;z-index:200;opacity:.05;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation:grainShift 7s steps(10) infinite;
+}
+:root.light .grain{opacity:.035}
+@keyframes grainShift{
+  0%,100%{transform:translate(0,0)}
+  10%{transform:translate(-4%,-6%)} 20%{transform:translate(-8%,3%)}
+  30%{transform:translate(5%,-8%)} 40%{transform:translate(-3%,8%)}
+  50%{transform:translate(-7%,-4%)} 60%{transform:translate(8%,0)}
+  70%{transform:translate(0,7%)} 80%{transform:translate(3%,-5%)}
+  90%{transform:translate(-6%,4%)}
+}
+
+/* ============================================================ RESPONSIVE */
+@media (max-width:920px){
+  :root{--ticker-h:30px}
+  .nav-toggle{display:inline-grid}
+  .links{display:none}
+  #navmenu.mobile{
+    display:block;position:fixed;left:0;right:0;top:var(--header-offset);
+    background:var(--bg-2);border-top:1px solid var(--border);
+    box-shadow:var(--shadow);padding:14px 22px 22px;z-index:65;
+    transform:translateY(-120%);transition:transform .24s ease-out;
+  }
+  #navmenu.mobile.open{transform:translateY(0)}
+  #navmenu.mobile a{display:block;padding:13px 4px;font-size:1.02rem}
+  #navmenu.mobile a::after{display:none}
+  .backdrop[hidden]{display:none}
+  .backdrop{position:fixed;inset:0;z-index:55;background:rgba(0,0,0,.5);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px)}
+  body.menu-open{overflow:hidden}
+  .hero{grid-template-columns:1fr;gap:28px;padding:36px 0 14px}
+  .surface-panel{aspect-ratio:16/10;max-height:280px}
+  .anim-strip.tall{height:210px}
+  .anim-strip.interactive{height:190px}
+  .dc-head{padding:11px 13px}
+  .dc-actions{width:100%;justify-content:space-between}
+  .dc-stage-wrap{height:84px}
+  .dc-term{height:120px}
+  .pl-canvas-wrap{height:200px}
+  .pl-controls input[type=range]{width:70px}
+  .cols-3,.cols-2{grid-template-columns:1fr}
+  .contact-grid{grid-template-columns:1fr}
+}
+
+@media (prefers-reduced-motion: reduce){
+  *{animation:none !important;transition:none !important;scroll-behavior:auto !important}
+  .js [data-reveal]{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+<div class="grain" aria-hidden="true"></div>
+<div id="boot" aria-hidden="true"><div class="boot-log" id="bootLog"></div></div>
+<div class="progress" id="progress"></div>
+<a class="skip" href="#main">Skip to content</a>
+
+  <!-- MARKET TICKER -->
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker-track">
+      <div class="ticker-set">
+        <span class="tk">aws·us-east-1 <b>$0.021/hr</b> <span class="up">▲</span></span>
+        <span class="tk">h100·80gb spot <b>$2.14/hr</b> <span class="dn">▼</span></span>
+        <span class="tk">savings·mtd <b class="up">+23.4%</b></span>
+        <span class="tk">argocd <b>12 apps synced</b></span>
+        <span class="tk">kubeflow <b>3 clusters healthy</b></span>
+        <span class="tk">iv·atm·30d <b>21.4%</b></span>
+        <span class="tk">vix <b>14.02</b> <span class="dn">▼</span></span>
+        <span class="tk">billing·recon <b class="up">100% matched</b></span>
+        <span class="tk">gpu·quota <b>61% util</b></span>
+        <span class="tk">drift <b>0 detected</b></span>
+        <span class="tk">deploys·wtd <b class="up">9 ✓</b></span>
+        <span class="tk">δ-hedge <b>neutral</b></span>
+      </div>
+      <div class="ticker-set">
+        <span class="tk">aws·us-east-1 <b>$0.021/hr</b> <span class="up">▲</span></span>
+        <span class="tk">h100·80gb spot <b>$2.14/hr</b> <span class="dn">▼</span></span>
+        <span class="tk">savings·mtd <b class="up">+23.4%</b></span>
+        <span class="tk">argocd <b>12 apps synced</b></span>
+        <span class="tk">kubeflow <b>3 clusters healthy</b></span>
+        <span class="tk">iv·atm·30d <b>21.4%</b></span>
+        <span class="tk">vix <b>14.02</b> <span class="dn">▼</span></span>
+        <span class="tk">billing·recon <b class="up">100% matched</b></span>
+        <span class="tk">gpu·quota <b>61% util</b></span>
+        <span class="tk">drift <b>0 detected</b></span>
+        <span class="tk">deploys·wtd <b class="up">9 ✓</b></span>
+        <span class="tk">δ-hedge <b>neutral</b></span>
+      </div>
+    </div>
+  </div>
+
+<!-- ============ HEADER ============ -->
+<header>
+  <div class="container">
+    <nav aria-label="Primary">
+      <div class="brand">
+        <span class="glyph" aria-hidden="true"></span>
+        <strong>Aniket Datar</strong>
+      </div>
+      <div id="navmenu" class="links" role="navigation">
+        <a href="#finops">finops</a>
+        <a href="#quant">quant</a>
+        <a href="#projects">projects</a>
+        <a href="#stack">stack</a>
+        <a href="#contact">contact</a>
+      </div>
+      <div class="actions">
+        <a id="v1Btn" class="btn ghost hire-btn" href="/" title="Back to v1">← v1</a>
+        <a id="hireBtn" class="btn primary hire-btn" href="mailto:aniketdatar@cyberservices.com?subject=Opportunity%20-%20redirected%20from%20portfolio&body=Hi%20Aniket%2C%0A%0AI%20came%20across%20your%20portfolio%20(d4t4r.github.io)%20and%20would%20like%20to%20discuss%20an%20opportunity%20with%20you.%0A%0ARole%20%2F%20Company%3A%0AWhat%20caught%20my%20eye%3A%0A%0ABest%20regards%2C">✦ For Hirers</a>
+        <button id="theme" class="icon-btn" type="button" aria-label="Toggle theme">☾</button>
+        <button id="menu" class="nav-toggle icon-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="navmenu">☰</button>
+      </div>
+    </nav>
+  </div>
+</header>
+<div id="backdrop" class="backdrop" hidden></div>
+
+<!-- ============ MAIN ============ -->
+<main id="main" class="container">
+
+  <!-- HERO -->
+  <section class="hero" id="top">
+    <canvas id="heroParticles" aria-hidden="true"></canvas>
+    <div class="hero-copy">
+      <span class="eyebrow">finops · hybrid cloud · quant systems</span>
+      <h1 id="headline">Cost-intelligent cloud at scale, with a <span class="grad-text">quant's mindset</span></h1>
+      <p class="lead" data-reveal>
+        I build automation for multi-cloud <strong>FinOps</strong> (EA/MCA/GCP/AWS/OCI + private cloud),
+        <strong>GPU provisioning</strong> and platform governance, and <strong>quant systems</strong> for pricing, risk, and event-driven analytics.
+      </p>
+      <div class="chips" data-reveal>
+        <span class="chip">Kubernetes</span>
+        <span class="chip">ArgoCD</span>
+        <span class="chip">GPU Provisioning</span>
+        <span class="chip">Managed Kubeflow</span>
+        <span class="chip">Oracle · BigQuery</span>
+        <span class="chip">Monte Carlo</span>
+      </div>
+      <div class="cta-row" data-reveal>
+        <a class="btn primary magnetic" href="/resume.pdf" target="_blank" rel="noopener" download><span class="mag-inner">↓ Download CV</span></a>
+        <a class="btn ghost magnetic" href="https://github.com/D4T4R" target="_blank" rel="noopener"><span class="mag-inner">GitHub</span></a>
+        <a class="btn ghost magnetic" href="https://www.linkedin.com/in/ezpuns" target="_blank" rel="noopener"><span class="mag-inner">LinkedIn</span></a>
+      </div>
+      <div class="id-row" data-reveal>
+        <img src="/me.jpg" alt="Aniket Datar portrait" />
+        <div>
+          <div class="who">Aniket Datar</div>
+          <div class="meta">India · <a href="mailto:aniketdatar@cyberservices.com">aniketdatar@cyberservices.com</a></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SIGNATURE: live implied volatility surface -->
+    <aside class="surface-panel" id="surfacePanel" aria-label="Live implied volatility surface visualization">
+      <div class="surface-fallback" id="surfaceFallback"></div>
+      <span class="panel-tag tl"><span class="live-dot"></span><b>implied volatility surface</b> · live</span>
+      <span class="panel-tag br mono">three.js</span>
+      <span class="panel-axis x">strike (K) →</span>
+      <span class="panel-axis y">maturity (T) →</span>
+    </aside>
+  </section>
+
+  <!-- FINOPS -->
+  <section id="finops">
+    <div class="sec-head" data-reveal>
+      <span class="eyebrow">cloud economics</span>
+      <h2>FinOps &amp; Hybrid Cloud</h2>
+    </div>
+    <div class="deploy-console card" data-reveal>
+      <div class="dc-head">
+        <span class="dc-title"><span class="live-dot"></span>gitops delivery · pipeline</span>
+        <div class="dc-actions">
+          <div class="dc-seg" id="dcEnv" role="group" aria-label="Target environment">
+            <button type="button" data-env="dev">dev</button>
+            <button type="button" data-env="staging" class="on" aria-pressed="true">staging</button>
+            <button type="button" data-env="prod">prod</button>
+          </div>
+          <label class="dc-chaos"><input type="checkbox" id="dcChaos"> <span>chaos</span></label>
+          <button id="deployBtn" class="btn primary dc-deploy" type="button">▶ deploy</button>
+        </div>
+      </div>
+      <div class="dc-stage-wrap"><canvas id="pipelineCanvas" aria-hidden="true"></canvas></div>
+      <div class="dc-term" id="deployTerm"><div class="dc-log" id="deployLog" role="log" aria-live="polite" aria-label="Deployment log"></div></div>
+      <div class="dc-status" id="deployStatus" aria-live="polite"></div>
+    </div>
+    <div class="grid cols-2">
+      <article class="card" data-reveal>
+        <div class="card-anim"><canvas id="animCost" aria-hidden="true"></canvas></div>
+        <h3>Cost Intelligence &amp; Billing Reconciliation</h3>
+        <p>End-to-end pipelines that normalize provider bills (EA/MCA/GCP/AWS/OCI) to SKU-level usage, map to accounts/projects, and surface anomalies for audits and exports.</p>
+        <ul>
+          <li>Operated two primary billing models: <strong>consumption-based</strong> and <strong>auto-metering-based</strong>.</li>
+          <li>Daily reconciliation jobs with retries &amp; partitioned DB design.</li>
+          <li>Exports for CRM/invoicing; governance &amp; audit trails.</li>
+        </ul>
+      </article>
+      <article class="card" data-reveal>
+        <div class="card-anim"><canvas id="animGpu" aria-hidden="true"></canvas></div>
+        <h3>Automated GPU Provisioning &amp; Governance</h3>
+        <p>Declarative flows to create tenants/subscriptions, allocate NVIDIA GPU SKUs, map billing IDs, and enforce quota + policy guardrails.</p>
+        <ul>
+          <li>GPU provisioning with SKU mapping to billing accounts and usage tracking.</li>
+          <li>Helm/ArgoCD GitOps across tracks/namespaces; drift detection and safe rollouts.</li>
+          <li>Automated retries for module init; readiness checks and guardrails.</li>
+        </ul>
+      </article>
+      <article class="card" data-reveal>
+        <div class="card-anim"><canvas id="animKube" aria-hidden="true"></canvas></div>
+        <h3>Managed Kubeflow: Auto-Install on Clusters</h3>
+        <p>Automated, repeatable installation of managed Kubeflow on Kubernetes clusters with standard policies, integration hooks, and operational checks.</p>
+        <ul>
+          <li>Cluster bootstrap flows for Kubeflow components using GitOps patterns.</li>
+          <li>Repeatable installs across environments with validation and rollbacks.</li>
+          <li>Focus on reproducibility, governance, and day-2 operations.</li>
+        </ul>
+      </article>
+      <article class="card" data-reveal>
+        <div class="card-anim"><canvas id="animDevex" aria-hidden="true"></canvas></div>
+        <h3>DevEx Automation: PR Auto-Approvals</h3>
+        <p>Safe auto-approval windows for specific branches/paths (e.g. <code>Replica</code> or <code>prod</code>, only <code>track1.list</code>/<code>track2.list</code> diffs), reducing toil while preserving controls.</p>
+        <ul>
+          <li>Scheduled runs; ADO permissions &amp; policy checks.</li>
+          <li>Fine-grained conditions and merge audits.</li>
+        </ul>
+      </article>
+    </div>
+  </section>
+
+  <!-- QUANT -->
+  <section id="quant">
+    <div class="sec-head" data-reveal>
+      <span class="eyebrow">pricing &amp; risk</span>
+      <h2>Quant &amp; Derivatives Systems</h2>
+    </div>
+    <div class="anim-strip tall card" data-reveal aria-hidden="true">
+      <canvas id="mcCanvas"></canvas>
+      <span class="strip-label">monte carlo pricing engine · live</span>
+    </div>
+    <div class="payoff-lab card" data-reveal>
+      <div class="pl-head">
+        <span class="dc-title">options payoff lab · interactive</span>
+        <div class="pl-controls">
+          <select id="plStrat" aria-label="Option strategy">
+            <option value="call">long call</option>
+            <option value="put">long put</option>
+            <option value="straddle" selected>straddle</option>
+            <option value="bullcall">bull call spread</option>
+            <option value="condor">iron condor</option>
+          </select>
+          <label>K <input type="range" id="plK" min="80" max="120" value="100" step="1" aria-label="Strike"><span class="val" id="plKv">100</span></label>
+          <label id="plWL">w <input type="range" id="plW" min="5" max="20" value="10" step="1" aria-label="Wing width"><span class="val" id="plWv">10</span></label>
+          <label>σ <input type="range" id="plV" min="10" max="80" value="30" step="1" aria-label="Implied volatility"><span class="val" id="plVv">30%</span></label>
+          <label>dte <input type="range" id="plT" min="5" max="180" value="45" step="1" aria-label="Days to expiry"><span class="val" id="plTv">45d</span></label>
+        </div>
+      </div>
+      <div class="pl-canvas-wrap"><canvas id="payoffCanvas" aria-label="Payoff diagram"></canvas></div>
+      <div class="pl-read" id="plRead"></div>
+    </div>
+    <div class="grid cols-2">
+      <article class="card" data-reveal>
+        <h3>Pricing &amp; Simulation</h3>
+        <p>Option pricing utilities (Black-Scholes, CRR binomial) and Monte-Carlo engines for path-dependent instruments; stress testing &amp; scenario analysis.</p>
+        <ul>
+          <li>Greeks &amp; risk surfaces; parameter sweeps and calibration hooks.</li>
+          <li>Payoff visualizers for custom strategies (iron condors, synthetics, more).</li>
+        </ul>
+      </article>
+      <article class="card" data-reveal>
+        <h3>Event-Driven Signals</h3>
+        <p>Ingestion → classification of market/news/alt data; feature pipelines feeding models that output event probabilities with action hooks.</p>
+        <ul>
+          <li>Batch + streaming inputs, priority queues, throttled executors.</li>
+          <li>Backtests with P&amp;L accounting and slippage models.</li>
+        </ul>
+      </article>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="projects">
+    <div class="sec-head" data-reveal>
+      <span class="eyebrow">selected work</span>
+      <h2>Projects</h2>
+    </div>
+    <div class="grid cols-2">
+      <article class="card" data-reveal>
+        <div class="card-anim"><canvas id="animHcmp" aria-hidden="true"></canvas></div>
+        <h3>HCMP FinOps Core</h3>
+        <p>A single control plane that unifies multiple cloud providers — cost management, observability, governance, ITSM, and SaaS integrations — into one platform, with anomaly detection and billing exports across consumption and auto-metering models.</p>
+        <div class="stack"><b>stack</b> · K8s · Helm · ArgoCD · Oracle/BigQuery · Spring · Python</div>
+      </article>
+      <article class="card" data-reveal>
+        <div class="card-anim"><canvas id="animTender" aria-hidden="true"></canvas></div>
+        <h3>TenderChain</h3>
+        <p>Decentralized tender-management dApp: government officers, contractors, and verifiers transact on-chain with stake-based security, encrypted bidding, and milestone verification — evidence pinned to IPFS for tamper-proof transparency.</p>
+        <div class="stack"><b>stack</b> · Solidity · Truffle · Web3 · IPFS · Node/Mongo · <a href="https://github.com/D4T4R/TenderChain" target="_blank" rel="noopener">repo ↗</a></div>
+      </article>
+      <article class="card" data-reveal>
+        <div class="card-anim"><canvas id="animInstaller" aria-hidden="true"></canvas></div>
+        <h3>Managed Kubeflow Installer</h3>
+        <p>Repeatable Kubeflow auto-installation on Kubernetes clusters with validation checks and environment parity.</p>
+        <div class="stack"><b>stack</b> · GitOps · Helm/YAML · Kubernetes</div>
+      </article>
+      <article class="card" data-reveal>
+        <div class="card-anim"><canvas id="animAnon" aria-hidden="true"></canvas></div>
+        <h3>GoAnon</h3>
+        <p>A layered privacy bootstrap for Linux: chained Tor + obfs4, two-level OpenVPN, randomized proxychains, VPS SOCKS tunnel, and VirtualBox isolation — all behind an nftables kill-switch that fails closed.</p>
+        <div class="stack"><b>stack</b> · Shell · Tor/obfs4 · OpenVPN · nftables · I2P/IPFS · <a href="https://github.com/D4T4R/GoAnon" target="_blank" rel="noopener">repo ↗</a></div>
+      </article>
+    </div>
+  </section>
+
+  <!-- STACK -->
+  <section id="stack">
+    <div class="sec-head" data-reveal>
+      <span class="eyebrow">toolchain</span>
+      <h2>Stack</h2>
+    </div>
+    <div class="card" data-reveal>
+      <div class="tagwall">
+        <span class="tag">Kubernetes</span><span class="tag">Helm</span><span class="tag">ArgoCD</span>
+        <span class="tag">KEDA</span><span class="tag">Vault</span><span class="tag">Docker/Podman</span>
+        <span class="tag">Kubeflow</span><span class="tag">GPU Provisioning</span>
+        <span class="tag">Oracle · BigQuery</span>
+        <span class="tag">Spring (Java)</span><span class="tag">Python</span><span class="tag">SQL/PLSQL</span>
+        <span class="tag">YAML/CI/CD (ADO)</span>
+        <span class="tag">Billing: Consumption · Auto-metering</span>
+      </div>
+    </div>
+    <div class="card" data-reveal style="margin-top:14px">
+      <div class="caps">also used</div>
+      <div class="icon-wall" aria-label="Also used tools and technologies">
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/bash/bash-original.svg" title="Bash" alt="Bash" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/solidity/solidity-original.svg" title="Solidity" alt="Solidity" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/remix/remix-original.svg" title="Remix IDE" alt="Remix IDE" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/linux/linux-original.svg" title="Linux" alt="Linux" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/python/python-original.svg" title="Python" alt="Python" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/materialui/materialui-original.svg" title="Material UI" alt="Material UI" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/npm/npm-original-wordmark.svg" title="NPM" alt="NPM" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/javascript/javascript-original.svg" title="JavaScript" alt="JavaScript" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/mongodb/mongodb-original.svg" title="MongoDB" alt="MongoDB" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/rust/rust-original.svg" title="Rust" alt="Rust" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/dbeaver/dbeaver-original.svg" title="DBeaver" alt="DBeaver" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/D4T4R/GoAnon/main/Veritas%20VCS.png" title="Veritas HAC" alt="Veritas HAC" width="40" height="60" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/ClusterLabs/pacemaker/main/doc/clusterlabs-logo-55x55.png" title="Pacemaker" alt="ClusterLabs Pacemaker" width="40" height="60" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/nodejs/nodejs-plain.svg" title="NodeJS" alt="NodeJS" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/mocha/mocha-plain.svg" title="Mocha" alt="Mocha" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/selenium/selenium-original.svg" title="Selenium" alt="Selenium" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/postman/postman-original.svg" title="Postman" alt="Postman" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/git/git-original.svg" title="Git" alt="Git" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/grafana/grafana-plain.svg" title="Grafana" alt="Grafana" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/grafana/beyla/main/docs/sources/assets/logo.png" title="Beyla" alt="Beyla" width="35" height="40" loading="lazy"/>
+        <img src="https://www.cloudbabble.co.uk/assets/img/anthos/anthoslogo.png" title="Anthos" alt="GCP Anthos" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/prometheus/prometheus-original.svg" title="Prometheus" alt="Prometheus" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/D4T4R/GoAnon/main/symbol-white.png" title="Victoria Metrics" alt="VictoriaMetrics" width="35" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/D4T4R/GoAnon/main/zabbix.png" title="Zabbix" alt="Zabbix" width="35" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/perses/perses/5503679acd58a0bd58b3e2de768f9183d5891336/docs/images/perses_logo_cropped.svg" title="Perses" alt="Perses" width="80" height="80" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/apacheairflow/apacheairflow-original.svg" title="Airflow" alt="Airflow" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/apachekafka/apachekafka-original.svg" title="Kafka" alt="Kafka" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/D4T4R/GoAnon/main/Keycloak.png" title="Keycloak" alt="Keycloak" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/nginx/nginx-original.svg" title="Nginx" alt="Nginx" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/azuredevops/azuredevops-plain.svg" title="Azure DevOps" alt="ADO" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/docker/docker-original.svg" title="Docker" alt="Docker" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/kubernetes/kubernetes-plain.svg" title="Kubernetes" alt="Kubernetes" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/istio/istio/master/logo/istio-bluelogo-whitebackground-unframed.svg" title="Istio ServiceMesh" alt="Istio" width="40" height="39" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/argocd/argocd-original.svg" title="ArgoCD" alt="ArgoCD" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/D4T4R/GoAnon/main/fargate.png" title="AWS Fargate" alt="AWS Fargate" width="40" height="40" loading="lazy"/>
+        <img src="https://avatars.githubusercontent.com/u/52158677" title="FluxCD" alt="FluxCD" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/harbor/harbor-original.svg" title="Harbor" alt="Harbor" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/helm/helm-original.svg" title="Helm" alt="Helm" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/go-gitea/gitea/main/assets/logo.svg" title="Gitea" alt="Gitea" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/D4T4R/GoAnon/main/boring-registry.png" title="Boring Registry" alt="Boring Registry" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/podman/podman-original.svg" title="Podman" alt="Podman" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/kedacore/keda/main/images/logos/keda-icon.svg" title="Keda Autoscaler" alt="Keda" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/percona/percona-toolkit/0289a1a6b4018c950c812b1d7d495774c712103f/config/sphinx-build/_static/percona-favicon.svg" title="Percona Operator" alt="Percona" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/D4T4R/GoAnon/main/piranha-cloud-square.png" title="Piranha Cloud" alt="Piranha Cloud" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/googlecloud/googlecloud-original.svg" title="GCP" alt="GCP" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/rabbitmq/rabbitmq-original.svg" title="RabbitMQ" alt="RabbitMQ" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/jenkins/jenkins-original.svg" title="Jenkins" alt="Jenkins" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/vault/vault-original.svg" title="Vault" alt="Vault" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/elasticsearch/elasticsearch-original.svg" title="ElasticSearch" alt="ElasticSearch" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/awk/awk-original.svg" title="Awk" alt="Awk" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/ballerina/ballerina-original.svg" title="Ballerina" alt="Ballerina" width="40" height="40" loading="lazy"/>
+        <img src="https://avatars.githubusercontent.com/u/40630007" title="Genesys Cloud" alt="Genesys" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/swagger/swagger-original.svg" title="Swagger" alt="Swagger" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/yaml/yaml-original.svg" title="YAML" alt="YAML" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/tomcat/tomcat-original.svg" title="Apache Tomcat" alt="Apache Tomcat" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/D4T4R/GoAnon/main/zato-og.png" title="Zato" alt="Zato" width="40" height="40" loading="lazy"/>
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRivy-Oqgqx4JRPY18gvvMc-nXO7HMbu05zcQ&s" title="Apigee" alt="Apigee" width="40" height="40" loading="lazy"/>
+        <img src="https://avatars.githubusercontent.com/u/1393215" title="Zipline" alt="Zipline" width="40" height="40" loading="lazy"/>
+      </div>
+    </div>
+  </section>
+
+  <!-- ACTIVITY -->
+  <section id="stats">
+    <div class="sec-head" data-reveal>
+      <span class="eyebrow">signal</span>
+      <h2>Activity Glimpse</h2>
+    </div>
+    <div class="grid cols-2 stats">
+      <div class="card" data-reveal>
+        <a href="https://git.io/streak-stats" target="_blank" rel="noopener" class="no-underline">
+          <div class="img-wrap loading" data-remote aria-busy="true">
+            <div class="skeleton" aria-hidden="true"></div>
+            <img src="https://github-readme-streak-stats.herokuapp.com/?user=d4t4r&theme=microsoft-dark&card_width=550&hide_border=true&short_numbers=true&date_format=M%20j[%2C%20Y]&exclude_days=Sun%2CSat" alt="GitHub Streak graph for D4T4R" loading="lazy"/>
+          </div>
+        </a>
+      </div>
+      <div class="card" data-reveal>
+        <a href="https://github.com/anuraghazra/github-readme-stats" target="_blank" rel="noopener" class="no-underline">
+          <div class="img-center">
+            <img src="https://github-stats-extended.vercel.app/api/top-langs/?username=D4T4R&hide_border=true&card_width=550&theme=vision-friendly-dark" alt="Top languages chart for D4T4R" loading="lazy"/>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="sec-head" data-reveal>
+      <span class="eyebrow">reach out</span>
+      <h2>Contact</h2>
+    </div>
+    <div class="contact-grid">
+      <a class="contact-link" data-reveal href="https://github.com/D4T4R" target="_blank" rel="noopener">
+        <span><span class="k">github</span><span class="v">@D4T4R</span></span>
+      </a>
+      <a class="contact-link" data-reveal href="https://www.linkedin.com/in/ezpuns" target="_blank" rel="noopener">
+        <span><span class="k">linkedin</span><span class="v">/in/ezpuns</span></span>
+      </a>
+      <a class="contact-link" data-reveal href="mailto:aniketdatar@cyberservices.com">
+        <span><span class="k">email</span><span class="v">aniketdatar@cyberservices.com</span></span>
+      </a>
+      <a class="contact-link" data-reveal href="https://www.buymeacoffee.com/ezpuns" target="_blank" rel="noopener">
+        <span><span class="k">support</span><span class="v">buy me a coffee</span></span>
+      </a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container">© <span id="y"></span> Aniket Datar · built on GitHub Pages · press <kbd>~</kbd> for shell · <a href="#top">back to top ↑</a></div>
+</footer>
+
+<!-- ============ LIBS (cdnjs, all free) ============ -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+<script>
+"use strict";
+document.documentElement.classList.add('js');
+const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const THEME_HOOKS = []; // visuals register here to re-tint/redraw on theme toggle
+
+/* ---------- year ---------- */
+document.getElementById('y').textContent = new Date().getFullYear();
+
+/* =========================================================
+   BOOT PRELOADER — terminal splash, once per session
+   ========================================================= */
+(function boot(){
+  if (!document.documentElement.classList.contains('booting')) return;
+  const log = document.getElementById('bootLog');
+  const bootEl = document.getElementById('boot');
+  if (!log || !bootEl) return;
+  const lines = [
+    ['cmd', '$',  'init portfolio --profile aniket'],
+    ['',    '\u25b8', 'mounting vol surface \u2026 \u2713'],
+    ['',    '\u25b8', 'hydrating pipelines \u2026 \u2713'],
+    ['',    '\u25b8', 'reconciling billing exports \u2026 \u2713'],
+    ['',    '\u25b8', 'calibrating greeks \u2026 \u2713'],
+    ['ok',  '\u2713', 'ready \u2014 welcome']
+  ];
+  const STEP = 170, HOLD = 520;
+  lines.forEach((l, i) => setTimeout(() => {
+    const d = document.createElement('div');
+    d.className = 'bl ' + l[0];
+    d.innerHTML = '<span class="pf">' + l[1] + '</span>' + l[2];
+    log.appendChild(d);
+    requestAnimationFrame(() => d.classList.add('on'));
+  }, 150 + i * STEP));
+  const total = 150 + lines.length * STEP + HOLD;
+  setTimeout(() => {
+    document.documentElement.classList.add('boot-done');
+    document.dispatchEvent(new CustomEvent('boot:done'));
+    try { sessionStorage.setItem('boot', '1'); } catch(e){}
+    setTimeout(() => {
+      document.documentElement.classList.remove('booting', 'boot-done');
+      bootEl.remove();
+    }, 500);
+  }, total);
+})();
+
+/* ---------- theme ---------- */
+const root = document.documentElement, themeBtn = document.getElementById('theme');
+const saved = localStorage.getItem('theme') || (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+if (saved === 'light') { root.classList.add('light'); themeBtn.textContent = '☀'; }
+function applyTheme(){
+  root.classList.toggle('light');
+  const mode = root.classList.contains('light') ? 'light' : 'dark';
+  themeBtn.textContent = mode === 'light' ? '☀' : '☾';
+  localStorage.setItem('theme', mode);
+  THEME_HOOKS.forEach(f => f(mode));
+}
+themeBtn.addEventListener('click', () => {
+  if (!document.startViewTransition || REDUCED){ applyTheme(); return; }
+  const r = themeBtn.getBoundingClientRect();
+  const cx = r.left + r.width/2, cy = r.top + r.height/2;
+  const maxR = Math.hypot(Math.max(cx, innerWidth - cx), Math.max(cy, innerHeight - cy));
+  root.classList.add('tw');
+  const vt = document.startViewTransition(applyTheme);
+  vt.finished.finally(() => root.classList.remove('tw'));
+  vt.ready.then(() => {
+    document.documentElement.animate(
+      { clipPath: [`circle(0px at ${cx}px ${cy}px)`, `circle(${maxR}px at ${cx}px ${cy}px)`] },
+      { duration: 520, easing: 'cubic-bezier(.4,0,.2,1)', pseudoElement: '::view-transition-new(root)' }
+    );
+  }).catch(() => {});
+});
+
+/* ---------- header offset (accurate sticky measurement) ---------- */
+const headerEl = document.querySelector('header');
+const tickerEl = document.querySelector('.ticker');
+function setHeaderOffset(){
+  const h = headerEl ? headerEl.getBoundingClientRect().height : 66;
+  const t = tickerEl ? tickerEl.getBoundingClientRect().height : 0;
+  root.style.setProperty('--header-offset', Math.ceil(h + t) + 'px');
+}
+setHeaderOffset();
+addEventListener('resize', () => requestAnimationFrame(setHeaderOffset), { passive:true });
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(setHeaderOffset);
+
+/* ---------- header auto-hide: down hides, up reveals ---------- */
+if (!REDUCED) {
+  let lastY = window.scrollY;
+  addEventListener('scroll', () => {
+    const y = window.scrollY;
+    const menuOpen = document.body.classList.contains('menu-open');
+    headerEl.classList.toggle('hide', !menuOpen && y > lastY && y > 240);
+    lastY = y;
+  }, { passive:true });
+}
+
+/* ---------- mobile nav ---------- */
+const menuBtn = document.getElementById('menu'), navmenu = document.getElementById('navmenu'), backdrop = document.getElementById('backdrop');
+const mq = matchMedia('(max-width: 920px)');
+function setMode(){
+  if (mq.matches) navmenu.classList.add('mobile');
+  else { navmenu.classList.remove('mobile','open'); document.body.classList.remove('menu-open'); menuBtn.setAttribute('aria-expanded','false'); backdrop.hidden = true; }
+  setHeaderOffset();
+}
+setMode(); mq.addEventListener('change', setMode);
+function setMenu(open){
+  if (!navmenu.classList.contains('mobile')) return;
+  navmenu.classList.toggle('open', open);
+  document.body.classList.toggle('menu-open', open);
+  menuBtn.setAttribute('aria-expanded', String(open));
+  backdrop.hidden = !open;
+}
+menuBtn.addEventListener('click', () => setMenu(!navmenu.classList.contains('open')));
+backdrop.addEventListener('click', () => setMenu(false));
+addEventListener('keydown', e => { if (e.key === 'Escape') setMenu(false); });
+navmenu.addEventListener('click', e => { if (e.target.tagName === 'A') setMenu(false); });
+
+/* ---------- scroll progress ---------- */
+const progress = document.getElementById('progress'), doc = document.documentElement;
+function updateProgress(){
+  const max = doc.scrollHeight - doc.clientHeight;
+  progress.style.width = (max ? (doc.scrollTop / max) * 100 : 0) + '%';
+}
+updateProgress();
+addEventListener('scroll', updateProgress, { passive:true });
+addEventListener('resize', updateProgress);
+
+/* ---------- skeleton loaders for remote images ---------- */
+document.querySelectorAll('.img-wrap[data-remote]').forEach(wrap => {
+  const img = wrap.querySelector('img'), sk = wrap.querySelector('.skeleton');
+  const finish = ok => {
+    wrap.classList.remove('loading'); wrap.setAttribute('aria-busy','false'); if (sk) sk.remove();
+    if (!ok) wrap.insertAdjacentHTML('beforeend', '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--muted);font-family:var(--mono);font-size:.8rem;background:rgba(0,0,0,.2)">image unavailable</div>');
+  };
+  if (img.complete) return finish(img.naturalWidth > 0);
+  img.addEventListener('load', () => finish(true), { once:true });
+  img.addEventListener('error', () => finish(false), { once:true });
+});
+
+/* =========================================================
+   ROLE ROTATOR — cycling word in the hero eyebrow
+   ========================================================= */
+(function roleRotator(){
+  if (REDUCED) return;
+  const eb = document.querySelector('.hero .eyebrow');
+  if (!eb) return;
+  const words = ['finops','hybrid cloud','quant systems','gpu provisioning','gitops automation'];
+  eb.innerHTML = '<span class="rot-wrap"><span class="rot-word">' + words[0] + '</span></span>';
+  const w = eb.querySelector('.rot-word');
+  let i = 0;
+  setInterval(() => {
+    w.classList.add('out');
+    setTimeout(() => {
+      i = (i + 1) % words.length;
+      w.textContent = words[i];
+      w.classList.remove('out');
+      w.classList.add('in');
+      requestAnimationFrame(() => requestAnimationFrame(() => w.classList.remove('in')));
+    }, 380);
+  }, 2600);
+})();
+
+/* =========================================================
+   CURSOR SPOTLIGHT — --mx/--my tracker for cards & contact links
+   ========================================================= */
+document.querySelectorAll('.card, .contact-link').forEach(el => {
+  el.addEventListener('pointermove', e => {
+    const r = el.getBoundingClientRect();
+    el.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+    el.style.setProperty('--my', (e.clientY - r.top) + 'px');
+  });
+});
+
+/* =========================================================
+   HEADLINE word-split reveal + GSAP scroll reveals
+   ========================================================= */
+function splitWords(el){
+  const walk = node => {
+    [...node.childNodes].forEach(n => {
+      if (n.nodeType === 3) {
+        const frag = document.createDocumentFragment();
+        n.textContent.split(/(\s+)/).forEach(part => {
+          if (part.trim() === '') frag.appendChild(document.createTextNode(part));
+          else { const s = document.createElement('span'); s.className = 'word'; s.textContent = part; frag.appendChild(s); }
+        });
+        n.replaceWith(frag);
+      } else if (n.nodeType === 1) {
+        if (n.classList.contains('grad-text')) { n.classList.add('word'); n.style.display = 'inline-block'; }
+        else walk(n);
+      }
+    });
+  };
+  walk(el);
+  return el.querySelectorAll('.word');
+}
+
+if (window.gsap) {
+  if (window.ScrollTrigger) gsap.registerPlugin(ScrollTrigger);
+
+  const runIntro = () => {
+    if (!REDUCED) {
+      // hero load orchestration
+      const words = splitWords(document.getElementById('headline'));
+      const tl = gsap.timeline({ defaults:{ ease:'power3.out' } });
+      tl.from(headerEl, { y:-20, opacity:0, duration:.5 })
+        .from('.hero .eyebrow', { y:10, opacity:0, duration:.5 }, '-=.2')
+        .from(words, { yPercent:120, opacity:0, duration:.7, stagger:.045 }, '-=.3')
+        .from('.surface-panel', { opacity:0, scale:.96, duration:.9, ease:'power2.out' }, '-=.6');
+
+      // staggered reveal for everything tagged [data-reveal]
+      document.querySelectorAll('[data-reveal]').forEach(el => {
+        gsap.to(el, {
+          opacity:1, y:0, duration:.6, ease:'power2.out',
+          scrollTrigger:{ trigger:el, start:'top 88%', once:true }
+        });
+      });
+    } else {
+      gsap.set('[data-reveal]', { opacity:1, y:0 });
+    }
+  };
+
+  // hold the intro until the boot preloader lifts (with a failsafe timeout)
+  if (document.documentElement.classList.contains('booting')) {
+    let started = false;
+    const go = () => { if (!started){ started = true; runIntro(); } };
+    document.addEventListener('boot:done', go, { once:true });
+    setTimeout(go, 3400);
+  } else runIntro();
+} else {
+  // CDN unreachable: never leave content hidden
+  document.querySelectorAll('[data-reveal]').forEach(el => { el.style.opacity = 1; el.style.transform = 'none'; });
+}
+
+/* =========================================================
+   Magnetic buttons (pointer-follow micro-interaction)
+   ========================================================= */
+if (!REDUCED && matchMedia('(pointer:fine)').matches) {
+  document.querySelectorAll('.magnetic').forEach(btn => {
+    const inner = btn.querySelector('.mag-inner') || btn;
+    const strength = 0.35;
+    btn.addEventListener('pointermove', e => {
+      const r = btn.getBoundingClientRect();
+      const x = (e.clientX - r.left - r.width/2) * strength;
+      const y = (e.clientY - r.top - r.height/2) * strength;
+      btn.style.transform = `translate(${x*0.4}px,${y*0.4}px)`;
+      inner.style.transform = `translate(${x}px,${y}px)`;
+    });
+    btn.addEventListener('pointerleave', () => {
+      btn.style.transform = ''; inner.style.transform = '';
+    });
+  });
+}
+
+/* =========================================================
+   CANVAS STRIPS — GitOps delivery loop + Monte Carlo paths
+   ========================================================= */
+function cssVar(n){ return getComputedStyle(document.documentElement).getPropertyValue(n).trim() || '#999'; }
+function themeInk(){
+  const light = document.documentElement.classList.contains('light');
+  return light
+    ? { light, text:'rgba(74,80,108,.95)', line:'rgba(60,66,96,.30)', grid:'rgba(60,66,96,.14)', dash:'rgba(60,66,96,.45)' }
+    : { light, text:'rgba(154,160,181,.9)', line:'rgba(150,152,176,.22)', grid:'rgba(154,160,181,.10)', dash:'rgba(154,160,181,.32)' };
+}
+
+function makeStrip(id, init, draw){
+  const cv = document.getElementById(id);
+  if (!cv || !cv.getContext) return;
+  const ctx = cv.getContext('2d');
+  let raf = 0, running = false, state = null;
+
+  function size(){
+    const r = cv.parentElement.getBoundingClientRect();
+    const dpr = Math.min(devicePixelRatio || 1, 2);
+    cv.width = Math.max(1, r.width * dpr); cv.height = Math.max(1, r.height * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    state = init(r.width, r.height);
+    if (REDUCED) { state.static = true; draw(ctx, state); } // single calm frame
+  }
+  function frame(){ draw(ctx, state); raf = requestAnimationFrame(frame); }
+  const start = () => { if (!running && !REDUCED && state){ running = true; raf = requestAnimationFrame(frame); } };
+  const stop  = () => { running = false; cancelAnimationFrame(raf); };
+
+  size();
+  THEME_HOOKS.push(() => { if (state) draw(ctx, state); });
+  addEventListener('resize', () => requestAnimationFrame(size), { passive:true });
+  if ('IntersectionObserver' in window)
+    new IntersectionObserver(es => es.forEach(e => e.isIntersecting ? start() : stop()), { threshold:.1 }).observe(cv);
+  else start();
+  document.addEventListener('visibilitychange', () => document.hidden ? stop() : start());
+}
+
+/* --- GitOps delivery loop: packets flowing commit → build → argocd → k8s --- */
+/* --- GitOps delivery loop: CLICK TO DEPLOY ---
+   idle ambient flow → press deploy → commit hash travels commit→build→argocd→k8s
+   with per-stage progress rings, checkmarks, typewriter log, and a rolling
+   pod update. Version counter persists across deploys. */
+(function deployConsole(){
+  const cv = document.getElementById('pipelineCanvas');
+  const btn = document.getElementById('deployBtn');
+  const logEl = document.getElementById('deployLog');
+  const statusEl = document.getElementById('deployStatus');
+  const termEl = document.getElementById('deployTerm');
+  const envSeg = document.getElementById('dcEnv');
+  const chaosEl = document.getElementById('dcChaos');
+  if (!cv || !cv.getContext || !btn) return;
+  const ctx = cv.getContext('2d');
+  const wrap = cv.parentElement;
+
+  const HEX = '0123456789abcdef';
+  const newHash = () => Array.from({ length: 7 }, () => HEX[(Math.random()*16)|0]).join('');
+  const rid = () => Math.random().toString(36).slice(2, 7);
+  const STAGES = ['checkout','build','sync','rollout'];
+
+  let W = 0, H = 0, raf = 0, running = false, t = 0;
+  const D = {
+    phase:'idle', env:'staging', chaos:false, hash:newHash(), version:1,
+    stageStatus:{}, activeStage:null, workArc:0,
+    pods:[0,0,0], podPop:[0,0,0], rings:[], parts:[],
+    queue:[], stepTimer:0, elapsed:0, failAt:null,
+    statusText:'ready', statusKind:''
+  };
+  function resetStages(){ D.stageStatus = {}; STAGES.forEach(s => D.stageStatus[s] = 'pending'); D.activeStage = null; D.workArc = 0; }
+  resetStages();
+
+  /* ---------- terminal ---------- */
+  function escapeHtml(s){ return s.replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c])); }
+  function logLine(level, text){
+    const pf = ({ cmd:'$', info:'\u25b8', ok:'\u2713', err:'\u2717', warn:'\u26a0' })[level] || ' ';
+    const div = document.createElement('div');
+    div.className = 'll ' + level;
+    div.innerHTML = '<span class="pf">' + pf + '</span>' + escapeHtml(text);
+    logEl.appendChild(div);
+    while (logEl.childNodes.length > 120) logEl.removeChild(logEl.firstChild);
+    termEl.scrollTop = termEl.scrollHeight;
+  }
+  function clearLog(){ logEl.innerHTML = ''; }
+
+  /* ---------- status bar ---------- */
+  function status(text, kind){ D.statusText = text; D.statusKind = kind || ''; renderStatus(); }
+  function renderStatus(){
+    const ready = D.pods.filter(p => p === 1).length;
+    statusEl.innerHTML =
+      '<span><span class="dot ' + D.statusKind + '"></span><b>' + D.statusText + '</b></span>' +
+      '<span>env <b>' + D.env + '</b></span>' +
+      '<span>commit <b>' + D.hash + '</b></span>' +
+      '<span>elapsed <b>' + (D.elapsed/1000).toFixed(1) + 's</b></span>' +
+      '<span>pods <b>' + ready + '/3</b></span>' +
+      '<span>version <b>v' + D.version + '</b></span>';
+  }
+
+  /* ---------- canvas geometry ---------- */
+  function geom(){ const y = H*0.46, x0 = W*0.07, x1 = W*0.74; return { y, x0, x1, nx: p => x0 + (x1-x0)*(p/(STAGES.length-1)) }; }
+  function ring(idx){ const { y, nx } = geom(); D.rings.push({ x: nx(idx), y, r:6, a:.5 }); }
+
+  /* ---------- step queue ---------- */
+  function enqueue(delay, run){ D.queue.push({ delay, run }); }
+  function setStage(name, st){ D.stageStatus[name] = st; if (st === 'running'){ D.activeStage = name; D.workArc = 0; } }
+  function flipPod(i){ D.pods[i] = 1; D.podPop[i] = t; ring(3); }
+
+  function buildQueue(){
+    const env = D.env, hash = D.hash;
+    D.failAt = D.chaos ? (Math.random() < 0.5 ? 'build' : 'rollout')
+                       : (Math.random() < 0.14 ? (Math.random() < 0.6 ? 'build' : 'rollout') : null);
+    enqueue(0,   () => { setStage('checkout','running'); status('running','run'); logLine('cmd','git push origin main'); });
+    enqueue(420, () => logLine('info','Enumerating objects: 36, done.'));
+    enqueue(360, () => logLine('info','remote: pipeline #' + D.version + ' queued on ' + env));
+    enqueue(420, () => { logLine('ok','checkout complete'); setStage('checkout','passed'); ring(0); });
+
+    enqueue(260, () => { setStage('build','running'); logLine('cmd','docker build -t finops-core:' + hash); });
+    enqueue(520, () => logLine('info','[1/4] FROM python:3.12-slim'));
+    enqueue(560, () => logLine('info','[2/4] RUN pip install -r requirements.txt'));
+    enqueue(520, () => logLine('info','[3/4] COPY . /app'));
+    enqueue(420, () => logLine('info','[4/4] running pytest (142 tests)\u2026'));
+    enqueue(760, () => {
+      if (D.failAt === 'build'){ logLine('err','FAILED tests/test_billing.py::test_reconcile  (2 failed)'); setStage('build','failed'); return fail('build'); }
+      logLine('ok','142 passed in 8.4s'); logLine('info','pushed finops-core:' + hash + ' (14.2 MB)'); setStage('build','passed'); ring(1);
+    });
+
+    enqueue(280, () => { setStage('sync','running'); logLine('cmd','argocd app sync finops-core --env ' + env); });
+    enqueue(520, () => logLine('info','comparing live state \u2194 desired (git)'));
+    enqueue(520, () => logLine('info','applying 7 manifests'));
+    enqueue(480, () => { logLine('ok','Deployment/api  configured'); setStage('sync','passed'); ring(2); });
+
+    if (env === 'prod') enqueue(220, () => awaitApproval());
+
+    enqueue(280, () => { setStage('rollout','running'); logLine('cmd','kubectl rollout status deploy/api -w'); });
+    for (let i = 0; i < 3; i++){
+      enqueue(560, () => {
+        if (D.failAt === 'rollout' && i === 1){ logLine('err','pod api-' + rid() + '  CrashLoopBackOff'); setStage('rollout','failed'); return fail('rollout'); }
+        flipPod(i); logLine('info','pod api-' + rid() + '  Ready  (' + (i+1) + '/3)');
+      });
+    }
+    enqueue(360, () => { logLine('ok','deployment "api" successfully rolled out'); setStage('rollout','passed'); succeed(); });
+  }
+
+  function fail(stage){
+    status('failed \u00b7 ' + stage, 'err');
+    D.queue = [];
+    enqueue(620, () => logLine('warn','rolling back to v' + D.version + ' (last known good)'));
+    enqueue(460, () => { D.pods = [0,0,0]; D.podPop = [t,t,t]; });
+    enqueue(520, () => { logLine('ok','rollback complete \u00b7 v' + D.version + ' stable'); finish('rolled back \u00b7 v' + D.version, 'err'); });
+    D.phase = 'running';
+  }
+  function awaitApproval(){
+    D.phase = 'awaiting'; status('awaiting approval','run');
+    logLine('warn','manual approval required for prod \u2014 click Approve');
+    btn.disabled = false; btn.textContent = '\u2713 approve'; btn.classList.add('approve');
+  }
+  function approve(){
+    btn.classList.remove('approve'); btn.textContent = 'deploying\u2026'; btn.disabled = true;
+    logLine('ok','approved by @aniketdatar'); status('running','run'); D.phase = 'running';
+  }
+  function succeed(){ D.version++; finish('deployed \u2713 ' + D.hash + ' live', 'ok'); }
+
+  /* confetti burst on successful deploy */
+  function burst(x, y){
+    const cols = [cssVar('--violet'), cssVar('--magenta'), cssVar('--amber'), cssVar('--ok')];
+    for (let i = 0; i < 52; i++){
+      const a = Math.random()*Math.PI*2, sp = 1.1 + Math.random()*2.8;
+      D.parts.push({
+        x, y, vx:Math.cos(a)*sp, vy:Math.sin(a)*sp - 1.6,
+        life:1, sz:1.6 + Math.random()*2.4, rot:Math.random()*Math.PI, col:cols[i % 4]
+      });
+    }
+  }
+  function finish(text, kind){
+    D.phase = 'done'; status(text, kind);
+    const g = geom(); for (let i = 0; i < 3; i++) D.rings.push({ x:g.nx(3), y:g.y, r:6+i*4, a:.4 });
+    if (kind === 'ok' && !REDUCED){ burst(g.nx(3), g.y); burst(g.nx(1), g.y); }
+    btn.disabled = false; btn.textContent = '\u25b6 deploy'; btn.classList.remove('approve');
+  }
+
+  function startDeploy(){
+    if (D.phase === 'running') return;
+    if (D.phase === 'awaiting'){ approve(); return; }
+    clearLog(); resetStages(); D.pods = [0,0,0]; D.podPop = [0,0,0]; D.rings.length = 0; D.parts.length = 0;
+    D.hash = newHash(); D.elapsed = 0; D.stepTimer = 0; D.queue = [];
+    D.phase = 'running'; btn.disabled = true; btn.textContent = 'deploying\u2026';
+    buildQueue();
+    if (REDUCED){
+      let guard = 0;
+      while (D.queue.length && guard++ < 200){ const s = D.queue.shift(); s.run(); if (D.phase === 'awaiting') approve(); }
+      draw();
+    }
+  }
+  btn.addEventListener('click', startDeploy);
+  if (envSeg) envSeg.addEventListener('click', e => {
+    const b = e.target.closest('button[data-env]');
+    if (!b || D.phase === 'running' || D.phase === 'awaiting') return;
+    D.env = b.dataset.env;
+    [...envSeg.children].forEach(c => { const on = c === b; c.classList.toggle('on', on); c.setAttribute('aria-pressed', on); });
+    status('ready \u00b7 ' + D.env, '');
+  });
+  if (chaosEl) chaosEl.addEventListener('change', () => { D.chaos = chaosEl.checked; });
+
+  /* ---------- engine tick ---------- */
+  function step(dt){
+    t += dt/1000;
+    if (D.phase !== 'running') return;
+    D.elapsed += dt;
+    if (D.activeStage) D.workArc = Math.min(1, D.workArc + dt/900);
+    D.stepTimer += dt;
+    let guard = 0;
+    while (D.queue.length && D.phase === 'running' && guard++ < 60){
+      const s = D.queue[0];
+      if (D.stepTimer >= s.delay){ D.stepTimer -= s.delay; D.queue.shift(); s.run(); }
+      else break;
+    }
+    renderStatus();
+  }
+
+  /* ---------- drawing ---------- */
+  function check(x, y, c){ ctx.strokeStyle = c; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.moveTo(x-3.2,y+.4); ctx.lineTo(x-.8,y+2.8); ctx.lineTo(x+3.6,y-2.6); ctx.stroke(); }
+  function cross(x, y, c){ ctx.strokeStyle = c; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.moveTo(x-2.6,y-2.6); ctx.lineTo(x+2.6,y+2.6); ctx.moveTo(x+2.6,y-2.6); ctx.lineTo(x-2.6,y+2.6); ctx.stroke(); }
+
+  function draw(){
+    ctx.clearRect(0, 0, W, H);
+    const { y, x0, x1, nx } = geom();
+    const ink = themeInk(), violet = cssVar('--violet'), magenta = cssVar('--magenta'),
+          amber = cssVar('--amber'), ok = cssVar('--ok'), err = cssVar('--err');
+
+    ctx.strokeStyle = ink.line; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(x0, y); ctx.lineTo(x1, y); ctx.stroke();
+
+    let last = -1; STAGES.forEach((s, i) => { if (D.stageStatus[s] === 'passed' || D.stageStatus[s] === 'running') last = Math.max(last, i); });
+    if (last > 0){ ctx.strokeStyle = magenta; ctx.globalAlpha = .4; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.moveTo(x0, y); ctx.lineTo(nx(last), y); ctx.stroke(); ctx.globalAlpha = 1; }
+
+    if (D.phase === 'idle' || D.phase === 'done' || D.phase === 'failed'){
+      for (let i = 0; i < 3; i++){ const tt = (t*0.22 + i/3) % 1; ctx.beginPath(); ctx.arc(x0+(x1-x0)*tt, y, 2.1, 0, 7); ctx.fillStyle = [violet,magenta,amber][i%3]; ctx.globalAlpha = .25; ctx.fill(); }
+      ctx.globalAlpha = 1;
+    }
+
+    ctx.font = '10px JetBrains Mono, monospace'; ctx.textAlign = 'center';
+    STAGES.forEach((name, i) => {
+      const x = nx(i), st = D.stageStatus[name];
+      const col = st === 'failed' ? err : st === 'passed' ? ok : st === 'running' ? amber : ink.line;
+      if (st === 'running'){
+        ctx.beginPath(); ctx.arc(x, y, 9, -Math.PI/2, -Math.PI/2 + D.workArc*Math.PI*2); ctx.strokeStyle = amber; ctx.lineWidth = 1.6; ctx.stroke();
+        const pulse = 0.5 + 0.5*Math.sin(t*5);
+        ctx.beginPath(); ctx.arc(x, y, 5+pulse*1.5, 0, 7); ctx.strokeStyle = amber; ctx.globalAlpha = .4; ctx.stroke(); ctx.globalAlpha = 1;
+      }
+      ctx.beginPath(); ctx.arc(x, y, 5, 0, 7); ctx.fillStyle = cssVar('--bg-2'); ctx.fill();
+      ctx.strokeStyle = col; ctx.lineWidth = 1.5; ctx.globalAlpha = st === 'pending' ? .5 : 1; ctx.stroke(); ctx.globalAlpha = 1;
+      if (st === 'passed') check(x, y, ok);
+      else if (st === 'failed') cross(x, y, err);
+      ctx.fillStyle = ink.text; ctx.fillText(name, x, y+22);
+    });
+
+    if (D.phase === 'running' && D.activeStage){
+      const idx = STAGES.indexOf(D.activeStage);
+      if (idx > 0 && D.workArc < 0.5){
+        const p = D.workArc/0.5, px = nx(idx-1) + (nx(idx)-nx(idx-1))*p;
+        ctx.beginPath(); ctx.arc(px, y, 3, 0, 7); ctx.fillStyle = amber; ctx.fill();
+      }
+    }
+
+    D.rings = D.rings.filter(r => r.a > 0.03);
+    D.rings.forEach(r => { ctx.beginPath(); ctx.arc(r.x, r.y, r.r, 0, 7); ctx.strokeStyle = magenta; ctx.globalAlpha = r.a; ctx.lineWidth = 1.2; ctx.stroke(); ctx.globalAlpha = 1; if (!REDUCED){ r.r += 0.6; r.a *= 0.95; } });
+
+    /* confetti particles */
+    if (D.parts.length){
+      D.parts = D.parts.filter(p => p.life > 0);
+      D.parts.forEach(p => {
+        p.x += p.vx; p.y += p.vy; p.vy += 0.055; p.life -= 0.016; p.rot += 0.09;
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, p.life);
+        ctx.translate(p.x, p.y); ctx.rotate(p.rot);
+        ctx.fillStyle = p.col;
+        ctx.fillRect(-p.sz/2, -p.sz/2, p.sz, p.sz*0.62);
+        ctx.restore();
+      });
+    }
+
+    const podX = W*0.82, podY = y, gap = Math.min(20, (W*0.16)/2.2), sz = 12;
+    const oldC = (D.version % 2 === 0) ? violet : amber, newC = (D.version % 2 === 0) ? amber : violet;
+    ctx.textAlign = 'center'; ctx.fillStyle = ink.text; ctx.font = '9px JetBrains Mono, monospace';
+    ctx.fillText('pods', podX + gap, podY - 13);
+    for (let i = 0; i < 3; i++){
+      const dtp = t - D.podPop[i], pop = (D.podPop[i] > 0 && dtp < 0.5) ? 1 + Math.sin(dtp/0.5*Math.PI)*0.25 : 1;
+      const s_ = sz*pop, ox = podX + i*gap;
+      ctx.fillStyle = D.pods[i] === 1 ? newC : oldC; ctx.globalAlpha = D.pods[i] === 1 ? .85 : .4;
+      rrect(ctx, ox-s_/2, podY-s_/2, s_, s_, 3); ctx.fill(); ctx.globalAlpha = 1;
+    }
+  }
+
+  function frame(ts){ const dt = Math.min(48, ts - (D._last || ts)); D._last = ts; step(dt); draw(); raf = requestAnimationFrame(frame); }
+  const start = () => { if (!running && !REDUCED){ running = true; D._last = 0; raf = requestAnimationFrame(frame); } };
+  const stop  = () => { running = false; cancelAnimationFrame(raf); };
+
+  function size(){
+    const r = wrap.getBoundingClientRect(), dpr = Math.min(devicePixelRatio || 1, 2);
+    cv.width = Math.max(1, r.width*dpr); cv.height = Math.max(1, r.height*dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0); W = r.width; H = r.height; draw();
+  }
+  size(); status('ready \u00b7 ' + D.env, '');
+  THEME_HOOKS.push(() => { draw(); renderStatus(); });
+  addEventListener('resize', () => requestAnimationFrame(size), { passive:true });
+  if ('IntersectionObserver' in window) new IntersectionObserver(es => es.forEach(e => e.isIntersecting ? start() : stop()), { threshold:.05 }).observe(cv);
+  else start();
+  document.addEventListener('visibilitychange', () => document.hidden ? stop() : start());
+})();
+
+/* --- Monte Carlo: GBM paths colored by outcome, terminal histogram, live readout --- */
+function genPaths(w, h){
+  const n = 240, P = 44, paths = [], term = [];
+  const cy = h * 0.52, sc = h / 105;
+  for (let p = 0; p < P; p++){
+    const drift = (Math.random() - 0.5) * 0.12;
+    let v = 0; const arr = [];
+    for (let k = 0; k < n; k++){
+      v += (Math.random() - 0.5) * 2.1 + drift - v * 0.006;
+      arr.push(cy - v * sc);
+    }
+    paths.push(arr); term.push(arr[n - 1]);
+  }
+  return { w, h, n, paths, term, head: 0, hold: 0, cy };
+}
+makeStrip('mcCanvas',
+  (w, h) => genPaths(w, h),
+  (ctx, s) => {
+    const { w, h, paths, n, cy } = s;
+    if (s.static){ s.head = n; s.hold = 999; }
+    else {
+      s.head = Math.min(s.head + 1.6, n);
+      if (s.head >= n && ++s.hold > 150) Object.assign(s, genPaths(w, h));
+    }
+    ctx.clearRect(0, 0, w, h);
+    const violet = cssVar('--violet'), amber = cssVar('--amber');
+    const ink = themeInk();
+    const histW = 70, xmax = w - histW - 18;
+    const m = Math.floor(s.head);
+
+    // faint gridlines
+    ctx.strokeStyle = ink.grid; ctx.lineWidth = 1;
+    [0.22, 0.82].forEach(g => { ctx.beginPath(); ctx.moveTo(0, h*g); ctx.lineTo(xmax, h*g); ctx.stroke(); });
+
+    // strike line K
+    ctx.setLineDash([3, 5]); ctx.strokeStyle = ink.dash;
+    ctx.beginPath(); ctx.moveTo(0, cy); ctx.lineTo(xmax, cy); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.font = '10px JetBrains Mono, monospace';
+    ctx.fillStyle = ink.text; ctx.textAlign = 'left';
+    ctx.fillText('K', 6, cy - 6);
+
+    // paths, colored by terminal outcome (above strike = sand, below = violet)
+    ctx.lineWidth = 1;
+    paths.forEach((p, i) => {
+      const colr = (s.term[i] < cy) ? amber : violet;
+      ctx.beginPath();
+      for (let k = 0; k < m; k++){
+        const x = (k / (n - 1)) * xmax, y = Math.max(8, Math.min(h - 8, p[k]));
+        k ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+      }
+      ctx.strokeStyle = colr; ctx.globalAlpha = .26; ctx.stroke();
+      // glowing head while drawing
+      if (m > 1 && m < n){
+        const hx = ((m - 1) / (n - 1)) * xmax, hy = Math.max(8, Math.min(h - 8, p[m - 1]));
+        ctx.beginPath(); ctx.arc(hx, hy, 1.8, 0, 7);
+        ctx.fillStyle = colr; ctx.globalAlpha = .85; ctx.fill();
+      }
+    });
+    ctx.globalAlpha = 1;
+
+    // terminal distribution histogram, fills in after paths complete
+    if (m >= n){
+      const prog = Math.min(1, s.hold / 45);
+      const bins = 14, counts = new Array(bins).fill(0);
+      const y0 = 10, y1 = h - 10, bh = (y1 - y0) / bins;
+      s.term.forEach(tv => {
+        const yy = Math.max(y0, Math.min(y1 - 0.01, tv));
+        counts[Math.floor((yy - y0) / (y1 - y0) * bins)]++;
+      });
+      const mx = Math.max.apply(null, counts) || 1;
+      for (let b = 0; b < bins; b++){
+        const by = y0 + b * bh;
+        ctx.fillStyle = (by + bh / 2) < cy ? amber : violet;
+        ctx.globalAlpha = .5;
+        ctx.fillRect(xmax + 10, by + 1, (counts[b] / mx) * (histW - 14) * prog, bh - 2);
+      }
+      ctx.globalAlpha = 1;
+    }
+
+    // live readout
+    const itm = s.term.filter(tv => tv < cy).length / s.term.length;
+    ctx.textAlign = 'right'; ctx.fillStyle = ink.text;
+    ctx.fillText(`${paths.length} paths · ITM ${Math.round(itm * 100)}%`, w - 12, 20);
+    if (m < n) ctx.fillText('simulating\u2026', w - 12, 34);
+    else ctx.fillText('terminal dist \u2192', w - 12, 34);
+  });
+
+/* =========================================================
+   CONTEXTUAL CARD ANIMATIONS (reuse makeStrip engine)
+   ========================================================= */
+function rrect(ctx, x, y, w, h, r){
+  ctx.beginPath();
+  if (ctx.roundRect) ctx.roundRect(x, y, w, h, Math.min(r, Math.abs(w)/2, Math.abs(h)/2));
+  else ctx.rect(x, y, w, h);
+}
+const SPIN = ['\u280b','\u2819','\u2839','\u2838','\u283c','\u2834','\u2826','\u2827','\u2807','\u280f'];
+
+/* 1 — Cost reconciliation: provider bars breathe, an anomaly bar breaches budget */
+makeStrip('animCost',
+  (w, h) => ({ w, h, t:0, n:6, anomaly:3, seed:Array.from({length:6}, () => Math.random()*6.28) }),
+  (ctx, s) => {
+    const { w, h, n, seed } = s; if (!s.static) s.t += 0.02;
+    ctx.clearRect(0, 0, w, h);
+    const ink = themeInk(), violet = cssVar('--violet'), magenta = cssVar('--magenta'), amber = cssVar('--amber');
+    const cols = [violet, magenta, amber], pad = 10, base = h - 12, top = 22;
+    const span = w - pad*2, gap = span/n, bw = gap*0.56, thr = top + (base-top)*0.30;
+
+    ctx.setLineDash([3,4]); ctx.strokeStyle = ink.dash; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(pad, thr); ctx.lineTo(w-pad, thr); ctx.stroke(); ctx.setLineDash([]);
+
+    for (let i = 0; i < n; i++){
+      const x = pad + gap*i + (gap-bw)/2;
+      const amp = s.static ? 0.5 : (0.5 + 0.5*Math.sin(s.t + seed[i]));
+      const isAnom = i === s.anomaly;
+      const spike = isAnom ? (s.static ? 1 : Math.max(0, Math.sin(s.t*0.6))) : 0;
+      let hgt = (base-top)*(0.22 + 0.45*amp) + (isAnom ? (base-top)*0.5*spike : 0);
+      hgt = Math.min(hgt, base-top); const y = base - hgt;
+      const breach = isAnom && y < thr;
+      ctx.fillStyle = breach ? amber : cols[i%3]; ctx.globalAlpha = isAnom ? .9 : .6;
+      rrect(ctx, x, y, bw, hgt, 3); ctx.fill(); ctx.globalAlpha = 1;
+      if (breach){ ctx.strokeStyle = amber; ctx.lineWidth = 1.4; rrect(ctx, x-1.5, y-1.5, bw+3, hgt+3, 4); ctx.stroke(); }
+    }
+    ctx.strokeStyle = ink.line; ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(pad, base); ctx.lineTo(w-pad, base); ctx.stroke();
+
+    if (!s.static){
+      const sx = pad + ((s.t*0.16) % 1) * span;
+      const g = ctx.createLinearGradient(sx-14, 0, sx+14, 0);
+      g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(.5, magenta); g.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.globalAlpha = .22; ctx.fillStyle = g; ctx.fillRect(sx-14, top, 28, base-top); ctx.globalAlpha = 1;
+    }
+    ctx.font = '8px JetBrains Mono, monospace'; ctx.fillStyle = ink.text; ctx.textAlign = 'left';
+    ctx.fillText('cost / provider \u00b7 anomaly watch', pad, 11);
+  });
+
+/* 2 — GPU provisioning: a rack of SKUs allocates cell by cell, holds, recycles */
+makeStrip('animGpu',
+  (w, h) => ({ w, h, k:0, hold:0, rows:2, colsN:6 }),
+  (ctx, s) => {
+    const { w, h, rows, colsN } = s, n = rows*colsN;
+    if (s.static) s.k = 8;
+    else { if (s.k < n) s.k += 0.05; else if (++s.hold > 150){ s.k = 0; s.hold = 0; } }
+    ctx.clearRect(0, 0, w, h);
+    const ink = themeInk(), violet = cssVar('--violet'), amber = cssVar('--amber');
+    const pad = 10, top = 20, cw = (w-pad*2)/colsN, ch = (h-top-4)/rows;
+    const gw = cw*0.74, gh = ch*0.6, alloc = Math.floor(s.k);
+
+    for (let i = 0; i < n; i++){
+      const r = Math.floor(i/colsN), c = i % colsN;
+      const x = pad + c*cw + (cw-gw)/2, y = top + r*ch + (ch-gh)/2;
+      const filled = i < alloc, active = i === alloc && !s.static;
+      if (filled){ ctx.fillStyle = violet; ctx.globalAlpha = .8; rrect(ctx, x, y, gw, gh, 3); ctx.fill(); }
+      else if (active){ const p = s.k - alloc; ctx.fillStyle = amber; ctx.globalAlpha = .3 + .5*p; rrect(ctx, x, y, gw, gh, 3); ctx.fill(); }
+      else { ctx.globalAlpha = 1; ctx.strokeStyle = ink.line; ctx.lineWidth = 1; rrect(ctx, x, y, gw, gh, 3); ctx.stroke(); }
+      ctx.globalAlpha = 1;
+    }
+    ctx.font = '8px JetBrains Mono, monospace'; ctx.fillStyle = ink.text; ctx.textAlign = 'left';
+    ctx.fillText('gpu sku allocation', pad, 11);
+    ctx.textAlign = 'right';
+    ctx.fillText(`${Math.min(alloc, n)}/${n} allocated`, w-pad, 11);
+  });
+
+/* 3 — Kubeflow auto-install: components fly in and dock onto cluster nodes */
+makeStrip('animKube',
+  (w, h) => ({ w, h, c:0, hold:0, total:9 }),
+  (ctx, s) => {
+    const { w, h, total } = s;
+    if (s.static) s.c = total;
+    else { if (s.c < total) s.c += 0.035; else if (++s.hold > 150){ s.c = 0; s.hold = 0; } }
+    ctx.clearRect(0, 0, w, h);
+    const ink = themeInk(), violet = cssVar('--violet'), magenta = cssVar('--magenta'), amber = cssVar('--amber');
+    const cols = [violet, magenta, amber];
+    const pad = 12, gap = 10, nodeY = h*0.42, nodeH = h - nodeY - 8;
+    const nodeW = (w - pad*2 - gap*2)/3, placed = Math.floor(s.c);
+
+    // cluster nodes
+    for (let nIdx = 0; nIdx < 3; nIdx++){
+      const nx = pad + nIdx*(nodeW+gap);
+      ctx.strokeStyle = ink.line; ctx.lineWidth = 1; rrect(ctx, nx, nodeY, nodeW, nodeH, 5); ctx.stroke();
+      // docked components (3 slots per node)
+      for (let i = 0; i < total; i++){
+        if (i % 3 !== nIdx) continue;
+        const slot = Math.floor(i/3); if (i >= placed) continue;
+        const sq = 7, sx = nx + 7 + slot*(sq+5), sy = nodeY + nodeH/2 - sq/2;
+        ctx.fillStyle = cols[nIdx]; ctx.globalAlpha = .85; rrect(ctx, sx, sy, sq, sq, 2); ctx.fill(); ctx.globalAlpha = 1;
+      }
+    }
+    // in-flight component
+    if (!s.static && s.c < total){
+      const i = placed, nIdx = i % 3, slot = Math.floor(i/3), p = s.c - placed;
+      const nx = pad + nIdx*(nodeW+gap), sq = 7;
+      const tx = nx + 7 + slot*(sq+5), ty = nodeY + nodeH/2 - sq/2;
+      const fx = w*0.5, fy = 6;
+      const cx = fx + (tx-fx)*p, cy = fy + (ty-fy)*(p*p);
+      ctx.fillStyle = amber; rrect(ctx, cx, cy, sq, sq, 2); ctx.fill();
+    }
+    ctx.font = '8px JetBrains Mono, monospace'; ctx.fillStyle = ink.text; ctx.textAlign = 'left';
+    ctx.fillText('installing components \u2192 cluster', pad, 11);
+  });
+
+/* 4 — Kubeflow installer: terminal checklist ticking through with a progress bar */
+makeStrip('animInstaller',
+  (w, h) => ({ w, h, t:0, idx:0, hold:0,
+    tasks:['apply namespace','install CRDs','deploy controllers','sync pipelines','enable katib','verify health'] }),
+  (ctx, s) => {
+    const { w, h, tasks } = s; const T = tasks.length;
+    if (!s.static) s.t += 1;
+    if (s.static) s.idx = T;
+    else { if (s.idx < T) s.idx += 0.012; else if (++s.hold > 130){ s.idx = 0; s.hold = 0; } }
+    ctx.clearRect(0, 0, w, h);
+    const ink = themeInk(), violet = cssVar('--violet'), amber = cssVar('--amber');
+    const done = Math.floor(s.idx), pad = 12;
+    const lineY = [24, 37, 50]; // last 3 visible rows
+    ctx.font = '9px JetBrains Mono, monospace'; ctx.textAlign = 'left';
+
+    const start = Math.max(0, done - 2);
+    for (let row = 0; row < 3; row++){
+      const i = start + row; if (i > T) break;
+      const y = lineY[row];
+      if (i < done || (s.static && i < T)){ ctx.fillStyle = violet; ctx.fillText('\u2713 ' + tasks[i], pad, y); }
+      else if (i === done && i < T){ const sp = SPIN[Math.floor(s.t/4) % SPIN.length]; ctx.fillStyle = amber; ctx.fillText(sp + ' ' + tasks[i], pad, y); }
+      else if (i === T){ ctx.fillStyle = violet; ctx.fillText('\u2713 ready', pad, y); }
+    }
+    ctx.font = '8px JetBrains Mono, monospace'; ctx.fillStyle = ink.text; ctx.textAlign = 'right';
+    ctx.fillText(`${Math.min(done, T)}/${T}`, w-pad, 11);
+    ctx.textAlign = 'left'; ctx.fillText('helm install kubeflow', pad, 11);
+    // progress bar
+    const by = h-9, bw = w - pad*2, p = Math.min(1, s.idx / T);
+    ctx.fillStyle = ink.grid; rrect(ctx, pad, by, bw, 3, 2); ctx.fill();
+    ctx.fillStyle = violet; rrect(ctx, pad, by, bw*p, 3, 2); ctx.fill();
+  });
+
+/* helpers for the anonymity circuit */
+function randIp(){ return (10 + (Math.random()*240|0)) + '.' + (Math.random()*256|0) + '.' + (Math.random()*256|0) + '.' + (Math.random()*256|0); }
+function newCircuit(h){ const a = 24, b = h - 16; return [0,0,0].map(() => a + Math.random()*(b-a)); }
+
+/* 5 — DevEx: a PR diff is scanned top-to-bottom, then auto-approved */
+makeStrip('animDevex',
+  (w, h) => ({ w, h, scan:0, hold:0,
+    lines:[{g:'+',ln:0.62},{g:'+',ln:0.8},{g:' ',ln:0.45},{g:'-',ln:0.7},{g:'+',ln:0.55}] }),
+  (ctx, s) => {
+    const { w, h, lines } = s;
+    if (s.static) s.scan = 1.2;
+    else { if (s.scan < 1.4) s.scan += 0.012; else if (++s.hold > 120){ s.scan = 0; s.hold = 0; } }
+    ctx.clearRect(0, 0, w, h);
+    const ink = themeInk(), violet = cssVar('--violet'), magenta = cssVar('--magenta'), amber = cssVar('--amber');
+    const pad = 12, top = 20, gut = pad + 9, barMax = (w - gut - pad - 60);
+    const rowH = (h - top - 6) / lines.length;
+    ctx.font = '8px JetBrains Mono, monospace'; ctx.fillStyle = ink.text; ctx.textAlign = 'left';
+    ctx.fillText('PR auto-approve \u00b7 track*.list', pad, 11);
+
+    lines.forEach((L, i) => {
+      const y = top + i*rowH + rowH/2, scanned = s.scan*lines.length >= i + 0.5;
+      if (L.g !== ' '){ ctx.fillStyle = L.g === '+' ? violet : magenta; ctx.fillText(L.g, pad, y+3); }
+      ctx.globalAlpha = scanned ? 0.9 : 0.4;
+      ctx.fillStyle = L.g === '+' ? violet : L.g === '-' ? magenta : ink.grid;
+      rrect(ctx, gut, y-2.5, Math.max(6, barMax*L.ln), 5, 2); ctx.fill(); ctx.globalAlpha = 1;
+    });
+    if (!s.static && s.scan < 1){
+      const sy = top + s.scan*(h - top - 6);
+      ctx.strokeStyle = amber; ctx.globalAlpha = .7; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(pad, sy); ctx.lineTo(w-pad, sy); ctx.stroke(); ctx.globalAlpha = 1;
+    }
+    if (s.scan >= 1){
+      const p = Math.min(1, (s.scan - 1)/0.3), bw = 52, bh = 16, bx = w - pad - bw, by = h/2 - bh/2;
+      ctx.globalAlpha = p; ctx.fillStyle = violet; rrect(ctx, bx, by, bw, bh, 8); ctx.fill();
+      ctx.fillStyle = '#fff'; ctx.font = '8px JetBrains Mono, monospace'; ctx.textAlign = 'center';
+      ctx.fillText('\u2713 approved', bx + bw/2, by + bh/2 + 3); ctx.globalAlpha = 1; ctx.textAlign = 'left';
+    }
+  });
+
+/* 6 — HCMP: providers stream into one core that fans out to capabilities */
+makeStrip('animHcmp',
+  (w, h) => ({ w, h, t:0 }),
+  (ctx, s) => {
+    const { w, h } = s; if (!s.static) s.t += 0.03;
+    ctx.clearRect(0, 0, w, h);
+    const ink = themeInk(), violet = cssVar('--violet'), magenta = cssVar('--magenta'), amber = cssVar('--amber');
+    const cols = [violet, magenta, amber, violet];
+    const top = 18, lx = 16, coreX = w*0.5, py0 = top + 6, py1 = h - 8, coreY = (py0 + py1)/2;
+
+    for (let i = 0; i < 4; i++){
+      const py = py0 + (py1 - py0)*(i/3);
+      ctx.strokeStyle = ink.line; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(lx, py); ctx.lineTo(coreX, coreY); ctx.stroke();
+      const ph = s.static ? 0.5 : ((s.t*0.5 + i*0.25) % 1);
+      ctx.fillStyle = cols[i]; ctx.globalAlpha = .85;
+      ctx.beginPath(); ctx.arc(lx + (coreX-lx)*ph, py + (coreY-py)*ph, 1.8, 0, 7); ctx.fill(); ctx.globalAlpha = 1;
+      ctx.beginPath(); ctx.arc(lx, py, 2.6, 0, 7); ctx.fill();
+    }
+    const caps = ['cost','obsv','gov','itsm'], capX = w - 16;
+    for (let i = 0; i < 4; i++){
+      const cy = py0 + (py1 - py0)*(i/3);
+      ctx.strokeStyle = ink.line; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(coreX, coreY); ctx.lineTo(capX - 22, cy); ctx.stroke();
+      const lit = s.static ? true : Math.sin(s.t*1.4 - i) > 0.2;
+      ctx.fillStyle = lit ? amber : ink.grid; ctx.globalAlpha = lit ? .9 : .5;
+      ctx.beginPath(); ctx.arc(capX - 22, cy, 2.2, 0, 7); ctx.fill(); ctx.globalAlpha = 1;
+      ctx.font = '7px JetBrains Mono, monospace'; ctx.fillStyle = ink.text; ctx.textAlign = 'left';
+      ctx.fillText(caps[i], capX - 17, cy + 2.5);
+    }
+    const pulse = s.static ? 0 : 0.5 + 0.5*Math.sin(s.t*2);
+    ctx.beginPath(); ctx.arc(coreX, coreY, 8 + pulse*2, 0, 7);
+    ctx.fillStyle = cssVar('--bg-2'); ctx.fill(); ctx.strokeStyle = violet; ctx.lineWidth = 1.6; ctx.stroke();
+    ctx.fillStyle = violet; ctx.font = '7px JetBrains Mono, monospace'; ctx.textAlign = 'center';
+    ctx.fillText('HCMP', coreX, coreY + 2.5);
+    ctx.fillStyle = ink.text; ctx.font = '8px JetBrains Mono, monospace'; ctx.textAlign = 'left';
+    ctx.fillText('multi-cloud \u2192 one platform', lx - 2, 11);
+  });
+
+/* 7 — TenderChain: blocks link into a chain, each sealing an encrypted bid */
+makeStrip('animTender',
+  (w, h) => ({ w, h, t:0, n:0, max:5, hold:0 }),
+  (ctx, s) => {
+    const { w, h, max } = s; if (!s.static) s.t += 1;
+    if (s.static) s.n = max;
+    else { if (s.n < max){ if (s.t % 42 < 1) s.n++; } else if (++s.hold > 120){ s.n = 0; s.hold = 0; } }
+    ctx.clearRect(0, 0, w, h);
+    const ink = themeInk(), violet = cssVar('--violet'), magenta = cssVar('--magenta'), amber = cssVar('--amber');
+    const pad = 12, gap = 14, by = h*0.42, bh = 28;
+    const bw = (w - pad*2 - gap*(max-1)) / max;
+    ctx.font = '8px JetBrains Mono, monospace'; ctx.fillStyle = ink.text; ctx.textAlign = 'left';
+    ctx.fillText('blockchain \u00b7 sealed bids', pad, 11);
+
+    for (let i = 0; i < s.n; i++){
+      const x = pad + i*(bw + gap);
+      if (i > 0){ ctx.strokeStyle = magenta; ctx.globalAlpha = .6; ctx.lineWidth = 1.4;
+        ctx.beginPath(); ctx.moveTo(x - gap, by + bh/2); ctx.lineTo(x, by + bh/2); ctx.stroke(); ctx.globalAlpha = 1; }
+      ctx.strokeStyle = violet; ctx.lineWidth = 1.4; ctx.fillStyle = cssVar('--bg-2');
+      rrect(ctx, x, by, bw, bh, 4); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = ink.text; ctx.font = '7px JetBrains Mono, monospace'; ctx.textAlign = 'center';
+      ctx.fillText('0x' + ((i*37 + 11) & 255).toString(16).padStart(2,'0'), x + bw/2, by - 3);
+      // tiny padlock = encrypted bid
+      const lx = x + bw/2, ly = by + bh/2 + 2;
+      ctx.strokeStyle = amber; ctx.lineWidth = 1.2;
+      ctx.beginPath(); ctx.arc(lx, ly - 3, 2.2, Math.PI, 0); ctx.stroke();
+      ctx.fillStyle = amber; rrect(ctx, lx - 3, ly - 1, 6, 5, 1); ctx.fill();
+    }
+    if (!s.static && s.n < max){
+      const x = pad + s.n*(bw + gap);
+      ctx.globalAlpha = 0.3 + 0.3*Math.sin(s.t*0.2);
+      ctx.setLineDash([3,3]); ctx.strokeStyle = ink.dash; ctx.lineWidth = 1;
+      rrect(ctx, x, by, bw, bh, 4); ctx.stroke(); ctx.setLineDash([]); ctx.globalAlpha = 1;
+    }
+  });
+
+/* 8 — GoAnon: a packet hops a Tor circuit that reshuffles with a new exit IP */
+makeStrip('animAnon',
+  (w, h) => ({ w, h, ys:newCircuit(h), packet:0, ip:randIp() }),
+  (ctx, s) => {
+    const { w, h } = s;
+    const midY = (24 + (h - 16))/2;
+    if (!s.static){ s.packet += 0.012; if (s.packet >= 1){ s.packet = 0; s.ys = newCircuit(h); s.ip = randIp(); } }
+    ctx.clearRect(0, 0, w, h);
+    const ink = themeInk(), violet = cssVar('--violet'), magenta = cssVar('--magenta'), amber = cssVar('--amber');
+    const cx = 16, dx = w - 16, rx = [0.34, 0.54, 0.74].map(f => f*w);
+    const pts = [[cx,midY],[rx[0],s.ys[0]],[rx[1],s.ys[1]],[rx[2],s.ys[2]],[dx,midY]];
+    const segs = pts.length - 1;
+
+    for (let i = 0; i < segs; i++){
+      const active = !s.static && s.packet >= i/segs && s.packet <= (i+1)/segs;
+      ctx.strokeStyle = active ? magenta : ink.line; ctx.globalAlpha = active ? .9 : .5; ctx.lineWidth = active ? 1.5 : 1;
+      ctx.beginPath(); ctx.moveTo(pts[i][0], pts[i][1]); ctx.lineTo(pts[i+1][0], pts[i+1][1]); ctx.stroke(); ctx.globalAlpha = 1;
+    }
+    if (!s.static){
+      const seg = Math.min(segs - 1, Math.floor(s.packet*segs)), local = s.packet*segs - seg;
+      const px = pts[seg][0] + (pts[seg+1][0]-pts[seg][0])*local, py = pts[seg][1] + (pts[seg+1][1]-pts[seg][1])*local;
+      ctx.fillStyle = amber; ctx.globalAlpha = .3; ctx.beginPath(); ctx.arc(px, py, 5, 0, 7); ctx.fill();
+      ctx.globalAlpha = 1; ctx.beginPath(); ctx.arc(px, py, 2.6, 0, 7); ctx.fill();
+    }
+    const node = (x, y, r, c, fill) => { ctx.beginPath(); ctx.arc(x, y, r, 0, 7);
+      if (fill){ ctx.fillStyle = c; ctx.fill(); } else { ctx.fillStyle = cssVar('--bg-2'); ctx.fill(); ctx.strokeStyle = c; ctx.lineWidth = 1.4; ctx.stroke(); } };
+    node(cx, midY, 4, violet, true);
+    rx.forEach((x, i) => node(x, s.ys[i], 3.4, magenta, false));
+    node(dx, midY, 4, amber, true);
+    ctx.font = '7px JetBrains Mono, monospace'; ctx.fillStyle = ink.text; ctx.textAlign = 'center';
+    ctx.fillText('you', cx, midY + 13); ctx.fillText('dst', dx, midY + 13);
+    ctx.textAlign = 'left'; ctx.font = '8px JetBrains Mono, monospace';
+    ctx.fillText('tor circuit \u00b7 exit ' + s.ip, 12, 11);
+  });
+
+/* =========================================================
+   AMBIENT — drifting particle field behind the hero (three.js)
+   ========================================================= */
+(function heroParticles(){
+  const cv = document.getElementById('heroParticles');
+  if (!cv || typeof THREE === 'undefined' || REDUCED) return;
+  const hero = cv.parentElement;
+  const N = matchMedia('(max-width:920px)').matches ? 70 : 150;
+  const PAL_DARK  = [[0.55,0.52,0.91],[0.85,0.52,0.74],[0.91,0.79,0.54]];
+  const PAL_LIGHT = [[0.36,0.31,0.79],[0.69,0.29,0.58],[0.73,0.51,0.12]];
+  let renderer, scene, camera, pts, raf = 0, running = false, t = 0;
+  let tx = 0, ty = 0, camX = 0, camY = 0;
+
+  function build(){
+    const w = Math.max(1, hero.clientWidth), h = Math.max(1, hero.clientHeight);
+    renderer = new THREE.WebGLRenderer({ canvas:cv, alpha:true, antialias:false, powerPreference:'low-power' });
+    renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+    renderer.setSize(w, h, false);
+    scene = new THREE.Scene();
+    camera = new THREE.PerspectiveCamera(50, w/h, 0.1, 50);
+    camera.position.z = 10;
+
+    const pos = new Float32Array(N*3), col = new Float32Array(N*3), seed = new Float32Array(N);
+    const palette = document.documentElement.classList.contains('light') ? PAL_LIGHT : PAL_DARK;
+    for (let i = 0; i < N; i++){
+      pos[i*3]   = (Math.random() - 0.5) * 24;
+      pos[i*3+1] = (Math.random() - 0.5) * 12;
+      pos[i*3+2] = (Math.random() - 0.5) * 6;
+      const c = palette[i % 3];
+      col[i*3] = c[0]; col[i*3+1] = c[1]; col[i*3+2] = c[2];
+      seed[i] = Math.random() * 100;
+    }
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    g.setAttribute('color', new THREE.BufferAttribute(col, 3));
+    pts = new THREE.Points(g, new THREE.PointsMaterial({ size:0.07, vertexColors:true, transparent:true, opacity:0.55 }));
+    pts.userData.seed = seed;
+    scene.add(pts);
+  }
+
+  function frame(){
+    t += 0.004;
+    const pos = pts.geometry.attributes.position, seed = pts.userData.seed;
+    for (let i = 0; i < N; i++){
+      pos.array[i*3+1] += Math.sin(t*2 + seed[i]) * 0.0016;
+      pos.array[i*3]   += Math.cos(t + seed[i]) * 0.0012;
+    }
+    pos.needsUpdate = true;
+    pts.rotation.y = Math.sin(t*0.3) * 0.05;
+    camX += (tx - camX) * 0.04; camY += (ty - camY) * 0.04;
+    camera.position.x = camX; camera.position.y = camY;
+    camera.lookAt(0, 0, 0);
+    renderer.render(scene, camera);
+    raf = requestAnimationFrame(frame);
+  }
+  const start = () => { if (!running && pts){ running = true; raf = requestAnimationFrame(frame); } };
+  const stop  = () => { running = false; cancelAnimationFrame(raf); };
+
+  hero.addEventListener('pointermove', e => {
+    const r = hero.getBoundingClientRect();
+    tx = ((e.clientX - r.left) / r.width - 0.5) * 0.9;
+    ty = -((e.clientY - r.top) / r.height - 0.5) * 0.5;
+  });
+  hero.addEventListener('pointerleave', () => { tx = 0; ty = 0; });
+
+  try { build(); } catch(e){ return; }
+  function retint(mode){
+    const pal = (mode === 'light') ? PAL_LIGHT : PAL_DARK;
+    const col = pts.geometry.attributes.color;
+    for (let i = 0; i < N; i++){ const c = pal[i % 3]; col.setXYZ(i, c[0], c[1], c[2]); }
+    col.needsUpdate = true;
+    pts.material.opacity = (mode === 'light') ? 0.5 : 0.55;
+  }
+  THEME_HOOKS.push(retint);
+  function resize(){
+    const w = Math.max(1, hero.clientWidth), h = Math.max(1, hero.clientHeight);
+    camera.aspect = w/h; camera.updateProjectionMatrix(); renderer.setSize(w, h, false);
+  }
+  addEventListener('resize', () => requestAnimationFrame(resize), { passive:true });
+  if ('IntersectionObserver' in window)
+    new IntersectionObserver(es => es.forEach(en => en.isIntersecting ? start() : stop()), { threshold:0.05 }).observe(hero);
+  else start();
+  document.addEventListener('visibilitychange', () => document.hidden ? stop() : start());
+})();
+
+/* =========================================================
+   3D tilt on cards (pointer-fine devices only)
+   ========================================================= */
+if (!REDUCED && matchMedia('(pointer:fine)').matches){
+  document.querySelectorAll('.card:not(.anim-strip)').forEach(card => {
+    card.addEventListener('pointermove', e => {
+      const r = card.getBoundingClientRect();
+      const rx = ((e.clientY - r.top) / r.height - 0.5) * -3.2;
+      const ry = ((e.clientX - r.left) / r.width - 0.5) * 3.2;
+      card.style.transform = `translateY(-4px) perspective(750px) rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg)`;
+    });
+    card.addEventListener('pointerleave', () => { card.style.transform = ''; });
+  });
+}
+
+/* =========================================================
+   ICON DOCK — proximity magnification on the "also used" wall
+   ========================================================= */
+(function iconDock(){
+  if (REDUCED || !matchMedia('(pointer:fine)').matches) return; // CSS lift remains as fallback
+  const wall = document.querySelector('.icon-wall');
+  if (!wall) return;
+  const icons = [...wall.querySelectorAll('img')];
+  if (!icons.length) return;
+  const tip = document.createElement('div');
+  tip.className = 'icon-tip'; tip.setAttribute('aria-hidden', 'true');
+  wall.appendChild(tip);
+  // move names out of title attrs so the native browser tooltip never doubles ours
+  icons.forEach(im => {
+    im.dataset.name = im.getAttribute('title') || im.alt || '';
+    im.removeAttribute('title');
+  });
+
+  let rect = null, centers = [], raf = 0, mx = 0, my = 0, inside = false;
+  const SIGMA = 65, GROW = 0.28, LIFT = 6;
+
+  function capture(){
+    rect = wall.getBoundingClientRect();
+    centers = icons.map(im => ({ x: im.offsetLeft + im.offsetWidth/2, y: im.offsetTop + im.offsetHeight/2 }));
+  }
+
+  function frame(){
+    raf = 0;
+    let best = -1, bestF = 0;
+    for (let i = 0; i < icons.length; i++){
+      const im = icons[i], c = centers[i];
+      const dx = mx - c.x, dy = my - c.y;
+      const f = Math.exp(-(dx*dx + dy*dy) / (2 * SIGMA * SIGMA));
+      im.style.transform = `translateY(${(-LIFT*f).toFixed(2)}px) scale(${(1 + GROW*f).toFixed(3)})`;
+      im.style.zIndex = 1 + Math.round(f * 50);
+      im.style.opacity = (0.72 + 0.28*f).toFixed(3);
+      im.style.filter = `grayscale(${(0.2*(1-f)).toFixed(3)}) drop-shadow(0 ${(3 + 6*f).toFixed(1)}px ${(5 + 9*f).toFixed(1)}px rgba(0,0,0,${(0.16 + 0.22*f).toFixed(3)}))`;
+      if (f > bestF){ bestF = f; best = i; }
+    }
+    if (best >= 0 && bestF > 0.55){
+      const c = centers[best], im = icons[best];
+      tip.textContent = im.dataset.name || '';
+      tip.style.left = c.x + 'px';
+      tip.style.top = (c.y - im.offsetHeight/2 - 10) + 'px';
+      tip.classList.add('show');
+    } else tip.classList.remove('show');
+  }
+
+  wall.addEventListener('pointerenter', () => { inside = true; capture(); wall.classList.add('magnify'); });
+  wall.addEventListener('pointermove', e => {
+    if (!rect) capture();
+    mx = e.clientX - rect.left; my = e.clientY - rect.top;
+    if (!raf) raf = requestAnimationFrame(frame);
+  });
+  wall.addEventListener('pointerleave', () => {
+    inside = false; if (raf){ cancelAnimationFrame(raf); raf = 0; }
+    wall.classList.remove('magnify'); tip.classList.remove('show');
+    icons.forEach(im => { im.style.transform = ''; im.style.zIndex = ''; im.style.opacity = ''; im.style.filter = ''; });
+  });
+  addEventListener('resize', () => { if (inside) capture(); }, { passive:true });
+  addEventListener('scroll', () => { if (inside) rect = wall.getBoundingClientRect(); }, { passive:true });
+})();
+
+/* =========================================================
+   OPTIONS PAYOFF LAB — Black-Scholes pricing, live payoff plot
+   ========================================================= */
+function stdN(x){
+  const t = 1/(1 + 0.2316419*Math.abs(x));
+  const d = Math.exp(-x*x/2)/Math.sqrt(2*Math.PI);
+  const p = d*t*(0.319381530 + t*(-0.356563782 + t*(1.781477937 + t*(-1.821255978 + t*1.330274429))));
+  return x >= 0 ? 1 - p : p;
+}
+function pdfN(x){ return Math.exp(-x*x/2)/Math.sqrt(2*Math.PI); }
+function bsPrice(type, S, K, T, sig, r){
+  if (T <= 1e-6){
+    const intr = type === 'c' ? Math.max(S-K, 0) : Math.max(K-S, 0);
+    return { price:intr, delta:0, theta:0, vega:0 };
+  }
+  const sq = sig*Math.sqrt(T);
+  const d1 = (Math.log(S/K) + (r + sig*sig/2)*T)/sq, d2 = d1 - sq;
+  const disc = Math.exp(-r*T);
+  let price, delta, sgn;
+  if (type === 'c'){ price = S*stdN(d1) - K*disc*stdN(d2); delta = stdN(d1); sgn = 1; }
+  else { price = K*disc*stdN(-d2) - S*stdN(-d1); delta = stdN(d1) - 1; sgn = -1; }
+  const theta = (-(S*pdfN(d1)*sig)/(2*Math.sqrt(T)) - sgn*r*K*disc*stdN(sgn*d2))/365;
+  const vega = S*pdfN(d1)*Math.sqrt(T)/100;
+  return { price, delta, theta, vega };
+}
+
+(function payoffLab(){
+  const cvs = document.getElementById('payoffCanvas');
+  if (!cvs || !cvs.getContext) return;
+  const ctx = cvs.getContext('2d');
+  const wrapEl = cvs.parentElement;
+  const el = id => document.getElementById(id);
+  const strat = el('plStrat'), rK = el('plK'), rW = el('plW'), rV = el('plV'), rT = el('plT');
+  const vK = el('plKv'), vW = el('plWv'), vV = el('plVv'), vT = el('plTv');
+  const wLabel = el('plWL'), read = el('plRead');
+  const S0 = 100, RATE = 0.05, SMIN = 55, SMAX = 145, NPTS = 181;
+  let W = 0, H = 0, hoverS = null;
+
+  function legsFor(s, K, w){
+    switch(s){
+      case 'call':     return [{q:1,t:'c',K}];
+      case 'put':      return [{q:1,t:'p',K}];
+      case 'straddle': return [{q:1,t:'c',K},{q:1,t:'p',K}];
+      case 'bullcall': return [{q:1,t:'c',K},{q:-1,t:'c',K:K+w}];
+      case 'condor':   return [{q:1,t:'p',K:K-2*w},{q:-1,t:'p',K:K-w},{q:-1,t:'c',K:K+w},{q:1,t:'c',K:K+2*w}];
+      default:         return [{q:1,t:'c',K}];
+    }
+  }
+  function model(){
+    const s = strat.value, K = +rK.value, w = +rW.value;
+    const sig = (+rV.value)/100, T = (+rT.value)/365;
+    const legs = legsFor(s, K, w);
+    let prem = 0, delta = 0, theta = 0, vega = 0;
+    legs.forEach(L => {
+      const g = bsPrice(L.t, S0, L.K, T, sig, RATE);
+      prem += L.q*g.price; delta += L.q*g.delta; theta += L.q*g.theta; vega += L.q*g.vega;
+    });
+    const expiry = S => legs.reduce((a,L) => a + L.q*(L.t==='c' ? Math.max(S-L.K,0) : Math.max(L.K-S,0)), 0) - prem;
+    const now = S => legs.reduce((a,L) => a + L.q*bsPrice(L.t, S, L.K, T, sig, RATE).price, 0) - prem;
+    return { legs, prem, delta, theta, vega, expiry, now };
+  }
+
+  function fmt(v, d){ return (v >= 0 ? '+' : '\u2212') + Math.abs(v).toFixed(d === undefined ? 2 : d); }
+
+  function draw(){
+    const m = model();
+    ctx.clearRect(0, 0, W, H);
+    const ink = themeInk(), amber = cssVar('--amber'), violet = cssVar('--violet'),
+          ok = cssVar('--ok'), err = cssVar('--err');
+    const padL = 46, padR = 14, padT = 16, padB = 24;
+    const Ss = [], eArr = [], nArr = [];
+    for (let i = 0; i < NPTS; i++){
+      const S = SMIN + (SMAX - SMIN)*i/(NPTS - 1);
+      Ss.push(S); eArr.push(m.expiry(S)); nArr.push(m.now(S));
+    }
+    let lo = Math.min(0, ...eArr, ...nArr), hi = Math.max(0, ...eArr, ...nArr);
+    const range = Math.max(4, hi - lo); lo -= range*0.10; hi += range*0.10;
+    const X = S => padL + (S - SMIN)/(SMAX - SMIN)*(W - padL - padR);
+    const Y = v => padT + (hi - v)/(hi - lo)*(H - padT - padB);
+    const Y0 = Y(0);
+
+    // profit/loss shading under expiry payoff
+    for (let i = 0; i < NPTS; i++){
+      const v = eArr[i]; if (Math.abs(v) < 1e-9) continue;
+      const x = X(Ss[i]), y = Y(v);
+      ctx.fillStyle = v > 0 ? ok : err; ctx.globalAlpha = .10;
+      ctx.fillRect(x - 0.7, Math.min(Y0, y), 1.6, Math.abs(Y0 - y));
+    }
+    ctx.globalAlpha = 1;
+
+    // grid + zero line + y ticks
+    ctx.font = '9px JetBrains Mono, monospace'; ctx.textAlign = 'right'; ctx.fillStyle = ink.text;
+    [lo + range*0.25, 0, hi - range*0.25].forEach(v => {
+      const y = Y(v);
+      ctx.strokeStyle = v === 0 ? ink.dash : ink.grid; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(W - padR, y); ctx.stroke();
+      ctx.fillText((v >= 0 ? '+' : '') + v.toFixed(0), padL - 6, y + 3);
+    });
+
+    // strike ticks + spot line
+    ctx.textAlign = 'center';
+    m.legs.forEach(L => {
+      const x = X(L.K);
+      ctx.strokeStyle = ink.line; ctx.beginPath(); ctx.moveTo(x, H - padB); ctx.lineTo(x, H - padB + 5); ctx.stroke();
+      ctx.fillText(L.K, x, H - 8);
+    });
+    const xs = X(S0);
+    ctx.setLineDash([3, 4]); ctx.strokeStyle = ink.dash;
+    ctx.beginPath(); ctx.moveTo(xs, padT); ctx.lineTo(xs, H - padB); ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillText('S\u2080', xs, padT - 4 + 10);
+
+    // curves: today (violet dashed) then expiry (amber solid)
+    const trace = (arr, color, dash) => {
+      ctx.setLineDash(dash || []); ctx.strokeStyle = color; ctx.lineWidth = dash ? 1.4 : 1.9;
+      ctx.beginPath();
+      for (let i = 0; i < NPTS; i++){ const x = X(Ss[i]), y = Y(arr[i]); i ? ctx.lineTo(x, y) : ctx.moveTo(x, y); }
+      ctx.stroke(); ctx.setLineDash([]);
+    };
+    trace(nArr, violet, [4, 4]);
+    trace(eArr, amber);
+
+    // breakevens on expiry curve
+    for (let i = 1; i < NPTS; i++){
+      if ((eArr[i-1] < 0) !== (eArr[i] < 0)){
+        const f = eArr[i-1]/(eArr[i-1] - eArr[i]);
+        const S = Ss[i-1] + (Ss[i] - Ss[i-1])*f;
+        ctx.beginPath(); ctx.arc(X(S), Y0, 3, 0, 7);
+        ctx.fillStyle = cssVar('--bg-2'); ctx.fill();
+        ctx.strokeStyle = amber; ctx.lineWidth = 1.4; ctx.stroke();
+      }
+    }
+
+    // legend
+    ctx.textAlign = 'left'; ctx.fillStyle = ink.text;
+    ctx.fillText('\u2014 at expiry', W - padR - 120, padT + 4);
+    ctx.fillStyle = violet; ctx.fillText('--', W - padR - 58, padT + 4);
+    ctx.fillStyle = ink.text; ctx.fillText(' today', W - padR - 50, padT + 4);
+
+    // hover crosshair
+    if (hoverS !== null){
+      const x = X(hoverS), ve = m.expiry(hoverS), vn = m.now(hoverS);
+      ctx.strokeStyle = ink.dash; ctx.globalAlpha = .7;
+      ctx.beginPath(); ctx.moveTo(x, padT); ctx.lineTo(x, H - padB); ctx.stroke(); ctx.globalAlpha = 1;
+      [[ve, amber],[vn, violet]].forEach(([v, c]) => {
+        ctx.beginPath(); ctx.arc(x, Y(v), 3, 0, 7); ctx.fillStyle = c; ctx.fill();
+      });
+      const label = `S ${hoverS.toFixed(0)} \u00b7 exp ${fmt(ve)} \u00b7 now ${fmt(vn)}`;
+      ctx.font = '9px JetBrains Mono, monospace';
+      const tw = ctx.measureText(label).width + 12;
+      const bx = Math.min(Math.max(x - tw/2, padL), W - padR - tw);
+      ctx.fillStyle = cssVar('--bg-2'); ctx.globalAlpha = .95;
+      rrect(ctx, bx, padT, tw, 16, 4); ctx.fill(); ctx.globalAlpha = 1;
+      ctx.strokeStyle = ink.line; rrect(ctx, bx, padT, tw, 16, 4); ctx.stroke();
+      ctx.fillStyle = ink.text; ctx.textAlign = 'left';
+      ctx.fillText(label, bx + 6, padT + 11);
+    }
+
+    // readout
+    const maxP = Math.max(...eArr), maxL = Math.min(...eArr);
+    const openHi = eArr[NPTS-1] > eArr[NPTS-2] + 0.02 || eArr[0] > eArr[1] + 0.02;
+    const openLo = eArr[NPTS-1] < eArr[NPTS-2] - 0.02 || eArr[0] < eArr[1] - 0.02;
+    read.innerHTML =
+      `<span>net ${m.prem >= 0 ? 'debit' : 'credit'} <b>${Math.abs(m.prem).toFixed(2)}</b></span>` +
+      `<span>max P <b>${openHi ? '\u221e' : fmt(maxP)}</b></span>` +
+      `<span>max L <b>${openLo ? '\u2212\u221e' : fmt(maxL)}</b></span>` +
+      `<span>\u0394 <b>${m.delta.toFixed(2)}</b></span>` +
+      `<span>\u0398 <b>${m.theta.toFixed(3)}/d</b></span>` +
+      `<span>\u03bd <b>${m.vega.toFixed(2)}</b></span>`;
+  }
+
+  function refreshLabels(){
+    vK.textContent = rK.value; vW.textContent = rW.value;
+    vV.textContent = rV.value + '%'; vT.textContent = rT.value + 'd';
+    const needsW = strat.value === 'bullcall' || strat.value === 'condor';
+    wLabel.style.display = needsW ? '' : 'none';
+  }
+  function size(){
+    const r = wrapEl.getBoundingClientRect(), dpr = Math.min(devicePixelRatio || 1, 2);
+    cvs.width = Math.max(1, r.width*dpr); cvs.height = Math.max(1, r.height*dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0); W = r.width; H = r.height; draw();
+  }
+  [strat, rK, rW, rV, rT].forEach(c => c.addEventListener('input', () => { refreshLabels(); draw(); }));
+  cvs.addEventListener('pointermove', e => {
+    const r = cvs.getBoundingClientRect();
+    const frac = (e.clientX - r.left - 46)/(r.width - 46 - 14);
+    hoverS = Math.max(SMIN, Math.min(SMAX, SMIN + frac*(SMAX - SMIN)));
+    draw();
+  });
+  cvs.addEventListener('pointerleave', () => { hoverS = null; draw(); });
+  refreshLabels(); size();
+  THEME_HOOKS.push(() => draw());
+  addEventListener('resize', () => requestAnimationFrame(size), { passive:true });
+})();
+
+/* =========================================================
+   GUEST SHELL — press ~ anywhere
+   ========================================================= */
+(function guestShell(){
+  const term = document.createElement('div');
+  term.id = 'guestTerm'; term.hidden = true;
+  term.setAttribute('role', 'dialog'); term.setAttribute('aria-label', 'Guest shell');
+  term.innerHTML =
+    '<div class="gt-head"><span>aniket@d4t4r \u2014 guest shell</span><span>esc to close</span></div>' +
+    '<div class="gt-out" role="log" aria-live="polite"></div>' +
+    '<div class="gt-line"><span class="gt-ps">guest@d4t4r:~$</span>' +
+    '<input class="gt-in" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Shell command input"></div>';
+  document.body.appendChild(term);
+  const out = term.querySelector('.gt-out'), inp = term.querySelector('.gt-in');
+  let prevFocus = null; const hist = []; let hi = 0;
+
+  /* ticker gets out of the way: pushed down flush below the open shell */
+  function pushTicker(){
+    const h = term.hidden ? 0 : term.getBoundingClientRect().height;
+    root.style.setProperty('--tick-push', h ? Math.ceil(h) + 'px' : '0px');
+  }
+  addEventListener('resize', () => { if (!term.hidden) pushTicker(); }, { passive:true });
+
+  const escT = s => s.replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+  function print(html, cls){
+    const d = document.createElement('div');
+    d.className = 'gt-l' + (cls ? ' ' + cls : '');
+    d.innerHTML = html;
+    out.appendChild(d);
+    while (out.childNodes.length > 200) out.removeChild(out.firstChild);
+    out.scrollTop = out.scrollHeight;
+    pushTicker(); /* shell grew — ticker follows */
+  }
+  function openTerm(){
+    prevFocus = document.activeElement;
+    term.hidden = false;
+    requestAnimationFrame(() => { term.classList.add('open'); pushTicker(); });
+    if (!out.childNodes.length) print('welcome to the guest shell \u2014 type <b>help</b>');
+    setTimeout(() => inp.focus(), 60);
+  }
+  function closeTerm(){
+    term.classList.remove('open');
+    root.style.setProperty('--tick-push', '0px');
+    setTimeout(() => { term.hidden = true; }, 230);
+    if (prevFocus && prevFocus.focus) prevFocus.focus();
+  }
+
+  const HIRE_MAILTO = 'mailto:aniketdatar@cyberservices.com'
+    + '?subject=' + encodeURIComponent('Opportunity - redirected from portfolio')
+    + '&body=' + encodeURIComponent('Hi Aniket,\n\nI came across your portfolio (d4t4r.github.io) and would like to discuss an opportunity with you.\n\nRole / Company:\nWhat caught my eye:\n\nBest regards,\n');
+  function hireSeq(){
+    const lines = [
+      ['ok', 'locating candidate\u2026 found: <b>Aniket Datar</b>'],
+      ['ok', 'checking availability\u2026 open to opportunities'],
+      ['ok', '<b>Hiring Aniket Datar</b> \u2014 opening mail draft \u2192']
+    ];
+    if (REDUCED){ lines.forEach(l => print(l[1], l[0])); location.href = HIRE_MAILTO; return; }
+    lines.forEach((l, i) => setTimeout(() => {
+      print(l[1], l[0]);
+      if (i === lines.length - 1) setTimeout(() => { location.href = HIRE_MAILTO; }, 450);
+    }, i * 420));
+  }
+
+  const CMDS = {
+    help(){ print('commands: <b>whoami</b> \u00b7 <b>projects</b> \u00b7 <b>stack</b> \u00b7 <b>contact</b> \u00b7 <b>hire</b> \u00b7 <b>ls</b> \u00b7 <b>goto &lt;section&gt;</b> \u00b7 <b>deploy [dev|staging|prod]</b> \u00b7 <b>theme</b> \u00b7 <b>clear</b> \u00b7 <b>exit</b>'); },
+    whoami(){ print('Aniket Datar \u2014 DevOps engineer \u00b7 hybrid-cloud R&amp;D \u00b7 FinOps &amp; GPU provisioning by day, derivatives pricing by night.'); },
+    projects(){ print('<span class="ac">HCMP FinOps Core</span> \u2014 multi-cloud cost platform\n<span class="ac">TenderChain</span> \u2014 on-chain tender management (Solidity/IPFS)\n<span class="ac">Managed Kubeflow Installer</span> \u2014 GitOps auto-install\n<span class="ac">GoAnon</span> \u2014 layered Linux anonymity (Tor/VPN/nftables)'); },
+    stack(){ print('k8s \u00b7 helm \u00b7 argocd \u00b7 vault \u00b7 kubeflow \u00b7 oracle/bigquery \u00b7 spring \u00b7 python \u00b7 terraform \u00b7 prometheus/grafana'); },
+    contact(){ print('email  <a href="mailto:aniketdatar@cyberservices.com">aniketdatar@cyberservices.com</a>\ngithub <a href="https://github.com/D4T4R" target="_blank" rel="noopener">github.com/D4T4R</a>\nlinkedin <a href="https://www.linkedin.com/in/ezpuns" target="_blank" rel="noopener">/in/ezpuns</a>'); },
+    ls(){ print('finops/  quant/  projects/  stack/  contact/'); },
+    goto(args){
+      const id = (args[0] || '').replace(/\W/g, '');
+      const sec = document.getElementById(id);
+      if (!sec){ print('goto: no such section \u2014 try <b>ls</b>', ''); return; }
+      print('\u2192 ' + id); closeTerm();
+      sec.scrollIntoView({ behavior: REDUCED ? 'auto' : 'smooth' });
+    },
+    deploy(args){
+      const env = (args[0] || '').toLowerCase();
+      const seg = document.getElementById('dcEnv');
+      if (env && seg){
+        const b = seg.querySelector('button[data-env="' + env + '"]');
+        if (b) b.click(); else { print('deploy: unknown env "' + escT(env) + '" \u2014 dev|staging|prod'); return; }
+      }
+      const dBtn = document.getElementById('deployBtn');
+      if (!dBtn){ print('deploy: pipeline console not found'); return; }
+      print('triggering pipeline' + (env ? ' \u2192 ' + env : '') + ' \u2026 watch the delivery console');
+      closeTerm();
+      const consoleEl = document.querySelector('.deploy-console');
+      if (consoleEl) consoleEl.scrollIntoView({ behavior: REDUCED ? 'auto' : 'smooth', block: 'center' });
+      setTimeout(() => dBtn.click(), REDUCED ? 0 : 550);
+    },
+    theme(){ themeBtn.click(); print('theme \u2192 ' + (root.classList.contains('light') ? 'light' : 'dark')); },
+    clear(){ out.innerHTML = ''; },
+    exit(){ closeTerm(); },
+    hire(){ hireSeq(); },
+    sudo(args){
+      if (args.join(' ') === 'hire-me'){ hireSeq(); }
+      else print('guest is not in the sudoers file. This incident will be reported.');
+    }
+  };
+
+  function run(line){
+    const clean = line.trim();
+    print('<span class="ps">guest@d4t4r:~$</span> ' + escT(clean), 'cmd');
+    if (!clean) return;
+    hist.push(clean); hi = hist.length;
+    const parts = clean.split(/\s+/), cmd = parts[0].toLowerCase(), args = parts.slice(1);
+    if (CMDS[cmd]) CMDS[cmd](args);
+    else print(escT(cmd) + ': command not found \u2014 try <b>help</b>');
+  }
+
+  inp.addEventListener('keydown', e => {
+    if (e.key === 'Enter'){ run(inp.value); inp.value = ''; }
+    else if (e.key === 'ArrowUp'){ if (hi > 0){ hi--; inp.value = hist[hi] || ''; e.preventDefault(); } }
+    else if (e.key === 'ArrowDown'){ if (hi < hist.length){ hi++; inp.value = hist[hi] || ''; e.preventDefault(); } }
+  });
+  addEventListener('keydown', e => {
+    if ((e.key === '`' || e.key === '~') && term.hidden){
+      const tag = (document.activeElement || {}).tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+      e.preventDefault(); openTerm();
+    } else if (e.key === 'Escape' && !term.hidden) closeTerm();
+  });
+})();
+
+/* =========================================================
+   SIGNATURE — animated implied volatility surface (three.js)
+   ========================================================= */
+(function volSurface(){
+  const panel = document.getElementById('surfacePanel');
+  const fallback = document.getElementById('surfaceFallback');
+  if (!panel || typeof THREE === 'undefined') return; // fallback gradient stays visible
+
+  let renderer, scene, camera, mesh, dots, grp, raf = 0, running = false, t = 0, scrollTilt = 0;
+  const SEG = (matchMedia('(max-width:920px)').matches ? 28 : 46);
+  const W = 4.2, H = 4.2;
+
+  // plasma colormap stops — per theme (light needs deeper, more saturated stops)
+  const STOPS_DARK = [
+    [0.28,0.26,0.48],
+    [0.55,0.52,0.91],
+    [0.85,0.52,0.74],
+    [0.91,0.79,0.54]
+  ];
+  const STOPS_LIGHT = [
+    [0.30,0.26,0.62],
+    [0.40,0.34,0.82],
+    [0.66,0.30,0.55],
+    [0.72,0.51,0.16]
+  ];
+  let STOPS = document.documentElement.classList.contains('light') ? STOPS_LIGHT : STOPS_DARK;
+  function ramp(x){
+    x = Math.max(0, Math.min(1, x));
+    const seg = (STOPS.length - 1), f = x * seg, i = Math.min(Math.floor(f), seg-1), k = f - i;
+    const a = STOPS[i], b = STOPS[i+1];
+    return [a[0]+(b[0]-a[0])*k, a[1]+(b[1]-a[1])*k, a[2]+(b[2]-a[2])*k];
+  }
+
+  // implied-vol-ish height field: smile (strike) + term hump + animated ripple
+  function heightAt(u, v, time){
+    const smile = 0.42 * u * u;                       // vol smile across moneyness
+    const term  = 0.16 * Math.sin(v * Math.PI * 0.8); // term-structure hump
+    const skew  = 0.10 * u * (1 - v);                 // skew that decays with maturity
+    const rip   = 0.07 * Math.sin(3.0*u + time) * Math.cos(2.2*v - time*0.7);
+    return smile + term + skew + rip;
+  }
+
+  function build(){
+    scene = new THREE.Scene();
+    const w = panel.clientWidth, h = panel.clientHeight;
+    camera = new THREE.PerspectiveCamera(42, w/h, 0.1, 100);
+    camera.position.set(0, 2.2, 4.4);
+    camera.lookAt(0, 0.15, 0);
+
+    renderer = new THREE.WebGLRenderer({ antialias:true, alpha:true, powerPreference:'low-power' });
+    renderer.setPixelRatio = renderer.setPixelRatio || function(){};
+    renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+    renderer.setSize(w, h);
+    renderer.setClearColor(0x000000, 0);
+    panel.appendChild(renderer.domElement);
+
+    const geo = new THREE.PlaneGeometry(W, H, SEG, SEG);
+    const count = geo.attributes.position.count;
+    geo.setAttribute('color', new THREE.BufferAttribute(new Float32Array(count*3), 3));
+    const mat = new THREE.MeshBasicMaterial({ wireframe:true, vertexColors:true, transparent:true,
+      opacity: document.documentElement.classList.contains('light') ? 0.85 : 0.78 });
+    mesh = new THREE.Mesh(geo, mat);
+    const dotMat = new THREE.PointsMaterial({ size:0.05, vertexColors:true, transparent:true, opacity:0.5 });
+    dots = new THREE.Points(geo, dotMat);
+    grp = new THREE.Group(); grp.add(mesh); grp.add(dots);
+    grp.rotation.x = -Math.PI / 2.18;
+    scene.add(grp);
+
+    fallback.style.opacity = '0';
+    deform(0);
+  }
+
+  function deform(time){
+    const pos = mesh.geometry.attributes.position, col = mesh.geometry.attributes.color;
+    for (let i = 0; i < pos.count; i++){
+      const x = pos.getX(i), y = pos.getY(i);
+      const u = x / (W/2), v = (y + H/2) / H;       // u:[-1,1], v:[0,1]
+      const z = heightAt(u, v, time);
+      pos.setZ(i, z);
+      const c = ramp((z + 0.25) / 1.05);
+      col.setXYZ(i, c[0], c[1], c[2]);
+    }
+    pos.needsUpdate = true; col.needsUpdate = true;
+  }
+
+  // pointer parallax
+  let targRX = -Math.PI/2.18, targRZ = 0, curRX = targRX, curRZ = 0;
+  panel.addEventListener('pointermove', e => {
+    const r = panel.getBoundingClientRect();
+    const nx = (e.clientX - r.left)/r.width - 0.5, ny = (e.clientY - r.top)/r.height - 0.5;
+    targRZ = nx * 0.25; targRX = -Math.PI/2.18 + ny * 0.18;
+  });
+  panel.addEventListener('pointerleave', () => { targRZ = 0; targRX = -Math.PI/2.18; });
+
+  function frame(){
+    t += 0.012;
+    deform(t);
+    curRX += (targRX - curRX) * 0.06; curRZ += (targRZ - curRZ) * 0.06;
+    grp.rotation.x = curRX; grp.rotation.z = curRZ + Math.sin(t*0.2)*0.04 + scrollTilt;
+    if (dots) dots.material.opacity = 0.35 + 0.2 * (0.5 + 0.5*Math.sin(t*0.6));
+    renderer.render(scene, camera);
+    raf = requestAnimationFrame(frame);
+  }
+  function start(){ if (!running && mesh){ running = true; raf = requestAnimationFrame(frame); } }
+  function stop(){ running = false; cancelAnimationFrame(raf); }
+
+  function resize(){
+    if (!renderer) return;
+    const w = panel.clientWidth, h = panel.clientHeight;
+    camera.aspect = w/h; camera.updateProjectionMatrix(); renderer.setSize(w, h);
+    if (!running) renderer.render(scene, camera);
+  }
+
+  // theme retint: swap colormap and opacity, refresh static frames
+  THEME_HOOKS.push(mode => {
+    const light = mode === 'light';
+    STOPS = light ? STOPS_LIGHT : STOPS_DARK;
+    if (mesh) mesh.material.opacity = light ? 0.85 : 0.78;
+    if (dots) dots.material.opacity = light ? 0.45 : 0.5;
+    if (renderer && mesh && !running){ deform(t); renderer.render(scene, camera); }
+  });
+
+  try { build(); } catch(e){ fallback.style.opacity = '0.5'; return; }
+  addEventListener('resize', () => requestAnimationFrame(resize), { passive:true });
+
+  // scroll-linked tilt: surface leans as the hero scrolls away
+  if (window.gsap && window.ScrollTrigger && !REDUCED){
+    const o = { v: 0 };
+    gsap.to(o, {
+      v: 0.45, ease:'none',
+      scrollTrigger:{ trigger:'#top', start:'top top', end:'bottom top', scrub:0.6 },
+      onUpdate(){ scrollTilt = o.v; }
+    });
+  }
+
+  if (REDUCED){ renderer.render(scene, camera); return; } // static frame, no loop
+
+  // run only while visible & tab active
+  if ('IntersectionObserver' in window){
+    new IntersectionObserver(es => es.forEach(en => en.isIntersecting ? start() : stop()), { threshold:0.05 }).observe(panel);
+  } else start();
+  document.addEventListener('visibilitychange', () => document.hidden ? stop() : start());
+})();
+</script>
+</body>
+</html>
