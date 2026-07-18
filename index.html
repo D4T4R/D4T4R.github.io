@@ -410,10 +410,16 @@ section{padding:48px 0}
 .dc-status .dot{width:7px;height:7px;border-radius:50%;background:var(--faint);display:inline-block;margin-right:5px;vertical-align:middle}
 .dc-status .dot.run{background:var(--amber)} .dc-status .dot.ok{background:var(--ok)} .dc-status .dot.err{background:var(--err)}
 
-/* theme wipe (View Transitions) */
-::view-transition-old(root),::view-transition-new(root){animation:none;mix-blend-mode:normal}
-::view-transition-old(root){z-index:1}
-::view-transition-new(root){z-index:2}
+/* cross-document transition: smooth fade-and-rise between / and /v2/ */
+@view-transition{navigation:auto}
+::view-transition-old(root){animation:vtOut .26s ease both}
+::view-transition-new(root){animation:vtIn .34s ease both}
+@keyframes vtOut{to{opacity:0;transform:translateY(-10px)}}
+@keyframes vtIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+/* theme wipe (same-document): suppress defaults while JS drives the clip-path */
+html.tw::view-transition-old(root),html.tw::view-transition-new(root){animation:none;mix-blend-mode:normal}
+html.tw::view-transition-old(root){z-index:1}
+html.tw::view-transition-new(root){z-index:2}
 
 /* guest shell (press ~) */
 #guestTerm{
@@ -517,6 +523,7 @@ footer a:hover{color:var(--magenta)}
         <a href="#contact">contact</a>
       </div>
       <div class="actions">
+        <a id="v2Btn" class="btn ghost hire-btn" href="/v2/" title="Switch to the v2 experience">β v2</a>
         <a id="hireBtn" class="btn primary hire-btn" href="mailto:aniketdatar@cyberservices.com?subject=Opportunity%20-%20redirected%20from%20portfolio&body=Hi%20Aniket%2C%0A%0AI%20came%20across%20your%20portfolio%20(d4t4r.github.io)%20and%20would%20like%20to%20discuss%20an%20opportunity%20with%20you.%0A%0ARole%20%2F%20Company%3A%0AWhat%20caught%20my%20eye%3A%0A%0ABest%20regards%2C">✦ For Hirers</a>
         <button id="theme" class="icon-btn" type="button" aria-label="Toggle theme">☾</button>
         <button id="menu" class="nav-toggle icon-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="navmenu">☰</button>
@@ -796,6 +803,7 @@ footer a:hover{color:var(--magenta)}
         <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/swagger/swagger-original.svg" title="Swagger" alt="Swagger" width="40" height="40" loading="lazy"/>
         <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/yaml/yaml-original.svg" title="YAML" alt="YAML" width="40" height="40" loading="lazy"/>
         <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/tomcat/tomcat-original.svg" title="Apache Tomcat" alt="Apache Tomcat" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/web3js/web3js-original.svg" title="Web3.js" alt="Web3.js" width="40" height="40" loading="lazy"/>
         <img src="https://raw.githubusercontent.com/D4T4R/GoAnon/main/zato-og.png" title="Zato" alt="Zato" width="40" height="40" loading="lazy"/>
         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRivy-Oqgqx4JRPY18gvvMc-nXO7HMbu05zcQ&s" title="Apigee" alt="Apigee" width="40" height="40" loading="lazy"/>
         <img src="https://avatars.githubusercontent.com/u/1393215" title="Zipline" alt="Zipline" width="40" height="40" loading="lazy"/>
@@ -885,7 +893,9 @@ themeBtn.addEventListener('click', () => {
   const r = themeBtn.getBoundingClientRect();
   const cx = r.left + r.width/2, cy = r.top + r.height/2;
   const maxR = Math.hypot(Math.max(cx, innerWidth - cx), Math.max(cy, innerHeight - cy));
+  root.classList.add('tw');
   const vt = document.startViewTransition(applyTheme);
+  vt.finished.finally(() => root.classList.remove('tw'));
   vt.ready.then(() => {
     document.documentElement.animate(
       { clipPath: [`circle(0px at ${cx}px ${cy}px)`, `circle(${maxR}px at ${cx}px ${cy}px)`] },
@@ -893,6 +903,19 @@ themeBtn.addEventListener('click', () => {
     );
   }).catch(() => {});
 });
+
+/* v1 ↔ v2 switch: browsers with cross-document view transitions animate it
+   natively; elsewhere, a quick fade-out before navigating */
+const v2Btn = document.getElementById('v2Btn');
+if (v2Btn && !('CSSViewTransitionRule' in window) && !REDUCED){
+  v2Btn.addEventListener('click', e => {
+    e.preventDefault();
+    document.body.style.transition = 'opacity .22s ease';
+    document.body.style.opacity = '0';
+    setTimeout(() => { location.href = v2Btn.href; }, 220);
+  });
+}
+addEventListener('pageshow', () => { document.body.style.opacity = ''; });
 
 /* ---------- header offset (accurate sticky measurement) ---------- */
 const headerEl = document.querySelector('header');
