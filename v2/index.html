@@ -23,8 +23,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
 
-<!-- boot flag: set before first paint so the preloader never flashes late -->
-<script>try{if(!sessionStorage.getItem('boot')&&!matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.classList.add('booting')}catch(e){}</script>
+<!-- boot flag: set before first paint so the preloader never flashes late.
+     Arriving from our own pages (v1 -> v2 switch) always plays the boot;
+     direct visits replay it after 6h. -->
+<script>try{var _b=+localStorage.getItem('bootAt')||0,_i=document.referrer.indexOf(location.origin)===0;if((_i||Date.now()-_b>216e5)&&!matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.classList.add('booting')}catch(e){}</script>
 
 <style>
 /* ============================================================
@@ -1030,7 +1032,7 @@ document.getElementById('y').textContent = new Date().getFullYear();
   setTimeout(() => {
     document.documentElement.classList.add('boot-done');
     document.dispatchEvent(new CustomEvent('boot:done'));
-    try { sessionStorage.setItem('boot', '1'); } catch(e){}
+    try { localStorage.setItem('bootAt', String(Date.now())); } catch(e){}
     setTimeout(() => {
       document.documentElement.classList.remove('booting', 'boot-done');
       bootEl.remove();
