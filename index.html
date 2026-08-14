@@ -343,6 +343,8 @@ section{padding:48px 0}
 .icon-wall img:hover{transform:translateY(-3px) scale(1.06);opacity:1;filter:invert(var(--inv)) grayscale(0) drop-shadow(0 6px 14px rgba(0,0,0,.35))}
 /* near-black logos: flip them in dark mode so they don't vanish; untouched in light */
 :root:not(.light) .icon-wall img.adaptive{--inv:1}
+/* already-white logos: the opposite — flip them in light mode only */
+:root.light .icon-wall img.adaptive-w{--inv:1}
 
 /* activity */
 .stats img{width:100%;height:auto;border-radius:12px}
@@ -776,7 +778,7 @@ footer a:hover{color:var(--magenta)}
         <img src="https://raw.githubusercontent.com/grafana/beyla/main/docs/sources/assets/logo.png" title="Beyla" alt="Beyla" width="35" height="40" loading="lazy"/>
         <img src="https://raw.githubusercontent.com/D4T4R/GoAnon/main/anthos.png" title="Anthos" alt="GCP Anthos" width="40" height="40" loading="lazy"/>
         <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/prometheus/prometheus-original.svg" title="Prometheus" alt="Prometheus" width="40" height="40" loading="lazy"/>
-        <img src="https://raw.githubusercontent.com/D4T4R/GoAnon/main/symbol-white.png" title="Victoria Metrics" class="adaptive" alt="VictoriaMetrics" width="35" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/D4T4R/GoAnon/main/symbol-white.png" title="Victoria Metrics" class="adaptive-w" alt="VictoriaMetrics" width="35" height="40" loading="lazy"/>
         <img src="https://raw.githubusercontent.com/D4T4R/GoAnon/main/zabbx.png" title="Zabbix" alt="Zabbix" width="35" height="40" loading="lazy"/>
         <img src="https://raw.githubusercontent.com/perses/perses/5503679acd58a0bd58b3e2de768f9183d5891336/docs/images/perses_logo_cropped.svg" title="Perses" alt="Perses" width="80" height="80" loading="lazy"/>
         <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/apacheairflow/apacheairflow-original.svg" title="Airflow" alt="Airflow" width="40" height="40" loading="lazy"/>
@@ -1844,7 +1846,8 @@ if (!REDUCED && matchMedia('(pointer:fine)').matches){
       im.style.transform = `translateY(${(-LIFT*f).toFixed(2)}px) scale(${(1 + GROW*f).toFixed(3)})`;
       im.style.zIndex = 1 + Math.round(f * 50);
       im.style.opacity = (0.72 + 0.28*f).toFixed(3);
-      const inv = (!document.documentElement.classList.contains('light') && im.classList.contains('adaptive')) ? 1 : 0;
+      const lightMode = document.documentElement.classList.contains('light');
+      const inv = ((!lightMode && im.classList.contains('adaptive')) || (lightMode && im.classList.contains('adaptive-w'))) ? 1 : 0;
       im.style.filter = `invert(${inv}) grayscale(${(0.2*(1-f)).toFixed(3)}) drop-shadow(0 ${(3 + 6*f).toFixed(1)}px ${(5 + 9*f).toFixed(1)}px rgba(0,0,0,${(0.16 + 0.22*f).toFixed(3)}))`;
       if (f > bestF){ bestF = f; best = i; }
     }
