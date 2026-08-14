@@ -335,11 +335,14 @@ section{padding:48px 0}
 }
 .icon-tip.show{opacity:1}
 .icon-wall img{
+  --inv:0;
   width:38px;height:38px;object-fit:contain;opacity:.72;border-radius:8px;
   transition:transform .16s ease,opacity .16s ease,filter .16s ease;
-  filter:grayscale(.2) drop-shadow(0 1px 0 rgba(0,0,0,.2));
+  filter:invert(var(--inv)) grayscale(.2) drop-shadow(0 1px 0 rgba(0,0,0,.2));
 }
-.icon-wall img:hover{transform:translateY(-3px) scale(1.06);opacity:1;filter:grayscale(0) drop-shadow(0 6px 14px rgba(0,0,0,.35))}
+.icon-wall img:hover{transform:translateY(-3px) scale(1.06);opacity:1;filter:invert(var(--inv)) grayscale(0) drop-shadow(0 6px 14px rgba(0,0,0,.35))}
+/* near-black logos: flip them in dark mode so they don't vanish; untouched in light */
+:root:not(.light) .icon-wall img.adaptive{--inv:1}
 
 /* activity */
 .stats img{width:100%;height:auto;border-radius:12px}
@@ -750,9 +753,9 @@ footer a:hover{color:var(--magenta)}
     <div class="card" data-reveal style="margin-top:14px">
       <div class="caps">also used</div>
       <div class="icon-wall" aria-label="Also used tools and technologies">
-        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/bash/bash-original.svg" title="Bash" alt="Bash" width="40" height="40" loading="lazy"/>
-        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/solidity/solidity-original.svg" title="Solidity" alt="Solidity" width="40" height="40" loading="lazy"/>
-        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/remix/remix-original.svg" title="Remix IDE" alt="Remix IDE" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/bash/bash-original.svg" title="Bash" class="adaptive" alt="Bash" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/solidity/solidity-original.svg" title="Solidity" class="adaptive" alt="Solidity" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/remix/remix-original.svg" title="Remix IDE" class="adaptive" alt="Remix IDE" width="40" height="40" loading="lazy"/>
         <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/linux/linux-original.svg" title="Linux" alt="Linux" width="40" height="40" loading="lazy"/>
         <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/python/python-original.svg" title="Python" alt="Python" width="40" height="40" loading="lazy"/>
         <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/materialui/materialui-original.svg" title="Material UI" alt="Material UI" width="40" height="40" loading="lazy"/>
@@ -760,7 +763,7 @@ footer a:hover{color:var(--magenta)}
         <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/javascript/javascript-original.svg" title="JavaScript" alt="JavaScript" width="40" height="40" loading="lazy"/>
         <img src="https://raw.githubusercontent.com/D4T4R/GoAnon/main/clickhouse.svg" title="ClickhouseDB" alt="ClickhouseDB" width="40" height="40" loading="lazy"/>
         <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/mongodb/mongodb-original.svg" title="MongoDB" alt="MongoDB" width="40" height="40" loading="lazy"/>
-        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/rust/rust-original.svg" title="Rust" alt="Rust" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/rust/rust-original.svg" title="Rust" class="adaptive" alt="Rust" width="40" height="40" loading="lazy"/>
         <img src="https://raw.githubusercontent.com/D4T4R/GoAnon/main/flyway.png" title="Flyway" alt="Flywway" width="40" height="40" loading="lazy"/>
         <img src="https://raw.githubusercontent.com/D4T4R/GoAnon/main/Veritas%20VCS.png" title="Veritas HAC" alt="Veritas HAC" width="40" height="60" loading="lazy"/>
         <img src="https://raw.githubusercontent.com/ClusterLabs/pacemaker/main/doc/clusterlabs-logo-55x55.png" title="Pacemaker" alt="ClusterLabs Pacemaker" width="40" height="60" loading="lazy"/>
@@ -777,8 +780,7 @@ footer a:hover{color:var(--magenta)}
         <img src="https://raw.githubusercontent.com/D4T4R/GoAnon/main/zabbx.png" title="Zabbix" alt="Zabbix" width="35" height="40" loading="lazy"/>
         <img src="https://raw.githubusercontent.com/perses/perses/5503679acd58a0bd58b3e2de768f9183d5891336/docs/images/perses_logo_cropped.svg" title="Perses" alt="Perses" width="80" height="80" loading="lazy"/>
         <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/apacheairflow/apacheairflow-original.svg" title="Airflow" alt="Airflow" width="40" height="40" loading="lazy"/>
-        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/apachekafka/apachekafka-original.svg" title="Kafka" alt="Kafka" width="40" height="40" loading="lazy"/>
-        <!--<svg xmlns="http://w3.org" viewBox="0 0 24 24" width="40" height="40" style="background: transparent; display: inline-block; vertical-align: middle; margin-right: 1px;"> <title>Kafka</title> <path fill="#39FF14" d="M9.71 2.136a1.43 1.43 0 0 0-2.047 0h-.007a1.48 1.48 0 0 0-.421 1.042c0 .41.161.777.422 1.039l.007.007c.257.264.616.426 1.019.426.404 0 .766-.162 1.027-.426l.003-.007c.261-.262.421-.629.421-1.039 0-.408-.159-.777-.421-1.042H9.71zM8.683 22.295c.404 0 .766-.167 1.027-.429l.003-.008c.261-.261.421-.631.421-1.036 0-.41-.159-.778-.421-1.044H9.71a1.42 1.42 0 0 0-1.027-.432 1.4 1.4 0 0 0-1.02.432h-.007c-.26.266-.422.634-.422 1.044 0 .406.161.775.422 1.036l.007.008c.258.262.617.429 1.02.429zm7.89-4.462c.359-.096.683-.33.882-.684l.027-.052a1.47 1.47 0 0 0 .114-1.067 1.454 1.454 0 0 0-.675-.896l-.021-.014a1.425 1.425 0 0 0-1.078-.132c-.36.091-.684.335-.881.686-.2.349-.241.75-.146 1.119.099.363.33.691.675.896h.002c.346.203.737.239 1.101.144zm-6.405-7.342a2.083 2.083 0 0 0-1.485-.627c-.58 0-1.103.242-1.482.627-.378.385-.612.916-.612 1.507s.233 1.124.612 1.514a2.08 2.08 0 0 0 2.967 0c.379-.39.612-.923.612-1.514s-.233-1.122-.612-1.507zm-.835-2.51c.843.141 1.6.552 2.178 1.144h.004c.092.093.182.196.265.299l1.446-.851a3.176 3.176 0 0 1-.047-1.808 3.149 3.149 0 0 1 1.456-1.926l.025-.016a3.062 3.062 0 0 1 2.345-.306c.77.21 1.465.721 1.898 1.482v.002c.431.757.518 1.626.313 2.408a3.145 3.145 0 0 1-1.456 1.928l-.198.118h-.02a3.095 3.095 0 0 1-2.154.201 3.127 3.127 0 0 1-1.514-.944l-1.444.848a4.162 4.162 0 0 1 0 2.879l1.444.846c.413-.47.939-.789 1.514-.944a3.041 3.041 0 0 1 2.371.319l.048.023v.002a3.17 3.17 0 0 1 1.408 1.906 3.215 3.215 0 0 1-.313 2.405l-.026.053-.003-.005a3.147 3.147 0 0 1-1.867 1.436 3.096 3.096 0 0 1-2.371-.318v-.006a3.156 3.156 0 0 1-1.456-1.927 3.175 3.175 0 0 1 .047-1.805l-1.446-.848a3.905 3.905 0 0 1-.265.294l-.004.005a3.938 3.938 0 0 1-2.178 1.138v1.699a3.09 3.09 0 0 1 1.56.862l.002.004c.565.572.914 1.368.914 2.243 0 .873-.35 1.664-.914 2.239l-.002.009a3.1 3.1 0 0 1-2.21.931 3.1 3.1 0 0 1-2.206-.93h-.002v-.009a3.186 3.186 0 0 1-.916-2.239c0-.875.35-1.672.916-2.243v-.004h.002a3.1 3.1 0 0 1 1.558-.862v-1.699a3.926 3.926 0 0 1-2.176-1.138l-.006-.005a4.098 4.098 0 0 1-1.173-2.874c0-1.122.452-2.136 1.173-2.872h.006a3.947 3.947 0 0 1 2.176-1.144V6.289a3.137 3.137 0 0 1-1.558-.864h-.002v-.004a3.192 3.192 0 0 1-.916-2.243c0-.871.35-1.669.916-2.243l.002-.002A3.084 3.084 0 0 1 8.683 0c.861 0 1.641.355 2.21.932v.002h.002c.565.574.914 1.372.914 2.243 0 .876-.35 1.667-.914 2.243l-.002.005a3.142 3.142 0 0 1-1.56.864v1.692zm8.121-1.129l-.012-.019a1.452 1.452 0 0 0-.87-.668 1.43 1.43 0 0 0-1.103.146h.002c-.347.2-.58.529-.677.896-.095.365-.054.768.146 1.119l.007.009c.2.347.519.579.874.673.357.103.755.059 1.098-.144l.019-.009a1.47 1.47 0 0 0 .657-.885 1.493 1.493 0 0 0-.141-1.118"/></svg>&nbsp;-->
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/apachekafka/apachekafka-original.svg" title="Kafka" class="adaptive" alt="Kafka" width="40" height="40" loading="lazy"/>
         <img src="https://raw.githubusercontent.com/D4T4R/GoAnon/main/Keycloak.png" title="Keycloak" alt="Keycloak" width="40" height="40" loading="lazy"/>
         <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/nginx/nginx-original.svg" title="Nginx" alt="Nginx" width="40" height="40" loading="lazy"/>
         <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/azuredevops/azuredevops-plain.svg" title="Azure DevOps" alt="ADO" width="40" height="40" loading="lazy"/>
@@ -802,7 +804,7 @@ footer a:hover{color:var(--magenta)}
         <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/vault/vault-original.svg" title="Vault" alt="Vault" width="40" height="40" loading="lazy"/>
         <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/elasticsearch/elasticsearch-original.svg" title="ElasticSearch" alt="ElasticSearch" width="40" height="40" loading="lazy"/>
         <img src="https://raw.githubusercontent.com/D4T4R/GoAnon/main/bento.png" title="Benthos" alt="Benthos" width="40" height="42" loading="lazy"/>
-        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/awk/awk-original.svg" title="Awk" alt="Awk" width="40" height="40" loading="lazy"/>
+        <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/awk/awk-original.svg" title="Awk" class="adaptive" alt="Awk" width="40" height="40" loading="lazy"/>
         <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/ballerina/ballerina-original.svg" title="Ballerina" alt="Ballerina" width="40" height="40" loading="lazy"/>
         <img src="https://avatars.githubusercontent.com/u/40630007" title="Genesys Cloud" alt="Genesys" width="40" height="40" loading="lazy"/>
         <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/swagger/swagger-original.svg" title="Swagger" alt="Swagger" width="40" height="40" loading="lazy"/>
@@ -1842,7 +1844,8 @@ if (!REDUCED && matchMedia('(pointer:fine)').matches){
       im.style.transform = `translateY(${(-LIFT*f).toFixed(2)}px) scale(${(1 + GROW*f).toFixed(3)})`;
       im.style.zIndex = 1 + Math.round(f * 50);
       im.style.opacity = (0.72 + 0.28*f).toFixed(3);
-      im.style.filter = `grayscale(${(0.2*(1-f)).toFixed(3)}) drop-shadow(0 ${(3 + 6*f).toFixed(1)}px ${(5 + 9*f).toFixed(1)}px rgba(0,0,0,${(0.16 + 0.22*f).toFixed(3)}))`;
+      const inv = (!document.documentElement.classList.contains('light') && im.classList.contains('adaptive')) ? 1 : 0;
+      im.style.filter = `invert(${inv}) grayscale(${(0.2*(1-f)).toFixed(3)}) drop-shadow(0 ${(3 + 6*f).toFixed(1)}px ${(5 + 9*f).toFixed(1)}px rgba(0,0,0,${(0.16 + 0.22*f).toFixed(3)}))`;
       if (f > bestF){ bestF = f; best = i; }
     }
     if (best >= 0 && bestF > 0.55){
